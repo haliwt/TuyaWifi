@@ -57,7 +57,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+   uint8_t times;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -72,7 +72,7 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  
 
   /* USER CODE END 1 */
 
@@ -119,11 +119,13 @@ int main(void)
     Decode_Function();
 	if(run_t.sendtimes> 4 || run_t.gPower_flag == 1){
 		run_t.sendtimes=0;
-	    run_t.gPower_flag++;
+        times++;
+        if(times > 49)run_t.gPower_flag++;
 	    Display_DHT11_Value(&DHT11);
 		//HAL_Delay(2);
         
 	}
+    if(run_t.gPower_On==0)times=0;
 	if((run_t.gPower_On ==0) && run_t.gFan_continueRun ==1){ //Fan be stop flag :0 -Fan works)
          
        if(run_t.gFan_counter > 59 && run_t.gFan_continueRun ==1){ //60s
