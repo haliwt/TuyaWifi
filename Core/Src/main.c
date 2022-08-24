@@ -27,7 +27,7 @@
 /* USER CODE BEGIN Includes */
 #include "ultrasonic.h"
 #include "dht11.h"
-
+#include "wifi.h"
 #include "led.h"
 #include "run.h"
 #include "fan.h"
@@ -37,7 +37,7 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
  //uint8_t   ReadKeyValue;
-
+uint8_t bleInputBuf[15];
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -102,9 +102,12 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-
+   wifi_protocol_init();
    HAL_TIM_Base_Start_IT(&htim3);//HAL_TIM_Base_Start(&htim3);
    UART_Start_Receive_IT(&huart1,inputBuf,1);
+   
+   __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);//??????
+    HAL_UART_Receive_DMA(&huart2,bleInputBuf,20);//??????DMA
    
   /* USER CODE END 2 */
 
@@ -118,8 +121,8 @@ int main(void)
 	
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
            
-
-    Decode_Function();
+     wifi_uart_service();
+    //Decode_Function();
 	if(run_t.sendtimes> 4 || run_t.gPower_flag == 1){
 		run_t.sendtimes=0;
         times++;
