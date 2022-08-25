@@ -121,7 +121,7 @@ int main(void)
 	
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
      wifi_uart_service();
-    HAL_UART_Receive_DMA(&huart2,wifiInputBuf,1);//??????DMA 
+   // HAL_UART_Receive_DMA(&huart2,wifiInputBuf,8);//??????DMA 
      
      
     //Decode_Function();

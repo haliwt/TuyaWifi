@@ -101,7 +101,11 @@ void MX_USART2_UART_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USART2_Init 2 */
+   	__HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE); //UART read data register not empty interruption
+	__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE); //使能IDLE中断
 
+  //DMA接收函数，此句一定要加，不加接收不到第一次传进来的实数据，是空的，且此时接收到的数据长度为缓存器的数据长度
+	HAL_UART_Receive_DMA(&huart2,wifiInputBuf,8);
   /* USER CODE END USART2_Init 2 */
 
 }

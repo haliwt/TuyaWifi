@@ -108,6 +108,8 @@ void uart_transmit_output(unsigned char value)
    // #error "请将MCU串口发送函数填入该函数,并删除该行"
     wifiOutputBuf[0]=value;
     HAL_UART_Transmit_DMA(&huart2,wifiOutputBuf, 1);
+    
+   // HAL_UART_Transmit_IT(&huart2,wifiOutputBuf, 1);
 /*
     //Example:
     extern void Uart_PutChar(unsigned char value);
