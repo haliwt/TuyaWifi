@@ -107,7 +107,7 @@ int main(void)
    UART_Start_Receive_IT(&huart1,inputBuf,1);
    
    __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);//??????
-  HAL_UART_Receive_DMA(&huart2,wifiInputBuf,100);//??????DMA      
+ // HAL_UART_Receive_DMA(&huart2,wifiInputBuf,100);//??????DMA      
     wifi_protocol_init();
   /* USER CODE END 2 */
 
@@ -121,10 +121,8 @@ int main(void)
 	
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
      wifi_uart_service();
-   //  HAL_UART_Receive_DMA(&huart2,wifiInputBuf,100);//??????DMA 
-     uart_receive_input(wifiInputBuf[i]); 
-     i++;
-     if(i>7)i=0;      
+    HAL_UART_Receive_DMA(&huart2,wifiInputBuf,1);//??????DMA 
+     
      
     //Decode_Function();
 	if(run_t.sendtimes> 4 || run_t.gPower_flag == 1){

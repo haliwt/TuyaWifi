@@ -19,7 +19,7 @@ volatile static uint8_t transOngoingFlag;
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    static uint8_t state=0,wifiData=0;
+    static uint8_t state=0,i=0;
     
 	if(huart==&huart1) // Motor Board receive data (filter)
 	{
@@ -61,13 +61,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     
     if(huart == &huart2){
     
-     if(__HAL_USART_GET_IT(&huart2, USART_IT_RXNE)!=RESET || __HAL_USART_GET_IT(&huart2, USART_IT_IDLE)!=RESET){
-         
-         __HAL_USART_CLEAR_IT(&huart2, USART_CLEAR_IDLEF);
-         
+      if(__HAL_UART_GET_FLAG(&huart2,UART_FLAG_IDLE)!= RESET)  //如果接收到了一个字节的数据
+      {
+         __HAL_UART_CLEAR_IDLEFLAG(&huart2);//清除标志位     
+          Res= USART2->RDR ;//wifiInputBuf[i];
+          uart_receive_input(Res); 
+         i++;
+         if(i>7)i=0;     
        
-      Res= USART2->RDR ;
-      uart_receive_input(Res);
+    // Res= USART2->RDR ;
+     // uart_receive_input(Res);
          
        
      
