@@ -136,7 +136,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         
         case 7:
 
-       
+            
             state2 = 0;
         
         break;
