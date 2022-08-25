@@ -107,8 +107,8 @@ void uart_transmit_output(unsigned char value)
 {
    // #error "请将MCU串口发送函数填入该函数,并删除该行"
     wifiOutputBuf[0]=value;
-    HAL_UART_Transmit_DMA(&huart2,wifiOutputBuf, 1);
-    while(0 != __HAL_DMA_GET_COUNTER(&hdma_usart2_tx));  /* 等待发送完成 */
+    HAL_UART_Transmit_IT(&huart2,&value,1);//HAL_UART_Transmit_DMA(&huart2,wifiOutputBuf, 1);
+   // while(__HAL_UART_GET_FLAG(&huart2,UART_FLAG_TXE)==RESET);  /* 等待发送完成 */
     
    // HAL_UART_Transmit_IT(&huart2,wifiOutputBuf, 1);
 /*

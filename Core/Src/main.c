@@ -18,7 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "dma.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -97,7 +96,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM1_Init();
-  MX_DMA_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   MX_TIM3_Init();
@@ -106,8 +104,7 @@ int main(void)
    HAL_TIM_Base_Start_IT(&htim3);//HAL_TIM_Base_Start(&htim3);
    UART_Start_Receive_IT(&huart1,inputBuf,1);
    //DMA usart2
-  // __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);//??????
- // HAL_UART_Receive_DMA(&huart2,wifiInputBuf,8);//??????DMA      
+   UART_Start_Receive_IT(&huart2,wifiInputBuf,1);     
     wifi_protocol_init();
   /* USER CODE END 2 */
 
@@ -121,7 +118,7 @@ int main(void)
 	
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
      wifi_uart_service();
-    HAL_UART_Receive_DMA(&huart2,wifiInputBuf,8);//??????DMA 
+  
      
      
     //Decode_Function();
