@@ -104,10 +104,11 @@ int main(void)
    HAL_TIM_Base_Start_IT(&htim3);//HAL_TIM_Base_Start(&htim3);
    UART_Start_Receive_IT(&huart1,inputBuf,1);
    //DMA usart2
-   UART_Start_Receive_IT(&huart2,wifiInputBuf,1);     
+   //UART_Start_Receive_IT(&huart2,wifiInputBuf,1);  
+    __HAL_UART_ENABLE_IT(&huart2,UART_IT_RXNE);   
     wifi_protocol_init();
   /* USER CODE END 2 */
-
+    mcu_set_wifi_mode(0);//????????
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)

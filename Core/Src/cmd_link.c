@@ -62,7 +62,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     
    
     if(huart->Instance==USART2){
-    
+      #if 0
         switch(state2)
 		{
 		case 0:  //#0
@@ -136,7 +136,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         
         case 7:
 
-            
+            wifiInputBuf[0]=0;
             state2 = 0;
         
         break;
@@ -145,7 +145,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
            
            
 	 UART_Start_Receive_IT(&huart2,wifiInputBuf,1);     
-	
+	#endif 
 		
 	}
     
