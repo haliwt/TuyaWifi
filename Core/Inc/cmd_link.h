@@ -5,7 +5,7 @@
 extern uint8_t inputBuf[4];
 
 extern uint8_t  inputCmd[2];
-
+extern uint8_t wifiInputBuf[8];
 
 void Decode_Function(void);
 

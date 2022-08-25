@@ -37,7 +37,7 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
  //uint8_t   ReadKeyValue;
-uint8_t bleInputBuf[15];
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -74,7 +74,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   
-
+   static uint8_t i;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -102,13 +102,13 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-   wifi_protocol_init();
+  
    HAL_TIM_Base_Start_IT(&htim3);//HAL_TIM_Base_Start(&htim3);
    UART_Start_Receive_IT(&huart1,inputBuf,1);
    
    __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);//??????
-    HAL_UART_Receive_DMA(&huart2,bleInputBuf,20);//??????DMA
-   
+  HAL_UART_Receive_DMA(&huart2,wifiInputBuf,100);//??????DMA      
+    wifi_protocol_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -120,8 +120,12 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
-           
      wifi_uart_service();
+   //  HAL_UART_Receive_DMA(&huart2,wifiInputBuf,100);//??????DMA 
+     uart_receive_input(wifiInputBuf[i]); 
+     i++;
+     if(i>7)i=0;      
+     
     //Decode_Function();
 	if(run_t.sendtimes> 4 || run_t.gPower_flag == 1){
 		run_t.sendtimes=0;

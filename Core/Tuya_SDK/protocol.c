@@ -30,6 +30,11 @@
 
 #include "wifi.h"
 #include "usart.h"
+
+uint8_t wifiOutputBuf[];
+
+
+
 #ifdef WEATHER_ENABLE
 /**
  * @var    weather_choose
@@ -100,8 +105,9 @@ const DOWNLOAD_CMD_S download_cmd[] =
  */
 void uart_transmit_output(unsigned char value)
 {
-  //  #error "请将MCU串口发送函数填入该函数,并删除该行"
-   HAL_UART_Transmit_DMA(&huart2,&value, sizeof(value) - 1);//WT.EDIT 2022.08.23 
+   // #error "请将MCU串口发送函数填入该函数,并删除该行"
+    wifiOutputBuf[0]=value;
+    HAL_UART_Transmit_DMA(&huart2,wifiOutputBuf, 1);
 /*
     //Example:
     extern void Uart_PutChar(unsigned char value);
@@ -136,10 +142,16 @@ void uart_transmit_output(unsigned char value)
 void all_data_update(void)
 {
    // #error "请在此处理可下发可上报数据及只上报数据示例,处理完成后删除该行"
-     mcu_dp_bool_update(DPID_START,0) ; //护理机 1->已经开启 0-> 关闭  //WT.EDIT 2022.08.23
-     mcu_dp_enum_update(DPID_MODE,0);  // 0->AI 模式自动开启 1->AI 模式关闭
-	 mcu_dp_value_update(DPID_TEMP,0x14); // 20度 ->温度 ->没有设置温度值
-	 mcu_dp_value_update(DPID_TIM,0);     // 0->没有设置定时时间值
+    
+    mcu_dp_bool_update(DPID_START,0); //BOOL型数据上报;
+    mcu_dp_enum_update(DPID_MODE,0); //枚举型数据上报;
+    mcu_dp_fault_update(DPID_FAULT,0); //故障型数据上报;
+    mcu_dp_value_update(DPID_TEMP,0x14); //VALUE型数据上报;
+    mcu_dp_bool_update(DPID_KILL,0); //BOOL型数据上报;
+    mcu_dp_bool_update(DPID_HEAT,0); //BOOL型数据上报;
+    mcu_dp_value_update(DPID_TIM,0); //VALUE型数据上报;
+    
+    
     /*
     //此代码为平台自动生成，请按照实际数据修改每个可下发可上报函数和只上报函数
     mcu_dp_bool_update(DPID_START,当前启动); //BOOL型数据上报;
@@ -164,7 +176,7 @@ void all_data_update(void)
 功能描述 : 针对DPID_START的处理函数
 输入参数 : value:数据源数据
         : length:数据长度
-返回参数 : 成功返回:SUCCESS/失败返回:ERROR
+返回参数 : 成功返回:WIFISUCCESS/失败返回:WIFIERROR
 使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
 *****************************************************************************/
 static unsigned char dp_download_start_handle(const unsigned char value[], unsigned short length)
@@ -183,17 +195,17 @@ static unsigned char dp_download_start_handle(const unsigned char value[], unsig
   
     //There should be a report after processing the DP
     ret = mcu_dp_bool_update(DPID_START,start);
-    if(ret == SUCCESS)
-        return SUCCESS;
+    if(ret == WIFISUCCESS)
+        return WIFISUCCESS;
     else
-        return ERROR;
+        return WIFIERROR;
 }
 /*****************************************************************************
 函数名称 : dp_download_mode_handle
 功能描述 : 针对DPID_MODE的处理函数
 输入参数 : value:数据源数据
         : length:数据长度
-返回参数 : 成功返回:SUCCESS/失败返回:ERROR
+返回参数 : 成功返回:WIFISUCCESS/失败返回:WIFIERROR
 使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
 *****************************************************************************/
 static unsigned char dp_download_mode_handle(const unsigned char value[], unsigned short length)
@@ -223,17 +235,17 @@ static unsigned char dp_download_mode_handle(const unsigned char value[], unsign
     
     //There should be a report after processing the DP
     ret = mcu_dp_enum_update(DPID_MODE, mode);
-    if(ret == SUCCESS)
-        return SUCCESS;
+    if(ret == WIFISUCCESS)
+        return WIFISUCCESS;
     else
-        return ERROR;
+        return WIFIERROR;
 }
 /*****************************************************************************
 函数名称 : dp_download_temp_handle
 功能描述 : 针对DPID_TEMP的处理函数
 输入参数 : value:数据源数据
         : length:数据长度
-返回参数 : 成功返回:SUCCESS/失败返回:ERROR
+返回参数 : 成功返回:WIFISUCCESS/失败返回:WIFIERROR
 使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
 *****************************************************************************/
 static unsigned char dp_download_temp_handle(const unsigned char value[], unsigned short length)
@@ -250,17 +262,17 @@ static unsigned char dp_download_temp_handle(const unsigned char value[], unsign
     
     //There should be a report after processing the DP
     ret = mcu_dp_value_update(DPID_TEMP,temp);
-    if(ret == SUCCESS)
-        return SUCCESS;
+    if(ret == WIFISUCCESS)
+        return WIFISUCCESS;
     else
-        return ERROR;
+        return WIFIERROR;
 }
 /*****************************************************************************
 函数名称 : dp_download_kill_handle
 功能描述 : 针对DPID_KILL的处理函数
 输入参数 : value:数据源数据
         : length:数据长度
-返回参数 : 成功返回:SUCCESS/失败返回:ERROR
+返回参数 : 成功返回:WIFISUCCESS/失败返回:WIFIERROR
 使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
 *****************************************************************************/
 static unsigned char dp_download_kill_handle(const unsigned char value[], unsigned short length)
@@ -279,17 +291,17 @@ static unsigned char dp_download_kill_handle(const unsigned char value[], unsign
   
     //There should be a report after processing the DP
     ret = mcu_dp_bool_update(DPID_KILL,kill);
-    if(ret == SUCCESS)
-        return SUCCESS;
+    if(ret == WIFISUCCESS)
+        return WIFISUCCESS;
     else
-        return ERROR;
+        return WIFIERROR;
 }
 /*****************************************************************************
 函数名称 : dp_download_heat_handle
 功能描述 : 针对DPID_HEAT的处理函数
 输入参数 : value:数据源数据
         : length:数据长度
-返回参数 : 成功返回:SUCCESS/失败返回:ERROR
+返回参数 : 成功返回:WIFISUCCESS/失败返回:WIFIERROR
 使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
 *****************************************************************************/
 static unsigned char dp_download_heat_handle(const unsigned char value[], unsigned short length)
@@ -308,17 +320,17 @@ static unsigned char dp_download_heat_handle(const unsigned char value[], unsign
   
     //There should be a report after processing the DP
     ret = mcu_dp_bool_update(DPID_HEAT,heat);
-    if(ret == SUCCESS)
-        return SUCCESS;
+    if(ret == WIFISUCCESS)
+        return WIFISUCCESS;
     else
-        return ERROR;
+        return WIFIERROR;
 }
 /*****************************************************************************
 函数名称 : dp_download_tim_handle
 功能描述 : 针对DPID_TIM的处理函数
 输入参数 : value:数据源数据
         : length:数据长度
-返回参数 : 成功返回:SUCCESS/失败返回:ERROR
+返回参数 : 成功返回:WIFISUCCESS/失败返回:WIFIERROR
 使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
 *****************************************************************************/
 static unsigned char dp_download_tim_handle(const unsigned char value[], unsigned short length)
@@ -335,10 +347,10 @@ static unsigned char dp_download_tim_handle(const unsigned char value[], unsigne
     
     //There should be a report after processing the DP
     ret = mcu_dp_value_update(DPID_TIM,tim);
-    if(ret == SUCCESS)
-        return SUCCESS;
+    if(ret == WIFISUCCESS)
+        return WIFISUCCESS;
     else
-        return ERROR;
+        return WIFIERROR;
 }
 
 
@@ -355,8 +367,8 @@ static unsigned char dp_download_tim_handle(const unsigned char value[], unsigne
  * @param[in] {value} dp数据缓冲区地址
  * @param[in] {length} dp数据长度
  * @return dp处理结果
- * -           0(ERROR): 失败
- * -           1(SUCCESS): 成功
+ * -           0(WIFIERROR): 失败
+ * -           1(WIFISUCCESS): 成功
  * @note   该函数用户不能修改
  */
 unsigned char dp_download_handle(unsigned char dpid,const unsigned char value[], unsigned short length)
@@ -454,7 +466,7 @@ unsigned char mcu_firm_update_handle(const unsigned char value[],unsigned long p
       
     }
     
-    return SUCCESS;
+    return WIFISUCCESS;
 }
 #endif
 
@@ -527,7 +539,7 @@ void mcu_write_rtctime(unsigned char time[])
  */
 void wifi_test_result(unsigned char result,unsigned char rssi)
 {
-    #error "请自行实现wifi功能测试成功/失败代码,完成后请删除该行"
+   // #error "请自行实现wifi功能测试成功/失败代码,完成后请删除该行"
     if(result == 0) {
         //测试失败
         if(rssi == 0x00) {
@@ -904,8 +916,8 @@ void file_download_package_choose(unsigned char package_sz)
  * @param[in] {position} 当前数据包在于文件位置
  * @param[in] {length} 当前文件包长度(长度为0时,表示文件包发送完成)
  * @return 数据处理结果
- * -           0(ERROR): 失败
- * -           1(SUCCESS): 成功
+ * -           0(WIFIERROR): 失败
+ * -           1(WIFISUCCESS): 成功
  * @note   MCU需要自行实现该功能
  */
 unsigned char file_download_handle(const unsigned char value[],unsigned long position,unsigned short length)
@@ -919,7 +931,7 @@ unsigned char file_download_handle(const unsigned char value[],unsigned long pos
       
     }
     
-    return SUCCESS;
+    return WIFISUCCESS;
 }
 #endif
 

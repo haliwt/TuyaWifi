@@ -2,12 +2,14 @@
 #include "usart.h"
 #include "run.h"
 #include "fan.h"
-
+#include "wifi.h"
 
 #define MAX_BUFFER_SIZE  8
 
 uint8_t inputBuf[4];
 uint8_t  inputCmd[2];
+uint8_t Res;
+uint8_t wifiInputBuf[8];
 
 static uint8_t transferSize;
 static uint8_t outputBuf[MAX_BUFFER_SIZE];
@@ -17,12 +19,11 @@ volatile static uint8_t transOngoingFlag;
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    static uint8_t state=0;
-
+    static uint8_t state=0,wifiData=0;
+    
 	if(huart==&huart1) // Motor Board receive data (filter)
 	{
 
-     // HAL_UART_Receive_DMA(&huart1,inputBuf,1);
 		switch(state)
 		{
 		case 0:  //#0
@@ -57,6 +58,24 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		HAL_UART_Receive_IT(&huart1,inputBuf,1);//UART receive data interrupt 1 byte
 		
 	}
+    
+    if(huart == &huart2){
+    
+     if(__HAL_USART_GET_IT(&huart2, USART_IT_RXNE)!=RESET || __HAL_USART_GET_IT(&huart2, USART_IT_IDLE)!=RESET){
+         
+         __HAL_USART_CLEAR_IT(&huart2, USART_CLEAR_IDLEF);
+         
+       
+      Res= USART2->RDR ;
+      uart_receive_input(Res);
+         
+       
+     
+     }
+    
+     __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);//??????
+    
+    }
 }
 
 //

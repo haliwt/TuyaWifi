@@ -273,8 +273,8 @@ void wifi_protocol_init(void);
  * @brief  MCU获取复位wifi成功标志
  * @param  Null
  * @return 复位标志
- * -           0(RESET_WIFI_WIFIERROR):失败
- * -           1(RESET_WIFI_WIFISUCCESS):成功
+ * -           0(RESET_WIFI_ERROR):失败
+ * -           1(RESET_WIFI_SUCCESS):成功
  * @note   1:MCU主动调用mcu_reset_wifi()后调用该函数获取复位状态
  *         2:如果为模块自处理模式,MCU无须调用该函数
  */
@@ -293,8 +293,8 @@ void mcu_reset_wifi(void);
  * @brief  获取设置wifi状态成功标志
  * @param  Null
  * @return wifimode flag
- * -           0(SET_WIFICONFIG_WIFIERROR):失败
- * -           1(SET_WIFICONFIG_WIFISUCCESS):成功
+ * -           0(SET_WIFICONFIG_ERROR):失败
+ * -           1(SET_WIFICONFIG_SUCCESS):成功
  * @note   1:MCU主动调用mcu_set_wifi_mode()后调用该函数获取复位状态
  *         2:如果为模块自处理模式,MCU无须调用该函数
  */
@@ -348,7 +348,7 @@ void mcu_get_green_time(void);
 void mcu_get_system_time(void);
 #endif
 
-#ifdef WIFI_TEST_WIFIENABLE
+#ifdef WIFI_TEST_ENABLE
 /**
  * @brief  mcu发起wifi功能测试
  * @param  Null
@@ -358,7 +358,7 @@ void mcu_get_system_time(void);
 void mcu_start_wifitest(void);
 #endif
 
-#ifdef WIFI_HEARTSTOP_WIFIENABLE
+#ifdef WIFI_HEARTSTOP_ENABLE
 /**
  * @brief  通知WIFI模组关闭心跳
  * @param  Null
@@ -368,7 +368,7 @@ void mcu_start_wifitest(void);
 void wifi_heart_stop(void);
 #endif
 
-#ifdef GET_WIFI_STATUS_WIFIENABLE
+#ifdef GET_WIFI_STATUS_ENABLE
 /**
  * @brief  获取当前wifi联网状态
  * @param  Null
@@ -378,15 +378,15 @@ void wifi_heart_stop(void);
 void mcu_get_wifi_connect_status(void);
 #endif
 
-#ifdef WIFI_STREAM_WIFIENABLE
+#ifdef WIFI_STREAM_ENABLE
 /**
  * @brief  流服务发送
  * @param[in] {id} ID号
  * @param[in] {buffer} 发送包的地址
  * @param[in] {buf_len} 发送包长度
  * @return 流服务传输结果
- * -           0(WIFIERROR): 失败
- * -           1(WIFISUCCESS): 成功
+ * -           0(ERROR): 失败
+ * -           1(SUCCESS): 成功
  * @note   MCU需要自行实现该功能
  */
 unsigned char stream_trans_send(unsigned int id, unsigned char *buffer, unsigned long buf_len);
@@ -401,14 +401,14 @@ unsigned char stream_trans_send(unsigned int id, unsigned char *buffer, unsigned
  * @param[in] {buffer} 数据包发送的地址
  * @param[in] {buf_len} 数据包发送的长度
  * @return 流服务传输结果
- * -           0(WIFIERROR): 失败
- * -           1(WIFISUCCESS): 成功
+ * -           0(ERROR): 失败
+ * -           1(SUCCESS): 成功
  * @note   MCU需要自行实现该功能
  */
 unsigned char maps_stream_trans_send(unsigned int id, unsigned char sub_id, unsigned char sub_id_pro_mode, unsigned char *buffer, unsigned long buf_len);
 #endif
 
-#ifdef WIFI_CONNECT_TEST_WIFIENABLE
+#ifdef WIFI_CONNECT_TEST_ENABLE
 /**
  * @brief  mcu发起wifi功能测试(连接指定路由)
  * @param[in] {ssid_buf} 存放路由器名称字符串数据的地址(ssid长度最大支持32个字节)
@@ -419,7 +419,7 @@ unsigned char maps_stream_trans_send(unsigned int id, unsigned char sub_id, unsi
 void mcu_start_connect_wifitest(unsigned char *ssid_buf,unsigned char *passwd_buffer);
 #endif
 
-#ifdef GET_MODULE_MAC_WIFIENABLE
+#ifdef GET_MODULE_MAC_ENABLE
 /**
  * @brief  获取模块MAC
  * @param  Null
@@ -429,7 +429,7 @@ void mcu_start_connect_wifitest(unsigned char *ssid_buf,unsigned char *passwd_bu
 void mcu_get_module_mac(void);
 #endif
 
-#ifdef IR_TX_RX_TEST_WIFIENABLE
+#ifdef IR_TX_RX_TEST_ENABLE
 /**
  * @brief  mcu发起红外进入收发产测
  * @param  Null
@@ -439,7 +439,7 @@ void mcu_get_module_mac(void);
 void mcu_start_ir_test(void);
 #endif
 
-#ifdef MODULE_EXPANDING_SERVICE_WIFIENABLE
+#ifdef MODULE_EXPANDING_SERVICE_ENABLE
 /**
  * @brief  打开模块时间服务通知
  * @param[in] {time_type} 时间类型
@@ -467,7 +467,7 @@ void request_weather_serve(void);
 void open_module_reset_state_serve(void);
 #endif
 
-#ifdef BLE_RELATED_FUNCTION_WIFIENABLE
+#ifdef BLE_RELATED_FUNCTION_ENABLE
 /**
  * @brief  mcu发起蓝牙功能性测试（扫描指定蓝牙信标）
  * @param  Null
@@ -477,7 +477,7 @@ void open_module_reset_state_serve(void);
 void mcu_start_BLE_test(void);
 #endif
 
-#ifdef VOICE_MODULE_PROTOCOL_WIFIENABLE
+#ifdef VOICE_MODULE_PROTOCOL_ENABLE
 /**
  * @brief  获取语音状态码
  * @param  Null
