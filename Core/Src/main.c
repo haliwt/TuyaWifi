@@ -105,9 +105,9 @@ int main(void)
   
    HAL_TIM_Base_Start_IT(&htim3);//HAL_TIM_Base_Start(&htim3);
    UART_Start_Receive_IT(&huart1,inputBuf,1);
-   
-   __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);//??????
- // HAL_UART_Receive_DMA(&huart2,wifiInputBuf,100);//??????DMA      
+   //DMA usart2
+  // __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);//??????
+ // HAL_UART_Receive_DMA(&huart2,wifiInputBuf,8);//??????DMA      
     wifi_protocol_init();
   /* USER CODE END 2 */
 
@@ -121,7 +121,7 @@ int main(void)
 	
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
      wifi_uart_service();
-   // HAL_UART_Receive_DMA(&huart2,wifiInputBuf,8);//??????DMA 
+    HAL_UART_Receive_DMA(&huart2,wifiInputBuf,8);//??????DMA 
      
      
     //Decode_Function();

@@ -60,13 +60,20 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	}
     if(huart->Instance==USART2){
     //if(huart == &huart2){
-    
+      
+      if(__HAL_UART_GET_FLAG(&huart2, UART_FLAG_RXNE) != RESET){ //如果接收到了一个字节的数据
+          Res= USART2->RDR ;
+          uart_receive_input(Res);
+      
+      
+      }
+        
       if(__HAL_UART_GET_FLAG(&huart2,UART_FLAG_IDLE)!= RESET)  //如果接收到了一个字节的数据
       {
          __HAL_UART_CLEAR_IDLEFLAG(&huart2);//清除标志位  
          // USART2->DR; //清除USART_IT_IDLE标志          
-          Res= huart2.Instance->RDR ;//wifiInputBuf[i];
-          uart_receive_input(Res); 
+         // Res= huart2.Instance->RDR ;//wifiInputBuf[i];
+         // uart_receive_input(Res); 
           i++;
        
     // Res= USART2->RDR ;
@@ -75,7 +82,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
        
      
      }
-    
+    __HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
      __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);//??????
     
     }
