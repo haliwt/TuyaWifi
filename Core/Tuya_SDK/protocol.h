@@ -277,7 +277,10 @@ BLE_test_result内部有#err提示,完成函数后请删除该#err
 #define DPID_HEAT 103
 //设置定时时间(可下发可上报)
 //备注:
-#define DPID_TIM 104
+#define DPID_TIME 104
+//湿度(只上报)
+//备注:
+#define DPID_HUM 105
 
 
 

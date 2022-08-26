@@ -88,7 +88,8 @@ const DOWNLOAD_CMD_S download_cmd[] =
   {DPID_TEMP, DP_TYPE_VALUE},
   {DPID_KILL, DP_TYPE_BOOL},
   {DPID_HEAT, DP_TYPE_BOOL},
-  {DPID_TIM, DP_TYPE_VALUE},
+  {DPID_TIME, DP_TYPE_VALUE},
+  {DPID_HUM, DP_TYPE_VALUE},  //Update from tuya Iot
 };
 
 
@@ -154,8 +155,8 @@ void all_data_update(void)
     mcu_dp_value_update(DPID_TEMP,0x14); //VALUE型数据上报;
     mcu_dp_bool_update(DPID_KILL,0); //BOOL型数据上报;
     mcu_dp_bool_update(DPID_HEAT,0); //BOOL型数据上报;
-    mcu_dp_value_update(DPID_TIM,0); //VALUE型数据上报;
-    
+    mcu_dp_value_update(DPID_TIME,0); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_HUM,0); //VALUE型数据上报;
     
     /*
     //此代码为平台自动生成，请按照实际数据修改每个可下发可上报函数和只上报函数
@@ -165,7 +166,8 @@ void all_data_update(void)
     mcu_dp_value_update(DPID_TEMP,当前温度); //VALUE型数据上报;
     mcu_dp_bool_update(DPID_KILL,当前杀菌); //BOOL型数据上报;
     mcu_dp_bool_update(DPID_HEAT,当前加热); //BOOL型数据上报;
-    mcu_dp_value_update(DPID_TIM,当前设置定时时间); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_TIME,当前设置定时时间); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_HUM,当前湿度); //VALUE型数据上报;
 
     */
 }
@@ -228,9 +230,6 @@ static unsigned char dp_download_mode_handle(const unsigned char value[], unsign
         break;
         
         case 2:
-        break;
-        
-        case 3:
         break;
         
         default:
@@ -331,14 +330,14 @@ static unsigned char dp_download_heat_handle(const unsigned char value[], unsign
         return WIFIERROR;
 }
 /*****************************************************************************
-函数名称 : dp_download_tim_handle
-功能描述 : 针对DPID_TIM的处理函数
+函数名称 : dp_download_time_handle
+功能描述 : 针对DPID_TIME的处理函数
 输入参数 : value:数据源数据
         : length:数据长度
-返回参数 : 成功返回:WIFISUCCESS/失败返回:WIFIERROR
+返回参数 : 成功返回:SUCCESS/失败返回:ERROR
 使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
 *****************************************************************************/
-static unsigned char dp_download_tim_handle(const unsigned char value[], unsigned short length)
+static unsigned char dp_download_time_handle(const unsigned char value[], unsigned short length)
 {
     //示例:当前DP类型为VALUE
     unsigned char ret;
@@ -351,7 +350,7 @@ static unsigned char dp_download_tim_handle(const unsigned char value[], unsigne
     */
     
     //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_TIM,tim);
+    ret = mcu_dp_value_update(DPID_TIME,tim);
     if(ret == WIFISUCCESS)
         return WIFISUCCESS;
     else
@@ -405,9 +404,9 @@ unsigned char dp_download_handle(unsigned char dpid,const unsigned char value[],
             //加热处理函数
             ret = dp_download_heat_handle(value,length);
         break;
-        case DPID_TIM:
+        case DPID_TIME:
             //设置定时时间处理函数
-            ret = dp_download_tim_handle(value,length);
+            ret = dp_download_time_handle(value,length);
         break;
 
         

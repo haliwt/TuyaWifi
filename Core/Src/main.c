@@ -73,7 +73,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   
-   static uint8_t i;
+   
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -105,7 +105,7 @@ int main(void)
    UART_Start_Receive_IT(&huart1,inputBuf,1);
    //DMA usart2
    //UART_Start_Receive_IT(&huart2,wifiInputBuf,1);  
-    __HAL_UART_ENABLE_IT(&huart2,UART_IT_RXNE);   
+    __HAL_UART_ENABLE_IT(&huart2,UART_IT_RXNE);  //read USART_ISR :RXNE(BIT5) ->hardware by be set and clear
     wifi_protocol_init();
   /* USER CODE END 2 */
     mcu_set_wifi_mode(0);//????????
@@ -122,17 +122,17 @@ int main(void)
   
      
      
-    //Decode_Function();
-	if(run_t.sendtimes> 4 || run_t.gPower_flag == 1){
+    Decode_Function();
+	if(run_t.sendtimes> 4 || run_t.gPower_flag == 1){ // display humidity and temperature value
 		run_t.sendtimes=0;
         times++;
         if(times > 49)run_t.gPower_flag++;
 	    Display_DHT11_Value(&DHT11);
-		//HAL_Delay(2);
+
         
 	}
     if(run_t.gPower_On==0)times=0;
-	if((run_t.gPower_On ==0) && run_t.gFan_continueRun ==1){ //Fan be stop flag :0 -Fan works)
+	if((run_t.gPower_On ==0) && run_t.gFan_continueRun ==1){ //Fan be stop flag :0 -Fan works 
          
        if(run_t.gFan_counter > 59 && run_t.gFan_continueRun ==1){ //60s
          FAN_Stop();

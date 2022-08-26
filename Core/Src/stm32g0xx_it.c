@@ -60,6 +60,7 @@ extern TIM_HandleTypeDef htim3;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
+unsigned char rx_value;
 
 /* USER CODE END EV */
 
@@ -177,13 +178,13 @@ void USART1_IRQHandler(void)
 void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
-   unsigned char value;
+  
   /* USER CODE END USART2_IRQn 0 */
   HAL_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_IRQn 1 */
   if(USART2->ISR & UART_FLAG_RXNE){
-     value = USART2->RDR;
-     uart_receive_input(value); 
+     rx_value = USART2->RDR;
+     uart_receive_input(rx_value); 
       
   }
   /* USER CODE END USART2_IRQn 1 */
