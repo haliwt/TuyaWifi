@@ -2,21 +2,27 @@
 #define __RUN_H__
 #include "main.h"
 
+#define WIIF_TUYA      1  //
+#define AI_ENABLE      1
 
-enum Signal {                   /* enumeration for CProcess signals */
-    KEY_SIG,RUN_SIG,IDEL_SIG
-};
+typedef enum {                   /* enumeration for CProcess signals */
+    WIFI_SIG,RUN_SIG,AI_SIG
+}Signal;
 
-enum State {                     /* enumeration for CProcess states */
-   IDLE, CODE, RUN
-};
+typedef enum
+{
+  AIENABLE = 1,
+  AIDISABLE = !AIENABLE
+} AiStatus;
 
-typedef struct CProcess1 CProcess1;  
-struct CProcess1 {
-   enum State state__;                /* the scalar state-variable */
-   uint8_t cmdCtr__;                 /* comment character counter */
-   /* ... */                          /* other CParser1 attributes */
-};
+typedef enum
+{
+  WIFIENABLE =1,
+  WIFIDISABLE = !WIFIENABLE
+
+}WifiStatus;
+
+
 
 typedef struct _RUN_T{
     
@@ -40,15 +46,15 @@ typedef struct _RUN_T{
   uint8_t sendtimes;
  
 
-   
+   uint8_t  AI ;
    uint8_t  gFan;
    uint8_t  gFan_flag;
    uint8_t  gPlasma;
    uint8_t  gDry;
-   uint8_t  gAi;
+   uint8_t  gAi;  
    uint8_t  Ai_key;
 
-
+   
 	uint8_t ai_key;
 	uint8_t ai_key_off;
 			
@@ -63,15 +69,12 @@ typedef struct _RUN_T{
 
    uint8_t gTimer_60s;
   
-   uint32_t gFan_counter;
-  
+   uint8_t gFan_counter;
 
- 
-
-  
-  
-
-}RUN_T;
+   //wifi 
+   uint8_t gTimer_wifi_20ms ;
+   
+ }RUN_T;
 
 #define CProcessInit(me_) ((me_)->cmdCtr__ =0,(me_)->state__ = IDLE)
 extern uint8_t ReceiveBuffer[1];

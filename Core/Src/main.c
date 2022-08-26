@@ -104,11 +104,13 @@ int main(void)
    HAL_TIM_Base_Start_IT(&htim3);//HAL_TIM_Base_Start(&htim3);
    UART_Start_Receive_IT(&huart1,inputBuf,1);
    //DMA usart2
-   //UART_Start_Receive_IT(&huart2,wifiInputBuf,1);  
+   //UART_Start_Receive_IT(&huart2,wifiInputBuf,1);
+  //tuya_wif
     __HAL_UART_ENABLE_IT(&huart2,UART_IT_RXNE);  //read USART_ISR :RXNE(BIT5) ->hardware by be set and clear
     wifi_protocol_init();
+	 mcu_set_wifi_mode(0);//???????? 
   /* USER CODE END 2 */
-    mcu_set_wifi_mode(0);//????????
+   
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -117,40 +119,14 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	
-    // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
-     wifi_uart_service();
-  
-     
-     
+    #ifdef  WIFI_TUYA
+      wifi_uart_service();
+    #else 
+        run_t.AI = AIENABLE;
+	#endif 
     Decode_Function();
-	if(run_t.sendtimes> 4 || run_t.gPower_flag == 1){ // display humidity and temperature value
-		run_t.sendtimes=0;
-        times++;
-        if(times > 49)run_t.gPower_flag++;
-	    Display_DHT11_Value(&DHT11);
-
-        
-	}
-    if(run_t.gPower_On==0)times=0;
-	if((run_t.gPower_On ==0) && run_t.gFan_continueRun ==1){ //Fan be stop flag :0 -Fan works 
-         
-       if(run_t.gFan_counter > 59 && run_t.gFan_continueRun ==1){ //60s
-         FAN_Stop();
-	     run_t.gFan_counter=0;
-	     run_t.gFan_flag =0; 
-         run_t.gFan_continueRun++;
-	   }
-	   else if((run_t.gFan_flag == 1 && run_t.gPower_On ==1) && run_t.gFan_counter > 59){
-	           FAN_Stop();
-			   run_t.gFan_counter=0;
-			   run_t.gFan_flag =0; 
-	  }
-	  else{
-
-            FAN_CCW_RUN();
-	   }
-
-	}
+	RunCommand_Order();
+	
    }
   /* USER CODE END 3 */
 }

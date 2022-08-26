@@ -13,13 +13,12 @@
   * This software is licensed under terms that can be found in the LICENSE file
   * in the root directory of this software component.
   * If no LICENSE file comes with this software, it is provided AS-IS.
-  * Ultrasonic is 25KHz T= 1/25 =40us,Ft =24MHz
-	  ���嶨ʱ��Ԥ��Ƶ����ʱ��ʵ��ʱ��Ƶ��Ϊ��24MHz/��PRESCALER+1��
-		��ʱ�������ж�Ƶ��Ϊ=   [24MHz/��PRESCALER+1]MHz/(arr+1)=1KHz����1ms��ʱ����
-		arr���Զ���װֵ��psc��ʱ��Ԥ��Ƶ��
-		��ʱ�����ʱ����㷽��:Tout=((arr+1)*(psc+1))/Ft (us).
-		Ft=��ʱ������Ƶ��=24MHz,��λ:Mhz
-		PRESCALER + 1 =24 ,arr+1 = 40
+  * Ultrasonic is 25KHz T= 1/25 =0.04ms,Ft =24MHz
+	    systemCloc = 24MHz 
+		Timer =   [24MHz/(PRESCALER+1]MHz/(arr+1)= 1/(39+1)MHz=0.025MHz=25KHz,Timer = 1/25KHZ=0.04(ms)
+		
+		TIMER over times:Tout=((arr+1)*(psc+1))/Ft (us).
+	
   ******************************************************************************
   */
 /* USER CODE END Header */
@@ -127,7 +126,7 @@ void MX_TIM3_Init(void)
   htim3.Instance = TIM3;
   htim3.Init.Prescaler = 23;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 9999;
+  htim3.Init.Period = 9999; //10ms
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -241,11 +240,10 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 
 /* USER CODE BEGIN 1 */
 /**
-  * ��������: ������ģʽ�¶�ʱ���Ļص�����
-  * �������?: htim����ʱ�����?
-  * �� �� ֵ: ��
-  * 100ms timer
-  * ˵    ��: ��
+  * Function Name: void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+  * Function: Tim3 interrupt call back function
+  * Tim3 timer :timing time 10ms
+  * 
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {

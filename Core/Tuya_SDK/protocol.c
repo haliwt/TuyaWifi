@@ -82,14 +82,14 @@ const char *weather_choose[WEATHER_CHOOSE_CNT] = {
 ******************************************************************************/
 const DOWNLOAD_CMD_S download_cmd[] =
 {
-  {DPID_START, DP_TYPE_BOOL},
-  {DPID_MODE, DP_TYPE_ENUM},
-  {DPID_FAULT, DP_TYPE_BITMAP},
-  {DPID_TEMP, DP_TYPE_VALUE},
-  {DPID_KILL, DP_TYPE_BOOL},
-  {DPID_HEAT, DP_TYPE_BOOL},
-  {DPID_TIME, DP_TYPE_VALUE},
-  {DPID_HUM, DP_TYPE_VALUE},  //Update from tuya Iot
+  {DPID_START, DP_TYPE_BOOL},       //power on
+  {DPID_MODE, DP_TYPE_ENUM},        //mode :ai not_ai
+  {DPID_FAULT, DP_TYPE_BITMAP},     //error
+  {DPID_TEMP, DP_TYPE_VALUE},       //temperature
+  {DPID_KILL, DP_TYPE_BOOL},     	//kill
+  {DPID_HEAT, DP_TYPE_BOOL},    	//heat
+  {DPID_TIME, DP_TYPE_VALUE},   	//time 
+  {DPID_HUM, DP_TYPE_VALUE},     	//Update from tuya Iot  humidity reference 
 };
 
 
@@ -108,8 +108,7 @@ void uart_transmit_output(unsigned char value)
 {
    // #error "请将MCU串口发送函数填入该函数,并删除该行"
     wifiOutputBuf[0]=value;
-   // HAL_UART_Transmit_IT(&huart2,&value,1);//HAL_UART_Transmit_DMA(&huart2,wifiOutputBuf, 1);
-   // while(__HAL_UART_GET_FLAG(&huart2,UART_FLAG_TXE)==RESET);  /* 等待发送完成 */
+ 
    HAL_UART_Transmit(&huart2, wifiOutputBuf, 1,0xffff);
 	
     

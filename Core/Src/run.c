@@ -33,14 +33,6 @@ static void Initial_Ref(void);
        ++n; 
    }
 #endif  
-
-
-
-
-
-
-
-
 /**********************************************************************
 *
 *Function Name:void Decode_RunCmd(void)
@@ -62,7 +54,6 @@ void Decode_RunCmd(void)
        if(cmdType_2 == 0x00){ //power off
             Buzzer_On();
             run_t.gPower_flag = 0;
-	       // run_t.sendtimes =0;
 	        run_t.gFan_counter=0;
 			run_t.gFan_continueRun =1; //turn off machine 
             PLASMA_SetLow(); //
@@ -78,7 +69,6 @@ void Decode_RunCmd(void)
        else if(cmdType_2 ==1){ //power on
                 Buzzer_On();
 				run_t.gFan_counter=0;
-	           // run_t.sendtimes =0;
                 run_t.gPower_flag = 1; //turn on power
 	            run_t.gFan_continueRun =0;
                 FAN_CCW_RUN();
@@ -88,8 +78,7 @@ void Decode_RunCmd(void)
                 run_t.gPower_On=1;
 				
 				
-       
-      }       
+       }       
       
           
       break;
@@ -159,40 +148,6 @@ static void Initial_Ref(void)
 
 }
 
-//static void AI_AutoOff(void)
-//{
-//	run_t.gAi = 1;
-//	run_t.gFan =1;
-//	run_t.gPlasma =1;
-//	run_t.gDry =1;
-
-
-//	PLASMA_SetLow(); //
-//	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
-//	PTC_SetLow();
-//	FAN_Stop();
-//	run_t.gFan_flag = 1; //Fan be stop flag :0 -Fan works 1-fan stop
-//	run_t.gFan_counter =0;
-
-
-//}
-
-//static void AI_AutoOn(void)
-//{
-//       run_t.gAi = 0;
-//       run_t.gFan =0;
-//       run_t.gPlasma =0;
-//       run_t.gDry =0;
-//      
-//        
-//        FAN_CCW_RUN();
-//        PLASMA_SetHigh(); //
-//        HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
-//        PTC_SetHigh();
-//		run_t.gFan_flag = 0; //Fan be stop flag :0 -Fan works
-//        run_t.gFan_counter =0;
-
-//}
 /**********************************************************************
 *
 *Functin Name: void RunCommand_Mode(unit8_t sig)
@@ -528,3 +483,38 @@ void AI_Function(uint8_t sig)
    	}
 }
 
+
+void RunCommand_Order(void)
+{
+    static uint8_t times;
+    if(run_t.sendtimes> 4 || run_t.gPower_flag == 1){ // display humidity and temperature value
+		run_t.sendtimes=0;
+        times++;
+        if(times > 49)run_t.gPower_flag++;
+	    Display_DHT11_Value(&DHT11);
+
+        
+	}
+    if(run_t.gPower_On==0)times=0;
+	if((run_t.gPower_On ==0) && run_t.gFan_continueRun ==1){ //Fan be stop flag :0 -Fan works 
+         
+       if(run_t.gFan_counter > 59 && run_t.gFan_continueRun ==1){ //60s
+         FAN_Stop();
+	     run_t.gFan_counter=0;
+	     run_t.gFan_flag =0; 
+         run_t.gFan_continueRun++;
+	   }
+	   else if((run_t.gFan_flag == 1 && run_t.gPower_On ==1) && run_t.gFan_counter > 59){
+	           FAN_Stop();
+			   run_t.gFan_counter=0;
+			   run_t.gFan_flag =0; 
+	  }
+	  else{
+
+            FAN_CCW_RUN();
+	   }
+
+	}
+
+
+}

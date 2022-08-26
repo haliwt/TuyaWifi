@@ -60,98 +60,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	}
     
     
-   
-    if(huart->Instance==USART2){
-      #if 0
-        switch(state2)
-		{
-		case 0:  //#0
-			if(wifiInputBuf[0] == 0x55){  //hex :54 - "T" -fixed
-				state2=1; //=1
-                uart_receive_input(wifiInputBuf[0]);
-                
-            }
-            else 
-                state2 = 0;
-		
-			break;
-		case 1: //#1
-             if(wifiInputBuf[0] == 0xAA){  //hex :4B - "K" -fixed
-				state2=2; //=1
-                uart_receive_input(wifiInputBuf[0]);
-             }
-			else
-			   state2 =0;
-			break;
-            
-        case 2:
-            if(wifiInputBuf[0] == 0){  //hex :4B - "K" -fixed
-			    state2=3; //=1
-                uart_receive_input(wifiInputBuf[0]);
-                
-            }
-            else 
-              state2 =0 ;
-        
-        break;
-        
-        case 3:
-          if(wifiInputBuf[0] != 0xff){  // order command "0x00"
-			state2=4; //=1
-            uart_receive_input(wifiInputBuf[0]);
-          }
-           else 
-            state2 = 0;
-        
-        break;
-           
-        case 4:
-          if(wifiInputBuf[0] != 0xff){  //hex :4B - "K" -fixed
-			state2=5; //=1
-            uart_receive_input(wifiInputBuf[0]);
-          }
-           else 
-            state2 = 0;
-        
-        break;
-           
-       case 5:
-          if(wifiInputBuf[0] != 0xff){  //hex :4B - "K" -fixed
-			state2=6; //=1
-            uart_receive_input(wifiInputBuf[0]);
-           }
-           else 
-            state2 = 0;
-        
-        break;
-           
-        case 6:
-        
-			state2=7; 
-            uart_receive_input(wifiInputBuf[0]);
-              
-          
-        
-        break;
-        
-        case 7:
-
-            wifiInputBuf[0]=0;
-            state2 = 0;
-        
-        break;
-           
-       }    
-           
-           
-	 UART_Start_Receive_IT(&huart2,wifiInputBuf,1);     
-	#endif 
-		
-	}
-    
  }
+    
+/********************************************
+	*
+	*Function Name:void Decode_Function(void)
+    *Function: receive dsipay panel of order
+    *Input Ref:NO
+    *Return Ref:NO
 
-//
+*********************************************/ 
 void Decode_Function(void)
 {
    if(run_t.decodeFlag==1){
