@@ -260,15 +260,15 @@ BLE_test_result内部有#err提示,完成函数后请删除该#err
 //启动(可下发可上报)
 //备注:
 #define DPID_START 1
-//模式(可下发可上报)
+//智能模式(可下发可上报)
 //备注:
 #define DPID_MODE 2
 //故障告警(只上报)
 //备注:
 #define DPID_FAULT 6
-//温度(可下发可上报)
+//显示温度值(只上报)
 //备注:
-#define DPID_TEMP 101
+#define DPID_DISPTEMP 101
 //杀菌(可下发可上报)
 //备注:
 #define DPID_KILL 102
@@ -277,10 +277,17 @@ BLE_test_result内部有#err提示,完成函数后请删除该#err
 #define DPID_HEAT 103
 //设置定时时间(可下发可上报)
 //备注:
-#define DPID_TIME 104
-//湿度(只上报)
+#define DPID_SETTIME 104
+//显示湿度(只上报)
 //备注:
-#define DPID_HUM 105
+#define DPID_DISPHUM 105
+//设置温度值(可下发可上报)
+//备注:
+#define DPID_SETTEMP 106
+//显示定时时间(只上报)
+//备注:
+#define DPID_DISPTIME 107
+
 
 
 

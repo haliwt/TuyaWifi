@@ -8,7 +8,6 @@
 
 uint8_t inputBuf[4];
 uint8_t  inputCmd[2];
-uint8_t Res;
 uint8_t wifiInputBuf[1];
 
 static uint8_t transferSize;
@@ -16,12 +15,18 @@ static uint8_t outputBuf[MAX_BUFFER_SIZE];
 volatile static uint8_t transOngoingFlag;
 
 
-
+/********************************************************************************
+	**
+	*Function Name:void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+	*Function :UART callback function  for UART interrupt for receive data
+	*Input Ref: structure UART_HandleTypeDef pointer
+	*Return Ref:NO
+	*
+*******************************************************************************/
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     static uint8_t state=0,state2=0;
-    if(huart->Instance==USART1)
-	//if(huart==&huart1) // Motor Board receive data (filter)
+    if(huart->Instance==USART1)//if(huart==&huart1) // Motor Board receive data (filter)
 	{
 
 		switch(state)
@@ -82,9 +87,9 @@ void Decode_Function(void)
 
 /********************************************************************************
 	**
-	*Function Name:void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-	*Function :UART callback function  for UART interrupt for receive data
-	*Input Ref: structure UART_HandleTypeDef pointer
+	*Function Name:SendData_To_TouchKey(uint8_t hum,uint8_t temp)
+	*Function :
+	*Input Ref: humidity value and temperature value
 	*Return Ref:NO
 	*
 *******************************************************************************/

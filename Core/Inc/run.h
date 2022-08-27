@@ -2,7 +2,7 @@
 #define __RUN_H__
 #include "main.h"
 
-#define WIIF_TUYA      1  //
+#define WIFI_TUYA      1  //
 #define AI_ENABLE      1
 
 typedef enum {                   /* enumeration for CProcess signals */

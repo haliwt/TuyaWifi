@@ -31,6 +31,7 @@
 #include "run.h"
 #include "fan.h"
 #include "cmd_link.h"
+#include "wifi_fun.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -119,12 +120,14 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	
-    #ifdef  WIFI_TUYA
+    #ifdef WIFI_TUYA
       wifi_uart_service();
+      HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
     #else 
-        run_t.AI = AIENABLE;
+       run_t.AI = AIENABLE;
 	#endif 
-    Decode_Function();
+    Wifi_Mode();
+	Decode_Function();
 	RunCommand_Order();
 	
    }
