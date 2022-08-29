@@ -61,6 +61,7 @@ void Decode_RunCmd(void)
           
 		 
 		  PowerOff();
+		  run_t.AI = 0;
 			
        
        } 
@@ -68,6 +69,7 @@ void Decode_RunCmd(void)
        
 
 	        PowerOn();
+			run_t.AI =1;
 
 	   }       
       
@@ -183,10 +185,10 @@ void AI_Function(uint8_t sig)
            }
          
      break;
-        
+     /*-------------------------------WIFI FUNCTION----------------------------------*/  
      //wifi function   
      case 0x04: //kill turn on
-	   if(ster_on !=run_t.ster_key || (wifi_t.wifi_kill == 1 && wifi_t.wifi_itemAi==1)){
+	   if((ster_on !=run_t.ster_key && run_t.AI ==1) || (wifi_t.wifi_kill == 1 && wifi_t.wifi_itemAi==1)){
 	   	    ster_on = run_t.ster_key;
            
 
@@ -208,7 +210,7 @@ void AI_Function(uint8_t sig)
 		   run_t.gFan = 0; //FAN on
 	       run_t.gPlasma =0;
 		   run_t.gFan_flag = 0;
-		   run_t.gFan_counter =0;
+		   run_t.gFan_continueRun =0;
 	       SterIlization(0); //turn on
 		   
 
@@ -217,9 +219,8 @@ void AI_Function(uint8_t sig)
      break;
          
     case 0x14: //kill turn off
-            if(ster_off !=run_t.ster_key_off|| (wifi_t.wifi_kill == 0 && wifi_t.wifi_itemAi==1)){
+            if((ster_off !=run_t.ster_key_off && run_t.AI  ==1 )|| (wifi_t.wifi_kill == 0 && wifi_t.wifi_itemAi==1)){
                ster_off = run_t.ster_key_off;
-			  wifi_t.wifi_kill = 2;
 		
                if(wifi_t.wifi_itemAi ==1)  wifi_t.wifi_kill = 2;
 
@@ -237,22 +238,16 @@ void AI_Function(uint8_t sig)
 	           run_t.gPlasma =1;
 			  }
 			     Buzzer_On();
-            
-             if(run_t.gDry == 0){
-                 run_t.gFan = 0;
-                 FAN_CCW_RUN();
-			      run_t.gFan_flag = 0;
-				 run_t.gFan_counter =0;
-             }
-			 else{
-				run_t.gFan =1;
-                FAN_Stop();
-			    run_t.gFan_flag = 1; //Fan be stop flag :0 -Fan works
-			     run_t.gFan_counter =0;
-
+       
+            run_t.gPlasma =1; //turn off plasma 
+			    
+		
+           SterIlization(1); //turn off kill function
+			 if( run_t.gDry ==1){
+			 	   run_t.gFan = 1; //turn off
+				  run_t.gFan_counter =0;
+				 run_t.gFan_continueRun =1;
 			 }
-			 SterIlization(1); //turn off kill function
-			
 
             }
     
@@ -260,7 +255,7 @@ void AI_Function(uint8_t sig)
 
 
     case 0x02: //dry turn 0n
-             if(dry_on != run_t.dry_key || (wifi_t.wifi_dry ==1&& wifi_t.wifi_itemAi==1)){
+             if((dry_on != run_t.dry_key && run_t.AI  ==1 ) || (wifi_t.wifi_dry ==1&& wifi_t.wifi_itemAi==1)){
 			    dry_on = run_t.dry_key;
 
 			   
@@ -284,7 +279,7 @@ void AI_Function(uint8_t sig)
              run_t.gDry = 0;
              run_t.gFan =0;
 	         run_t.gFan_flag = 0;
-			run_t.gFan_counter =0;
+			 run_t.gFan_continueRun =0;
 			 Dry_Function(0);
 			 
 
@@ -292,7 +287,7 @@ void AI_Function(uint8_t sig)
     break;
          
     case 0x12 : //dry turn off
-            if(dry_off != run_t.dry_key_off || (wifi_t.wifi_dry==0 && wifi_t.wifi_itemAi==1)){
+            if((dry_off != run_t.dry_key_off && run_t.AI ==1) || (wifi_t.wifi_dry==0 && wifi_t.wifi_itemAi==1)){
 			  dry_off = run_t.dry_key_off;
 			 
 
@@ -317,23 +312,16 @@ void AI_Function(uint8_t sig)
         
              run_t.gDry =1;
 		 	
-             if(run_t.gPlasma ==0){
+			
+		    Dry_Function(1) ;//Display_Function_OnOff();
+		    
+             if(run_t.gPlasma ==1){ //plasma turn off flag
 
-                 run_t.gFan =0;
-                 FAN_CCW_RUN();
-			     run_t.gFan_flag = 0;
+                 run_t.gFan = 1; //turn off
 				 run_t.gFan_counter =0;
+				 run_t.gFan_continueRun =1;
 
              }
-			 else{
-
-                 run_t.gFan =1;
-                 FAN_Stop();
-			     run_t.gFan_flag = 1; //Fan be stop flag :0 -Fan works
-			     run_t.gFan_counter =0;
-			 }
-
-		    Dry_Function(1) ;//Display_Function_OnOff();
 		    
            }
 

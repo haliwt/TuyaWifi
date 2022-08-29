@@ -46,6 +46,7 @@ typedef struct _RUN_T{
   uint8_t sendtimes;
  
 
+   uint8_t  AI;
    uint8_t  gFan;
    uint8_t  gFan_flag;
    uint8_t  gPlasma;
