@@ -35,8 +35,7 @@ void Initial_Ref(void)
   run_t.gDry =0;
   run_t.gFan_flag =0;
   run_t.gFan_counter=0;
- // PowerOn_Host(SetPowerOn_ForDoing);
- // PowerOff_Host(SetPowerOff_ForDoing);
+ 
 
 }
 
@@ -439,7 +438,7 @@ void AI_Function(uint8_t sig)
 
 	break;
     }
-   	}
+  }
 }
 
 /**********************************************************************
@@ -464,8 +463,13 @@ void RunCommand_Order(void)
     if(run_t.gPower_On==0)times=0;
 	
 	if((run_t.gPower_On ==0) && run_t.gFan_continueRun ==1){ //Fan be stop flag :0 -Fan works 
+        
+         if(run_t.gFan_counter < 61){
          
-       if(run_t.gFan_counter > 59){ //60s
+             FAN_CCW_RUN();
+         }        
+       
+        if(run_t.gFan_counter >= 60){ //60s
         
 	     run_t.gFan_counter=0;
 	     run_t.gFan_flag =0; 
@@ -475,6 +479,11 @@ void RunCommand_Order(void)
 	  }
 	
 	  if(run_t.gFan_continueRun ==1 && run_t.gPower_On ==1){
+          
+                if(run_t.gFan_counter < 61){
+          
+                       FAN_CCW_RUN();
+                  }       
 
 	           if(run_t.gFan_counter > 59){
 		           

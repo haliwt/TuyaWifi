@@ -17,8 +17,7 @@ void (*SetTimes)(void);
 void (*SetTemperature)(void);
 
 static void Wifi_RunCmd(uint8_t sig);
-static void wifi_SpeicalAI_Fun(void);
-static void wifi_SpeicalNotAI_Fun(void);
+static void wifiPowerOn_After_data_update(void);
 
 
 
@@ -79,6 +78,7 @@ void Wifi_Mode(void)
 
       PowerOn(); //default AI 
       wifi_t.wifiPowerOn_flag =1;
+      wifiPowerOn_After_data_update();
            
    }
 
@@ -86,9 +86,13 @@ void Wifi_Mode(void)
           wifi_t.wifi_power = 0xff;
 			 PowerOff();
           wifi_t.wifiPowerOn_flag=0;
+          run_t.gFan_continueRun =1;
+          run_t.gFan_counter=0;
            
     }
-    Wifi_RunCmd(wifi_t.wifi_RunMode);
+    if(wifi_t.wifiPowerOn_flag==1){
+      Wifi_RunCmd(wifi_t.wifi_RunMode);
+    }
   }
 }
 /***********************************************
@@ -103,54 +107,29 @@ static void Wifi_RunCmd(uint8_t sig)
    Ai_Fun(sig); //调用函数地址,有参数的函数
 
 }
-/****************************************************************
+
+/***********************************************
    *
-   *Function Name:  static void wifi_SpeicalAI_Fun(void)
-   *Funciton :
+   *Function Name: void Wifi_RunCmd(void)
+   *Funciton : wifi power on default is AI mode
    *
    *
-****************************************************************/
-static void wifi_SpeicalAI_Fun(void)
+***********************************************/
+static void wifiPowerOn_After_data_update(void)
 {
-     FAN_CCW_RUN(); 
-     PTC_SetHigh(); //dry on
-     PLASMA_SetHigh(); // plasma on
-     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
-     
+
+    mcu_dp_bool_update(DPID_START,1); //BOOL型数据上报;
+    mcu_dp_enum_update(DPID_MODE,0); //枚举型数据上报;
+    mcu_dp_fault_update(DPID_FAULT,0); //故障型数据上报;
+    mcu_dp_value_update(DPID_DISPTEMP,0); //VALUE型数据上报;
+    mcu_dp_bool_update(DPID_KILL,1); //BOOL型数据上报;
+    mcu_dp_bool_update(DPID_HEAT,1); //BOOL型数据上报;
+    mcu_dp_value_update(DPID_SETTIME,0); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_DISPHUM,0); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_SETTEMP,0); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_DISPTIME,0); //VALUE型数据上报;
+
+
+
+
 }
-/****************************************************************
-   *
-   *Function Name:  static void wifi_SpeicalNotAI_Fun();
-   *Funciton :
-   *
-   *
-****************************************************************/
- static void wifi_SpeicalNotAI_Fun()
- {
-    if(wifi_t.wifi_kill == 0){  //power on default kill function Tunr on
-       run_t.gFan_continueRun =0; //Turn On fan
-       PLASMA_SetHigh(); // plasma on
-       HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
-    }
-    else{
-
-      PLASMA_SetLow();
-      HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);//ultrasnoic off
-      run_t.gFan_continueRun =1;
-      run_t.gFan_counter=0;
-
-    }
-
-    if(wifi_t.wifi_dry==0){ //heat turn On default On
-      run_t.gFan_continueRun =0;//turn On fan
-       PTC_SetHigh();
-    }
-    else{
-      PTC_SetLow();
-      run_t.gFan_continueRun =1;
-      run_t.gFan_counter=0;
-    }
-
-
- }
-

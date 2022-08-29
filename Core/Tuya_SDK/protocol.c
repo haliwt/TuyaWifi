@@ -156,11 +156,11 @@ void all_data_update(void)
     mcu_dp_enum_update(DPID_MODE,0); //枚举型数据上报;
     mcu_dp_fault_update(DPID_FAULT,0); //故障型数据上报;
     mcu_dp_value_update(DPID_DISPTEMP,0); //VALUE型数据上报;
-    mcu_dp_bool_update(DPID_KILL,1); //BOOL型数据上报;
-    mcu_dp_bool_update(DPID_HEAT,1); //BOOL型数据上报;
+    mcu_dp_bool_update(DPID_KILL,0); //BOOL型数据上报;
+    mcu_dp_bool_update(DPID_HEAT,0); //BOOL型数据上报;
     mcu_dp_value_update(DPID_SETTIME,0); //VALUE型数据上报;
     mcu_dp_value_update(DPID_DISPHUM,0); //VALUE型数据上报;
-    mcu_dp_value_update(DPID_SETTEMP,20); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_SETTEMP,0); //VALUE型数据上报;
     mcu_dp_value_update(DPID_DISPTIME,0); //VALUE型数据上报;
     
     /*
