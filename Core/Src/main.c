@@ -75,7 +75,6 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   
-   
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -114,6 +113,7 @@ int main(void)
   /* USER CODE END 2 */
   PowerOn_Host(SetPowerOn_ForDoing);
   PowerOff_Host(SetPowerOff_ForDoing);
+  AI_Function_Host(AI_Function);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)

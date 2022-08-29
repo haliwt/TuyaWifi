@@ -4,15 +4,19 @@
 #include "fan.h"
 #include "tim.h"
 #include "special_power.h"
+#include "wifi.h"
 
 WIFI_FUN   wifi_t;
 
 void (*PowerOn)(void);
 void (*PowerOff)(void);
+void (*Ai_Fun)(uint8_t sig);
+
+
 void (*SetTimes)(void);
 void (*SetTemperature)(void);
 
-static void Wifi_RunCmd(void);
+static void Wifi_RunCmd(uint8_t sig);
 static void wifi_SpeicalAI_Fun(void);
 static void wifi_SpeicalNotAI_Fun(void);
 
@@ -30,6 +34,17 @@ void PowerOff_Host(void(*poweroffHandler)(void))
 {
    PowerOff = poweroffHandler;
 
+}
+/****************************************************************
+     * 
+     * Function Name:void AI_Function_Host(void(*AIhandler)(uint8_t sig))
+     * Function: take with reference of function pointer
+     * 
+     * 
+****************************************************************/
+void AI_Function_Host(void(*AIhandler)(uint8_t sig))
+{
+         Ai_Fun=AIhandler;
 }
 
 void SetTimeHost(void(*timesHandler)(void))
@@ -55,7 +70,7 @@ void SetTemperatureHost(void(*temperatureHandler)(void))
 ***********************************************/
 void Wifi_Mode(void)
 {
-  
+   
    if(wifi_work_state == WIFI_CONNECTED ){ //当WIFI连接成功，打开天气数据且仅一次
 
    if(wifi_t.wifi_power ==1){
@@ -73,7 +88,7 @@ void Wifi_Mode(void)
           wifi_t.wifiPowerOn_flag=0;
            
     }
-    Wifi_RunCmd();
+    Wifi_RunCmd(wifi_t.wifi_RunMode);
   }
 }
 /***********************************************
@@ -83,42 +98,9 @@ void Wifi_Mode(void)
    *
    *
 ***********************************************/
-static void Wifi_RunCmd(void)
+static void Wifi_RunCmd(uint8_t sig)
 {
-    static uint8_t wifi_ai = 0xff,wifi_notai=0xff;
-    
-    if(wifi_t.wifiPowerOn_flag ==1){
-
-      switch(wifi_t.wifi_RunMode){
-         
-         case wifi_AI:
-            if(wifi_t.wifi_power==0xf0){
-                wifi_t.wifi_power++;
-            }
-            else{
-               if(wifi_ai != wifi_t.aikey){
-                   wifi_ai = wifi_t.aikey;
-                   wifi_SpeicalAI_Fun();
-                }
-            }
-
-         break;
-
-         case wifi_NotAI:
-            if(wifi_notai !=wifi_t.notaikey){
-             wifi_notai = wifi_t.notaikey;
-             wifi_SpeicalNotAI_Fun();
-
-         }
-
-         break;
-
-
-      }
-
-
-    }
-
+   Ai_Fun(sig);
 
 }
 /****************************************************************

@@ -15,7 +15,6 @@
 RUN_T run_t; 
 uint8_t times;
  
-static void AI_Function(uint8_t sig);
 
 
 
@@ -118,26 +117,24 @@ void Decode_RunCmd(void)
 
 
 /**********************************************************************
-*
-*Functin Name: void RunCommand_Mode(unit8_t sig)
-*Function : be check key of value 
-*Input Ref:  key of value
-*Return Ref: NO
-*
+	*
+	*Functin Name: void RunCommand_Mode(unit8_t sig)
+	*Function : wifi functio AI 
+	*Input Ref:  key of value
+	*Return Ref: NO
+	*
 **********************************************************************/
 void AI_Function(uint8_t sig)
 {
-   static uint8_t ai_on= 0xff,ai_off=0xff,fan_on=0xff,fan_off=0xff;
+   static uint8_t fan_on=0xff,fan_off=0xff;
    static uint8_t dry_on =0xff, dry_off = 0xff,ster_on=0xff,ster_off=0xff;
-   if(run_t.gPower_On==1){
+   if(run_t.gPower_On==1 || wifi_t.wifiPowerOn_flag==1){  //WT.EDIT 2022.08.29
 	switch(sig){
-
-     case 0x08: //fan on
+   
+	case 0x08: //fan on
             if(fan_on !=run_t.fan_key){
 				fan_on = run_t.fan_key ;
-				run_t.Ai_key =1;
-				run_t.ai_key++;
-				run_t.ai_key_off++;
+			
 		
 			   run_t.ster_key++;
 			   run_t.ster_key_off++;
@@ -163,11 +160,7 @@ void AI_Function(uint8_t sig)
            if(fan_off != run_t.fan_key_off){
 		   	   fan_off = run_t.fan_key_off;
 		   	
-	           run_t.Ai_key=2;
-
-               run_t.ai_key++;
-               run_t.ai_key_off++;
-		
+	          
 			   run_t.ster_key++;
 			   run_t.ster_key_off++;
 			   
@@ -192,16 +185,14 @@ void AI_Function(uint8_t sig)
            }
          
      break;
-
-	case 0x04: //kill turn on 
-	   if(ster_on !=run_t.ster_key){
-	   	   ster_on = run_t.ster_key;
-	       run_t.Ai_key=3;
-           run_t.ai_key++;
-		   run_t.ai_key_off++;
-		
-			
-			   run_t.ster_key_off++;
+        
+     //wifi function   
+     case 0x04: //kill turn on
+	   if(ster_on !=run_t.ster_key ||wifi_t.wifi_kill == 1){
+	   	    ster_on = run_t.ster_key;
+           wifi_t.wifi_kill=2;
+	 
+               run_t.ster_key_off++;
 			   
 			   run_t.dry_key++;
 			   run_t.dry_key_off++;
@@ -215,20 +206,19 @@ void AI_Function(uint8_t sig)
 	       run_t.gPlasma =0;
 		   run_t.gFan_flag = 0;
 		   run_t.gFan_counter =0;
-	       SterIlization(0);
+	       SterIlization(0); //turn on
 		   
 
 	   	}
 	   
      break;
          
-    case 0x14: //don't kill turn off 
-            if(ster_off !=run_t.ster_key_off){
-			  ster_off = run_t.ster_key_off;
-			   run_t.ai_key++;
-		       run_t.ai_key_off++;
+    case 0x14: //kill turn off
+            if(ster_off !=run_t.ster_key_off|| wifi_t.wifi_kill == 0){
+               ster_off = run_t.ster_key_off;
+			  wifi_t.wifi_kill = 2;
 		
-			   run_t.ster_key++;
+		       run_t.ster_key++;
 			  
 			   
 			   run_t.dry_key++;
@@ -237,7 +227,7 @@ void AI_Function(uint8_t sig)
 			   run_t.fan_key++;
 			   run_t.fan_key_off++;
 			   
-	    	   run_t.Ai_key=4;
+	    	
 	           run_t.gPlasma =1;
 			     Buzzer_On();
             
@@ -254,7 +244,7 @@ void AI_Function(uint8_t sig)
 			     run_t.gFan_counter =0;
 
 			 }
-			 SterIlization(1);
+			 SterIlization(1); //turn off kill function
 			
 
             }
@@ -262,11 +252,11 @@ void AI_Function(uint8_t sig)
     break;
 
 
-    case 0x02: //dry
-             if(dry_on != run_t.dry_key){
+    case 0x02: //dry turn 0n
+             if(dry_on != run_t.dry_key || wifi_t.wifi_dry ==1){
 			    dry_on = run_t.dry_key;
-			   run_t.ai_key++;
-			   run_t.ai_key_off++;
+				wifi_t.wifi_dry = 2;
+		
 		
 			   run_t.ster_key++;
 			   run_t.ster_key_off++;
@@ -278,7 +268,7 @@ void AI_Function(uint8_t sig)
 			   run_t.fan_key_off++;
 			    Buzzer_On();
 			  
-             run_t.Ai_key=5;
+            
              run_t.gDry = 0;
              run_t.gFan =0;
 	         run_t.gFan_flag = 0;
@@ -289,12 +279,12 @@ void AI_Function(uint8_t sig)
              }
     break;
          
-    case 0x12 : //don't dry
-            if(dry_off != run_t.dry_key_off){
+    case 0x12 : //dry turn off
+            if(dry_off != run_t.dry_key_off || wifi_t.wifi_dry==0){
 			  dry_off = run_t.dry_key_off;
+			  wifi_t.wifi_dry=2;
 			  
-			  run_t.ai_key_off++;
-			  run_t.ai_key++;
+			
 		
 			   run_t.ster_key++;
 			   run_t.ster_key_off++;
@@ -307,7 +297,7 @@ void AI_Function(uint8_t sig)
 
 			    Buzzer_On();
 			  
-            run_t.Ai_key=6;
+        
              run_t.gDry =1;
 		 	
              if(run_t.gPlasma ==0){
@@ -332,12 +322,12 @@ void AI_Function(uint8_t sig)
 
     break;
 
-	case 0x01: //AI ON
+	case 0x01: //AI tunr ON
 
-	    if(ai_on != run_t.ai_key){
-		  ai_on = run_t.ai_key;
+	    if(wifi_t.wifi_ai ==1){
 		 
-			   run_t.ai_key_off++;
+		 wifi_t.wifi_ai =2;
+			
 		
 			   run_t.ster_key++;
 			   run_t.ster_key_off++;
@@ -349,7 +339,7 @@ void AI_Function(uint8_t sig)
 			   run_t.fan_key_off++;
 		  
 		  Buzzer_On();
-	      run_t.Ai_key=7;
+	      
 		  run_t.gFan_continueRun =0;
          if(run_t.gFan ==0 && run_t.gPlasma ==0 && run_t.gDry ==0){
 
@@ -389,12 +379,12 @@ void AI_Function(uint8_t sig)
 			
     break;
            
-    case 0x11: //don.t AI
+    case 0x11: //AI turn off
 
-	        if(ai_off != run_t.ai_key_off){
-				ai_off = run_t.ai_key_off;
+	        if(wifi_t.wifi_ai==0){
+				
 
-			    run_t.ai_key++;
+			   wifi_t.wifi_ai=2;
 			
 			   run_t.ster_key++;
 			   run_t.ster_key_off++;
@@ -406,7 +396,7 @@ void AI_Function(uint8_t sig)
 			   run_t.fan_key_off++;
 		       Buzzer_On();
 				
-            run_t.Ai_key=8;
+         
 		
             if(run_t.gFan ==1 && run_t.gPlasma ==1 && run_t.gDry ==1){
 
@@ -452,7 +442,14 @@ void AI_Function(uint8_t sig)
    	}
 }
 
-
+/**********************************************************************
+	*
+	*Functin Name: void RunCommand_Order(void)
+	*Function : be check key of value 
+	*Input Ref:  key of value
+	*Return Ref: NO
+	*
+**********************************************************************/
 void RunCommand_Order(void)
 {
     

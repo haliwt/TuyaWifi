@@ -17,8 +17,7 @@ typedef struct _WIFI_FUN{
     uint8_t wifiPowerOn_flag;
     uint8_t wifi_RunMode;
 
-	uint8_t aikey;
-	uint8_t notaikey;
+	uint8_t wifi_ai;
 	uint8_t wifi_dry;
 	uint8_t wifi_time;
 	uint8_t wifi_kill;
@@ -32,11 +31,14 @@ extern WIFI_FUN   wifi_t;
 
 extern void (*PowerOn)(void); //函数指针
 extern void (*PowerOff)(void);
+extern void (*Ai_Fun)(uint8_t sig);
 extern void (*SetTimes)(void);
 extern void (*SetTemperature)(void);
 
 void PowerOn_Host(void (*poweronHandler)(void));
 void PowerOff_Host(void (*poweroffHandler)(void));
+void AI_Function_Host(void(*AIhandler)(uint8_t sig));
+
 void SetTimeHost(void(*timesHandler)(void));
 void SetTemperatureHost(void(*temperatureHandler)(void));
 

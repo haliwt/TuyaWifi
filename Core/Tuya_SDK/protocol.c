@@ -235,12 +235,12 @@ static unsigned char dp_download_mode_handle(const unsigned char value[], unsign
     switch(mode) {
         case 0:
 			wifi_t.wifi_RunMode = wifi_AI;  //WT.EDIT .2022.08.27
-            wifi_t.notaikey++;
+        
         break;
         
         case 1:
 			wifi_t.wifi_RunMode = wifi_NotAI;
-			wifi_t.aikey++;
+			
         break;
         
         default:

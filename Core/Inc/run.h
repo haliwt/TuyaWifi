@@ -46,17 +46,14 @@ typedef struct _RUN_T{
   uint8_t sendtimes;
  
 
-   uint8_t  AI ;
    uint8_t  gFan;
    uint8_t  gFan_flag;
    uint8_t  gPlasma;
    uint8_t  gDry;
    uint8_t  gAi;  
-   uint8_t  Ai_key;
+ 
 
    
-	uint8_t ai_key;
-	uint8_t ai_key_off;
 			
 	uint8_t ster_key;
 	uint8_t ster_key_off;
@@ -76,21 +73,19 @@ typedef struct _RUN_T{
    
  }RUN_T;
 
-#define CProcessInit(me_) ((me_)->cmdCtr__ =0,(me_)->state__ = IDLE)
+//#define CProcessInit(me_) ((me_)->cmdCtr__ =0,(me_)->state__ = IDLE)
 extern uint8_t ReceiveBuffer[1];
 extern RUN_T run_t; 
 
 
 
-//void CProcessRun_Init(void);
-//void CProcess_Run(void);
 void RunCommand_Mode(uint8_t sig);
 void RunCommand_Order(void);
 
 void Decode_RunCmd(void);
 void Initial_Ref(void);
 
-
+void AI_Function(uint8_t sig);
 
 
 
