@@ -88,6 +88,11 @@ void RunCommand_Mode(uint8_t sig);
 void RunCommand_Order(void);
 
 void Decode_RunCmd(void);
+void Initial_Ref(void);
+
+
+
+
 
 #endif 
 

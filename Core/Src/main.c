@@ -32,6 +32,7 @@
 #include "fan.h"
 #include "cmd_link.h"
 #include "wifi_fun.h"
+#include "special_power.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,7 +59,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-   uint8_t times;
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -111,7 +112,8 @@ int main(void)
     wifi_protocol_init();
 	 mcu_set_wifi_mode(0);//???????? 
   /* USER CODE END 2 */
-   
+  PowerOn_Host(SetPowerOn_ForDoing);
+  PowerOff_Host(SetPowerOff_ForDoing);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -126,8 +128,10 @@ int main(void)
     #else 
        run_t.AI = AIENABLE;
 	#endif 
+     
     Wifi_Mode();
 	Decode_Function();
+    
 	RunCommand_Order();
 	
    }

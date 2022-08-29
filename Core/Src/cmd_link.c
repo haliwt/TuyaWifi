@@ -25,7 +25,7 @@ volatile static uint8_t transOngoingFlag;
 *******************************************************************************/
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    static uint8_t state=0,state2=0;
+    static uint8_t state=0;
     if(huart->Instance==USART1)//if(huart==&huart1) // Motor Board receive data (filter)
 	{
 

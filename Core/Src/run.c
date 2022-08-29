@@ -1,38 +1,46 @@
 #include "run.h"
-
+#include "wifi_fun.h"
 
 #include "dht11.h"
 #include "fan.h"
 #include "tim.h"
 #include "cmd_link.h"
+#include "special_power.h"
 
  
 
 
 //static CProcess1 cprocess;
 RUN_T run_t; 
-
+uint8_t times;
  
 static void AI_Function(uint8_t sig);
-static void Initial_Ref(void);
-//static void AI_AutoOff(void);
-//static void AI_AutoOn(void);
 
 
-#if 0
- n = 0;
-   CParser1Init(&cparser); 
-   while ((ch = fgetc(f)) != EOF) {
-       int sig;
-       switch (ch) {
-       case '/': sig = SLASH_SIG; break;
-       case '*': sig = STAR_SIG;  break;
-       default:  sig = CHAR_SIG;  break;
-       }
-       CParser1Dispatch(&cparser, sig); 
-       ++n; 
-   }
-#endif  
+
+
+/**********************************************************************
+*
+*Functin Name: void Initial_Ref(void)
+*Function : be check key of value 
+*Input Ref:  key of value
+*Return Ref: NO
+*
+**********************************************************************/
+void Initial_Ref(void)
+{
+  run_t.gFan = 0;
+  run_t.gPlasma=0;
+  run_t.gAi =0;
+  run_t.gDry =0;
+  run_t.gFan_flag =0;
+  run_t.gFan_counter=0;
+ // PowerOn_Host(SetPowerOn_ForDoing);
+ // PowerOff_Host(SetPowerOff_ForDoing);
+
+}
+
+
 /**********************************************************************
 *
 *Function Name:void Decode_RunCmd(void)
@@ -52,6 +60,7 @@ void Decode_RunCmd(void)
         
         
        if(cmdType_2 == 0x00){ //power off
+           #if 0
             Buzzer_On();
             run_t.gPower_flag = 0;
 	        run_t.gFan_counter=0;
@@ -63,19 +72,26 @@ void Decode_RunCmd(void)
 			
             run_t.gPower_On=0;
             Initial_Ref();
+		  #endif 
+		 
+		  PowerOff();
 			
        
        } 
        else if(cmdType_2 ==1){ //power on
-                Buzzer_On();
-				run_t.gFan_counter=0;
-                run_t.gPower_flag = 1; //turn on power
-	            run_t.gFan_continueRun =0;
-                FAN_CCW_RUN();
-                PLASMA_SetHigh(); //
-                HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
-                PTC_SetHigh();
-                run_t.gPower_On=1;
+       
+//                Buzzer_On();
+//				run_t.gFan_counter=0;
+//                run_t.gPower_flag = 1; //turn on power
+//	            run_t.gFan_continueRun =0;
+//                FAN_CCW_RUN();
+//                PLASMA_SetHigh(); //
+//                HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
+//                PTC_SetHigh();
+//                run_t.gPower_On=1;
+	        PowerOn();
+
+			
 				
 				
        }       
@@ -129,24 +145,7 @@ void Decode_RunCmd(void)
     
 
 }
-/**********************************************************************
-*
-*Functin Name: static void Initial_Ref(void)
-*Function : be check key of value 
-*Input Ref:  key of value
-*Return Ref: NO
-*
-**********************************************************************/
-static void Initial_Ref(void)
-{
-  run_t.gFan = 0;
-  run_t.gPlasma=0;
-  run_t.gAi =0;
-  run_t.gDry =0;
-  run_t.gFan_flag =0;
-  run_t.gFan_counter=0;
 
-}
 
 /**********************************************************************
 *
@@ -486,7 +485,7 @@ void AI_Function(uint8_t sig)
 
 void RunCommand_Order(void)
 {
-    static uint8_t times;
+    
     if(run_t.sendtimes> 4 || run_t.gPower_flag == 1){ // display humidity and temperature value
 		run_t.sendtimes=0;
         times++;
