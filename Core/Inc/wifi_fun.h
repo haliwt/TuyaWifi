@@ -5,7 +5,7 @@
 
 typedef enum{
   
-  wifi_AI=0x01 ,wifi_notAI=0x11,wifi_itemkill=0x04,wifi_itemnotkill=0x14,
+   wifi_AI=0x01 ,wifi_notAI=0x11,wifi_itemkill=0x04,wifi_itemnotkill=0x14,
      wifi_heat= 0x02,wifi_notheat=0x12,wifi_Timer,wifi_Temp
 
 
@@ -17,12 +17,14 @@ typedef struct _WIFI_FUN{
     uint8_t wifi_power;
     uint8_t wifiPowerOn_flag;
     uint8_t wifi_RunMode;
+	
 
 	uint8_t wifi_ai;
+	uint8_t wifi_itemAi;
 	uint8_t wifi_dry;
 	uint8_t wifi_time;
 	uint8_t wifi_kill;
-	uint8_t wifi_counter;
+	
 	
 
 

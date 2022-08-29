@@ -188,7 +188,7 @@ void AI_Function(uint8_t sig)
         
      //wifi function   
      case 0x04: //kill turn on
-	   if(ster_on !=run_t.ster_key ||wifi_t.wifi_kill == 1){
+	   if(ster_on !=run_t.ster_key || (wifi_t.wifi_kill == 1 && wifi_t.wifi_itemAi==wifi_notAI)){
 	   	    ster_on = run_t.ster_key;
            wifi_t.wifi_kill=2;
 	 
@@ -214,7 +214,7 @@ void AI_Function(uint8_t sig)
      break;
          
     case 0x14: //kill turn off
-            if(ster_off !=run_t.ster_key_off|| wifi_t.wifi_kill == 0){
+            if(ster_off !=run_t.ster_key_off|| (wifi_t.wifi_kill == 0 && wifi_t.wifi_itemAi==wifi_notAI)){
                ster_off = run_t.ster_key_off;
 			  wifi_t.wifi_kill = 2;
 		
@@ -253,7 +253,7 @@ void AI_Function(uint8_t sig)
 
 
     case 0x02: //dry turn 0n
-             if(dry_on != run_t.dry_key || wifi_t.wifi_dry ==1){
+             if(dry_on != run_t.dry_key || (wifi_t.wifi_dry ==1&& wifi_t.wifi_itemAi==wifi_notAI)){
 			    dry_on = run_t.dry_key;
 				wifi_t.wifi_dry = 2;
 		
@@ -280,7 +280,7 @@ void AI_Function(uint8_t sig)
     break;
          
     case 0x12 : //dry turn off
-            if(dry_off != run_t.dry_key_off || wifi_t.wifi_dry==0){
+            if(dry_off != run_t.dry_key_off || (wifi_t.wifi_dry==0 && wifi_t.wifi_itemAi==wifi_notAI)){
 			  dry_off = run_t.dry_key_off;
 			  wifi_t.wifi_dry=2;
 			  

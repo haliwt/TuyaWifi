@@ -156,8 +156,8 @@ void all_data_update(void)
     mcu_dp_enum_update(DPID_MODE,0); //枚举型数据上报;
     mcu_dp_fault_update(DPID_FAULT,0); //故障型数据上报;
     mcu_dp_value_update(DPID_DISPTEMP,0); //VALUE型数据上报;
-    mcu_dp_bool_update(DPID_KILL,0); //BOOL型数据上报;
-    mcu_dp_bool_update(DPID_HEAT,0); //BOOL型数据上报;
+    mcu_dp_bool_update(DPID_KILL,1); //BOOL型数据上报;
+    mcu_dp_bool_update(DPID_HEAT,1); //BOOL型数据上报;
     mcu_dp_value_update(DPID_SETTIME,0); //VALUE型数据上报;
     mcu_dp_value_update(DPID_DISPHUM,0); //VALUE型数据上报;
     mcu_dp_value_update(DPID_SETTEMP,20); //VALUE型数据上报;
@@ -234,16 +234,19 @@ static unsigned char dp_download_mode_handle(const unsigned char value[], unsign
     mode = mcu_get_dp_download_enum(value,length);
     switch(mode) {
         case 0:
-			wifi_t.wifi_RunMode = 0x01;
-			wifi_t.wifi_RunMode = wifi_AI;  //WT.EDIT .2022.08.27
 			
+			wifi_t.wifi_RunMode = wifi_AI;  //WT.EDIT .2022.08.27
+			wifi_t.wifi_ai = wifi_AI;
+		    wifi_t.wifi_itemAi = wifi_AI;
+		
         
         break;
         
         case 1:
-			wifi_t.wifi_RunMode = 0x11;
-			wifi_t.wifi_RunMode = wifi_notAI;
 			
+			wifi_t.wifi_RunMode = wifi_notAI;
+			wifi_t.wifi_ai = wifi_notAI;
+		    wifi_t.wifi_itemAi = wifi_notAI;
         break;
         
         default:
