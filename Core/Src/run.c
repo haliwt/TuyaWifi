@@ -6,6 +6,7 @@
 #include "tim.h"
 #include "cmd_link.h"
 #include "special_power.h"
+#include "wifi.h"
 
  
 
@@ -60,19 +61,7 @@ void Decode_RunCmd(void)
         
         
        if(cmdType_2 == 0x00){ //power off
-           #if 0
-            Buzzer_On();
-            run_t.gPower_flag = 0;
-	        run_t.gFan_counter=0;
-			run_t.gFan_continueRun =1; //turn off machine 
-            PLASMA_SetLow(); //
-            HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
-            PTC_SetLow();
-            FAN_Stop();
-			
-            run_t.gPower_On=0;
-            Initial_Ref();
-		  #endif 
+          
 		 
 		  PowerOff();
 			
@@ -80,47 +69,28 @@ void Decode_RunCmd(void)
        } 
        else if(cmdType_2 ==1){ //power on
        
-//                Buzzer_On();
-//				run_t.gFan_counter=0;
-//                run_t.gPower_flag = 1; //turn on power
-//	            run_t.gFan_continueRun =0;
-//                FAN_CCW_RUN();
-//                PLASMA_SetHigh(); //
-//                HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
-//                PTC_SetHigh();
-//                run_t.gPower_On=1;
+
 	        PowerOn();
 
-			
-				
-				
-       }       
+	   }       
       
           
       break;
       
-      case 'A': //AI function 
+      case 'A': //AI function ->wifi ->indicate Fun
         
         if(run_t.gPower_On==1){
 			if(cmdType_2== 0x81){//turn off AI
-			   //don't buzzer sound
-			  // AI_AutoOff(); //turn off PTC
-			  run_t.gDry =1;
-			  PTC_SetLow();
+			  
+			 mcu_set_wifi_mode(1);//wifi be detector AP mode
 			 
 
 			}
 			else if(cmdType_2== 0x71){//tunr on AI
-			  //don't buzzer sound
-              //AI_AutoOn(); turn on PTC
-              run_t.gDry =0;
-			  PTC_SetHigh();
+			   mcu_set_wifi_mode(0);//wifi be detector smart mode
 
 			}
-			else{
-				
-		   		AI_Function(cmdType_2);
-			}
+			
         }
       break;
 
@@ -495,25 +465,37 @@ void RunCommand_Order(void)
         
 	}
     if(run_t.gPower_On==0)times=0;
+	
 	if((run_t.gPower_On ==0) && run_t.gFan_continueRun ==1){ //Fan be stop flag :0 -Fan works 
          
-       if(run_t.gFan_counter > 59 && run_t.gFan_continueRun ==1){ //60s
-         FAN_Stop();
+       if(run_t.gFan_counter > 59){ //60s
+        
 	     run_t.gFan_counter=0;
 	     run_t.gFan_flag =0; 
          run_t.gFan_continueRun++;
+		  FAN_Stop();
 	   }
-	   else if((run_t.gFan_flag == 1 && run_t.gPower_On ==1) && run_t.gFan_counter > 59){
-	           FAN_Stop();
-			   run_t.gFan_counter=0;
-			   run_t.gFan_flag =0; 
 	  }
-	  else{
+	
+	  if(run_t.gFan_continueRun ==1 && run_t.gPower_On ==1){
 
-            FAN_CCW_RUN();
-	   }
+	           if(run_t.gFan_counter > 59){
+		           
+				   run_t.gFan_counter=0;
+				   run_t.gFan_flag =0; 
+				   run_t.gFan_continueRun++;
+				   FAN_Stop();
+	           }
+	  }
+	  
+	  
 
-	}
+      if(run_t.gPower_On !=0 && run_t.gFan_continueRun ==0){
 
+	      FAN_CCW_RUN();
+      }
 
 }
+
+
+

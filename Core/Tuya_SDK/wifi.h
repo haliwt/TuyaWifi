@@ -79,7 +79,7 @@
 #define         SMART_CONFIG_STATE              0x00
 #define         AP_STATE                        0x01
 #define         WIFI_NOT_CONNECTED              0x02
-#define         WIFI_CONNECTED                  0x03
+#define         WIFI_CONNECTED                  0x03  //WIFI配置成功且连上路由器
 #define         WIFI_CONN_CLOUD                 0x04
 #define         WIFI_LOW_POWER                  0x05
 #define         SMART_AND_AP_STATE              0x06
