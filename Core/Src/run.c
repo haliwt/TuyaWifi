@@ -188,7 +188,11 @@ void AI_Function(uint8_t sig)
      case 0x04: //kill turn on
 	   if(ster_on !=run_t.ster_key || (wifi_t.wifi_kill == 1 && wifi_t.wifi_itemAi==1)){
 	   	    ster_on = run_t.ster_key;
-           wifi_t.wifi_kill=2;
+           
+
+		      if(wifi_t.wifi_itemAi ==1) wifi_t.wifi_kill=2;
+
+			  if(wifi_t.wifi_kill !=2){
 	 
                run_t.ster_key_off++;
 			   
@@ -197,8 +201,9 @@ void AI_Function(uint8_t sig)
 			   	
 			   run_t.fan_key++;
 			   run_t.fan_key_off++;
-
-			    Buzzer_On();
+			  }
+			  
+			Buzzer_On();
 	   
 		   run_t.gFan = 0; //FAN on
 	       run_t.gPlasma =0;
@@ -216,7 +221,10 @@ void AI_Function(uint8_t sig)
                ster_off = run_t.ster_key_off;
 			  wifi_t.wifi_kill = 2;
 		
-		       run_t.ster_key++;
+               if(wifi_t.wifi_itemAi ==1)  wifi_t.wifi_kill = 2;
+
+			  if(wifi_t.wifi_kill !=2){
+			   run_t.ster_key++;
 			  
 			   
 			   run_t.dry_key++;
@@ -227,6 +235,7 @@ void AI_Function(uint8_t sig)
 			   
 	    	
 	           run_t.gPlasma =1;
+			  }
 			     Buzzer_On();
             
              if(run_t.gDry == 0){
@@ -253,10 +262,12 @@ void AI_Function(uint8_t sig)
     case 0x02: //dry turn 0n
              if(dry_on != run_t.dry_key || (wifi_t.wifi_dry ==1&& wifi_t.wifi_itemAi==1)){
 			    dry_on = run_t.dry_key;
+
+			   
 				
-			 if(wifi_t.wifi_itemAi ==1) wifi_t.wifi_dry++;
+			 if(wifi_t.wifi_itemAi ==1)   wifi_t.wifi_dry = 2;
 		
-		       if(wifi_t.wifi_itemAi !=2){
+		       if(wifi_t.wifi_dry!=2){
 				   run_t.ster_key++;
 				   run_t.ster_key_off++;
 				   
@@ -283,10 +294,13 @@ void AI_Function(uint8_t sig)
     case 0x12 : //dry turn off
             if(dry_off != run_t.dry_key_off || (wifi_t.wifi_dry==0 && wifi_t.wifi_itemAi==1)){
 			  dry_off = run_t.dry_key_off;
+			 
 
-			  if(wifi_t.wifi_itemAi ==1) wifi_t.wifi_dry++;
+			   
+
+			  if(wifi_t.wifi_itemAi ==1)  wifi_t.wifi_dry=2;
 			  
-			   if(wifi_t.wifi_itemAi !=2){
+			   if( wifi_t.wifi_dry!=2){
 		
 				   run_t.ster_key++;
 				   run_t.ster_key_off++;
@@ -330,7 +344,7 @@ void AI_Function(uint8_t sig)
 	    if(wifi_t.wifi_ai ==0 && wifi_t.wifi_itemAi==0){
 		 
 		 wifi_t.wifi_ai =2;
-			
+		
 		   Buzzer_On();
 	      
 		   run_t.gFan_continueRun =0;
