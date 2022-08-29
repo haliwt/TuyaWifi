@@ -203,7 +203,7 @@ static unsigned char dp_download_start_handle(const unsigned char value[], unsig
     start = mcu_get_dp_download_bool(value,length);
     if(start == 0) {
         //bool off
-        wifi_t.wifi_power =0;//WT.EDIT 2022.08.27
+        wifi_t.wifi_power =2;//WT.EDIT 2022.08.27
 
     }else {
         //bool on
@@ -236,8 +236,8 @@ static unsigned char dp_download_mode_handle(const unsigned char value[], unsign
         case 0:
 			
 			wifi_t.wifi_RunMode = wifi_AI;  //WT.EDIT .2022.08.27
-			wifi_t.wifi_ai = wifi_AI;
-		    wifi_t.wifi_itemAi = wifi_AI;
+			wifi_t.wifi_ai = 0;
+		    wifi_t.wifi_itemAi = 0;
 		
         
         break;
@@ -245,8 +245,8 @@ static unsigned char dp_download_mode_handle(const unsigned char value[], unsign
         case 1:
 			
 			wifi_t.wifi_RunMode = wifi_notAI;
-			wifi_t.wifi_ai = wifi_notAI;
-		    wifi_t.wifi_itemAi = wifi_notAI;
+			wifi_t.wifi_ai = 1;
+		    wifi_t.wifi_itemAi = 1;
         break;
         
         default:

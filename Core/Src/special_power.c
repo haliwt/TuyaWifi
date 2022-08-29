@@ -26,13 +26,14 @@ void SetPowerOff_ForDoing(void)
     Buzzer_On();
 	run_t.gPower_flag = 0;
 	run_t.gFan_counter=0;
-	run_t.gFan_continueRun =1; //turn off machine 
+	run_t.gFan_continueRun =1; //the fan still run 60s
+	run_t.gPower_On=0;
 	PLASMA_SetLow(); //
 	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
 	PTC_SetLow();
 	FAN_Stop();
 
-	run_t.gPower_On=0;
+	
 	
 
 

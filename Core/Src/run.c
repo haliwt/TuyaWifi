@@ -31,7 +31,6 @@ void Initial_Ref(void)
 {
   run_t.gFan = 0;
   run_t.gPlasma=0;
-  run_t.gAi =0;
   run_t.gDry =0;
   run_t.gFan_flag =0;
   run_t.gFan_counter=0;
@@ -187,7 +186,7 @@ void AI_Function(uint8_t sig)
         
      //wifi function   
      case 0x04: //kill turn on
-	   if(ster_on !=run_t.ster_key || (wifi_t.wifi_kill == 1 && wifi_t.wifi_itemAi==wifi_notAI)){
+	   if(ster_on !=run_t.ster_key || (wifi_t.wifi_kill == 1 && wifi_t.wifi_itemAi==1)){
 	   	    ster_on = run_t.ster_key;
            wifi_t.wifi_kill=2;
 	 
@@ -213,7 +212,7 @@ void AI_Function(uint8_t sig)
      break;
          
     case 0x14: //kill turn off
-            if(ster_off !=run_t.ster_key_off|| (wifi_t.wifi_kill == 0 && wifi_t.wifi_itemAi==wifi_notAI)){
+            if(ster_off !=run_t.ster_key_off|| (wifi_t.wifi_kill == 0 && wifi_t.wifi_itemAi==1)){
                ster_off = run_t.ster_key_off;
 			  wifi_t.wifi_kill = 2;
 		
@@ -252,20 +251,23 @@ void AI_Function(uint8_t sig)
 
 
     case 0x02: //dry turn 0n
-             if(dry_on != run_t.dry_key || (wifi_t.wifi_dry ==1&& wifi_t.wifi_itemAi==wifi_notAI)){
+             if(dry_on != run_t.dry_key || (wifi_t.wifi_dry ==1&& wifi_t.wifi_itemAi==1)){
 			    dry_on = run_t.dry_key;
-				wifi_t.wifi_dry = 2;
+				
+			 if(wifi_t.wifi_itemAi ==1) wifi_t.wifi_dry++;
 		
-		
-			   run_t.ster_key++;
-			   run_t.ster_key_off++;
-			   
-			 
-			   run_t.dry_key_off++;
-			   	
-			   run_t.fan_key++;
-			   run_t.fan_key_off++;
-			    Buzzer_On();
+		       if(wifi_t.wifi_itemAi !=2){
+				   run_t.ster_key++;
+				   run_t.ster_key_off++;
+				   
+				 
+				   run_t.dry_key_off++;
+				   	
+				   run_t.fan_key++;
+				   run_t.fan_key_off++;
+
+             	}
+			   Buzzer_On();
 			  
             
              run_t.gDry = 0;
@@ -279,20 +281,22 @@ void AI_Function(uint8_t sig)
     break;
          
     case 0x12 : //dry turn off
-            if(dry_off != run_t.dry_key_off || (wifi_t.wifi_dry==0 && wifi_t.wifi_itemAi==wifi_notAI)){
+            if(dry_off != run_t.dry_key_off || (wifi_t.wifi_dry==0 && wifi_t.wifi_itemAi==1)){
 			  dry_off = run_t.dry_key_off;
-			  wifi_t.wifi_dry=2;
+
+			  if(wifi_t.wifi_itemAi ==1) wifi_t.wifi_dry++;
 			  
-			
+			   if(wifi_t.wifi_itemAi !=2){
 		
-			   run_t.ster_key++;
-			   run_t.ster_key_off++;
-			   
-			   run_t.dry_key++;
-			  
-			   	
-			   run_t.fan_key++;
-			   run_t.fan_key_off++;
+				   run_t.ster_key++;
+				   run_t.ster_key_off++;
+				   
+				   run_t.dry_key++;
+				  
+				   	
+				   run_t.fan_key++;
+				   run_t.fan_key_off++;
+			   }
 
 			    Buzzer_On();
 			  
@@ -321,46 +325,18 @@ void AI_Function(uint8_t sig)
 
     break;
 
-	case 0x01: //AI tunr ON
+	case 0x01: //wifi -> AI tunr ON
 
-	    if(wifi_t.wifi_ai ==1){
+	    if(wifi_t.wifi_ai ==0 && wifi_t.wifi_itemAi==0){
 		 
 		 wifi_t.wifi_ai =2;
 			
-		
-			   run_t.ster_key++;
-			   run_t.ster_key_off++;
-			   
-			   run_t.dry_key++;
-			   run_t.dry_key_off++;
-			   	
-			   run_t.fan_key++;
-			   run_t.fan_key_off++;
-		  
-		  Buzzer_On();
+		   Buzzer_On();
 	      
-		  run_t.gFan_continueRun =0;
-         if(run_t.gFan ==0 && run_t.gPlasma ==0 && run_t.gDry ==0){
-
-             run_t.gAi = 1;
-             run_t.gFan =1;
-             run_t.gPlasma =1;
-             run_t.gDry =1;
-          
-             
-            PLASMA_SetLow(); //
-            HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
-            PTC_SetLow();
-            FAN_Stop();
-            run_t.gFan_flag = 1; //Fan be stop flag :0 -Fan works
-            run_t.gFan_counter =0;
-             
-           }
-            else{
-               run_t.gAi = 0;
-               run_t.gFan =0;
-               run_t.gPlasma =0;
-               run_t.gDry =0;
+		   run_t.gFan_continueRun =0;
+            run_t.gFan =0;
+            run_t.gPlasma =0;
+            run_t.gDry =0;
               
                 
                 FAN_CCW_RUN();
@@ -368,71 +344,15 @@ void AI_Function(uint8_t sig)
                 HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
                 PTC_SetHigh();
 				run_t.gFan_flag = 0; //Fan be stop flag :0 -Fan works
-                run_t.gFan_counter =0;
+             
 				
 
-				
-            }
-			
-	    }
+		}
+		
 			
     break;
            
-    case 0x11: //AI turn off
-
-	        if(wifi_t.wifi_ai==0){
-				
-
-			   wifi_t.wifi_ai=2;
-			
-			   run_t.ster_key++;
-			   run_t.ster_key_off++;
-			 
-			   run_t.dry_key++;
-			   run_t.dry_key_off++;
-			   	
-			   run_t.fan_key++;
-			   run_t.fan_key_off++;
-		       Buzzer_On();
-				
-         
-		
-            if(run_t.gFan ==1 && run_t.gPlasma ==1 && run_t.gDry ==1){
-
-                run_t.gAi = 0;
-				run_t.gFan =0;
-			    run_t.gPlasma =0;
-				run_t.gDry =0;
-				
-				
-                FAN_CCW_RUN();
-                PLASMA_SetHigh(); //
-                HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
-                PTC_SetHigh();
-				run_t.gFan_flag = 0; //Fan be stop flag :0 -Fan works
-                run_t.gFan_counter =0;
-			}    
-            else{
-
-              run_t.gAi = 1;
-              run_t.gFan =1;
-              run_t.gPlasma =1;
-              run_t.gDry =1;
-            
-                
-            PLASMA_SetLow(); //
-            HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
-            PTC_SetLow();
-            FAN_Stop();
-			run_t.gFan_flag = 1; //Fan be stop flag :0 -Fan works
-		    run_t.gFan_counter =0;
-			
-              
-           }
-			
-	      }
-        
-    break;
+   
 
 	default:
 

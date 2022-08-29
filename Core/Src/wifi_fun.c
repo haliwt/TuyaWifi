@@ -82,7 +82,7 @@ void Wifi_Mode(void)
            
    }
 
-   if(wifi_t.wifi_power ==0 ){
+   if(wifi_t.wifi_power ==2 ){
           wifi_t.wifi_power = 0xff;
 			 PowerOff();
           wifi_t.wifiPowerOn_flag=0;

@@ -50,12 +50,8 @@ typedef struct _RUN_T{
    uint8_t  gFan_flag;
    uint8_t  gPlasma;
    uint8_t  gDry;
-   uint8_t  gAi;  
  
-
-   
-			
-	uint8_t ster_key;
+    uint8_t ster_key;
 	uint8_t ster_key_off;
 
 	uint8_t dry_key;
