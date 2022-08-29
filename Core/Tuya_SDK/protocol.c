@@ -234,12 +234,15 @@ static unsigned char dp_download_mode_handle(const unsigned char value[], unsign
     mode = mcu_get_dp_download_enum(value,length);
     switch(mode) {
         case 0:
+			wifi_t.wifi_RunMode = 0x01;
 			wifi_t.wifi_RunMode = wifi_AI;  //WT.EDIT .2022.08.27
+			
         
         break;
         
         case 1:
-			wifi_t.wifi_RunMode = wifi_NotAI;
+			wifi_t.wifi_RunMode = 0x11;
+			wifi_t.wifi_RunMode = wifi_notAI;
 			
         break;
         
@@ -273,10 +276,13 @@ static unsigned char dp_download_kill_handle(const unsigned char value[], unsign
     kill = mcu_get_dp_download_bool(value,length);
     if(kill == 0) {
         //bool off
+        wifi_t.wifi_RunMode = wifi_itemnotkill;
         wifi_t.wifi_kill =0;
+		
     }else {
         //bool on
-         wifi_t.wifi_kill = 1;
+        wifi_t.wifi_RunMode = wifi_itemkill ;
+        wifi_t.wifi_kill = 1;
     }
   
     //There should be a report after processing the DP
@@ -304,9 +310,11 @@ static unsigned char dp_download_heat_handle(const unsigned char value[], unsign
     heat = mcu_get_dp_download_bool(value,length);
     if(heat == 0) {
         //bool off
+        wifi_t.wifi_RunMode =wifi_notheat;
         wifi_t.wifi_dry =0;
     }else {
         //bool on
+        wifi_t.wifi_RunMode = wifi_heat;
         wifi_t.wifi_dry=1;
     }
   
