@@ -6,7 +6,7 @@
 #define AI_ENABLE      1
 
 typedef enum {                   /* enumeration for CProcess signals */
-    WIFI_SIG,RUN_SIG,AI_SIG
+    kill =1,notkill,dry,notdry
 }Signal;
 
 typedef enum
@@ -47,7 +47,7 @@ typedef struct _RUN_T{
   uint8_t sendtimes;
  
 
-   uint8_t  AI;
+  
    uint8_t  gFan;
    uint8_t  gFan_flag;
    uint8_t  gPlasma;
@@ -61,8 +61,14 @@ typedef struct _RUN_T{
 
 	uint8_t ai_key;
 	uint8_t ai_key_off;
-   uint8_t wifi_key;
-   uint8_t wifi_key_off;
+  uint8_t wifi_key;
+  uint8_t wifi_key_off;
+
+  uint8_t  globle_kill;
+  uint8_t  globle_notkill;
+
+   uint8_t  globle_dry;
+  uint8_t  globle_notdry;
 
 
    uint8_t gTimer_60s;
