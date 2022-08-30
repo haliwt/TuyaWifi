@@ -277,6 +277,7 @@ void AI_Function(uint8_t sig)
 	       run_t.gPlasma =0;
 		   run_t.gFan_flag = 0;
 		   run_t.gFan_continueRun =0;
+		   wifiUpdate_Kill_Status(1);
 	       SterIlization(0); //turn on
 		   
 
@@ -308,7 +309,7 @@ void AI_Function(uint8_t sig)
 			     Buzzer_On();
        
             run_t.gPlasma =1; //turn off plasma 
-			    
+			wifiUpdate_Kill_Status(0);
 		
            SterIlization(1); //turn off kill function
 			 if( run_t.gDry ==1){
@@ -351,6 +352,7 @@ void AI_Function(uint8_t sig)
              run_t.gFan =0;
 	         run_t.gFan_flag = 0;
 			 run_t.gFan_continueRun =0;
+			 wifiUpdate_Dry_Status(1);
 			 Dry_Function(0);
 			 
 
@@ -377,7 +379,7 @@ void AI_Function(uint8_t sig)
         
              run_t.gDry =1;
 		 	
-			
+			wifiUpdate_Dry_Status(0);
 		    Dry_Function(1) ;//Display_Function_OnOff();
 		    
              if(run_t.gPlasma ==1){ //plasma turn off flag
@@ -414,7 +416,7 @@ void AI_Function(uint8_t sig)
             run_t.gFan =0;
             run_t.gPlasma =0;
             run_t.gDry =0;
-              
+            wifiUpdate_AI_Status(0);
                 
                 FAN_CCW_RUN();
                 PLASMA_SetHigh(); //
@@ -431,7 +433,7 @@ void AI_Function(uint8_t sig)
 	      if((ai_off != run_t.ai_key_off && run_t.SingleMode ==1) ||(wifi_t.wifi_ai ==0 && wifi_t.wifi_itemAi==1)){
 		      ai_off = run_t.ai_key_off;
 		      wifi_t.wifi_ai =2;
-
+              wifiUpdate_AI_Status(1);
 
 		           run_t.ster_key++;
 				   run_t.ster_key_off++;
