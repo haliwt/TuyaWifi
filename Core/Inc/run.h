@@ -36,7 +36,8 @@ typedef struct _RUN_T{
 
    uint8_t gTimer_Counter;
    uint8_t gFan_continueRun;
- 
+   uint8_t SingleMode;
+   uint8_t Single_cmd;
 
 
    uint8_t gbuzzer_flag;

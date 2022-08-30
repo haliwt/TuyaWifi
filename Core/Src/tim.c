@@ -27,6 +27,7 @@
 
 /* USER CODE BEGIN 0 */
 #include "run.h"
+#include "wifi_fun.h"
 /* USER CODE END 0 */
 
 TIM_HandleTypeDef htim1;
@@ -248,13 +249,18 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 
-    static uint8_t tm0 ,tm1;
+    static uint8_t tm0 ,tm1,tm2;
     if(htim->Instance==TIM3){
-	tm0 ++ ;
-    
-	if(tm0 == 100){//100ms *10 = 1000ms =1s
+	   tm0 ++ ;
+     tm2++;
+     if(tm2 > 49){
+       tm2 =0;
+       wifi_t.gTimer_500ms++;
+
+     }
+	   if(tm0 == 100){//100ms *10 = 1000ms =1s
        tm0 =0;
-      
+       wifi_t.gTimer_1s ++;
        run_t.sendtimes++;
 	   if(run_t.gFan_flag ==1 || run_t.gFan_continueRun ==1){
 	   	   tm1++;

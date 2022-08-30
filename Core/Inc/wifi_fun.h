@@ -17,6 +17,9 @@ typedef struct _WIFI_FUN{
     uint8_t wifi_power;
     uint8_t wifiPowerOn_flag;
     uint8_t wifi_RunMode;
+	uint8_t getNet_flag;
+	uint8_t AP;
+	uint8_t Smart;
 
 	uint8_t wifi_ai;
 	uint8_t wifi_itemAi;
@@ -31,6 +34,9 @@ typedef struct _WIFI_FUN{
 	uint8_t dispHumidityValue;
 
     uint8_t getTime_flag;
+	uint8_t gTimer_500ms;
+	uint8_t gTimer_1s;
+	
 	uint8_t getTime[7];
 	
 

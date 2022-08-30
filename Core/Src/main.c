@@ -33,6 +33,7 @@
 #include "cmd_link.h"
 #include "wifi_fun.h"
 #include "special_power.h"
+#include "single_mode.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -124,13 +125,14 @@ int main(void)
 	
     #ifdef WIFI_TUYA
       wifi_uart_service();
-      HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
+   //   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
     #else 
        run_t.AI = AIENABLE;
 	#endif 
      
   Wifi_Mode();
 	Decode_Function();
+  Single_Mode();
     
 	RunCommand_Order();
 	
