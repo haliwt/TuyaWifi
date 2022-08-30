@@ -59,6 +59,7 @@ void SetTimeHost(void(*timesHandler)(void));
 void SetTemperatureHost(void(*temperatureHandler)(void));
 
 void Wifi_Mode(void);
+void wifiDisplayTemperature_Humidity(void);
 
 
 

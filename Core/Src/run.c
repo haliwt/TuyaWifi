@@ -369,12 +369,27 @@ void AI_Function(uint8_t sig)
 void RunCommand_Order(void)
 {
     
-    if(run_t.sendtimes> 4 || run_t.gPower_flag == 1){ // display humidity and temperature value
+    static uint8_t wifidisp;
+    
+    if(run_t.sendtimes> 5 || run_t.gPower_flag == 1){ // display humidity and temperature value
 		run_t.sendtimes=0;
         times++;
+        wifidisp++;
         if(times > 49)run_t.gPower_flag++;
-	    Display_DHT11_Value(&DHT11);
+	     Display_DHT11_Value(&DHT11);
 
+	   if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==  WIFI_CONN_CLOUD){
+
+                 wifi_t.getNet_flag =1;
+                 HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
+       }
+         
+       if(wifidisp > 3){
+        	wifidisp = 0;
+	    if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==  WIFI_CONN_CLOUD){
+              wifiDisplayTemperature_Humidity();
+         }
+        }
         
 	}
     if(run_t.gPower_On==0)times=0;
@@ -414,12 +429,8 @@ void RunCommand_Order(void)
 
 	      FAN_CCW_RUN();
       }
-     
-       if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==  WIFI_CONN_CLOUD){
-
-                 wifi_t.getNet_flag =1;
-                 HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
-        }
+      
+      
 
 }
 

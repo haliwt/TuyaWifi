@@ -140,3 +140,10 @@ static void wifiPowerOn_After_data_update(void)
 
 
 }
+
+void wifiDisplayTemperature_Humidity(void)
+{
+  mcu_dp_value_update(DPID_DISPTEMP,wifi_t.dispTemperatureValue); //VALUE型数据上报;
+   mcu_dp_value_update(DPID_DISPHUM,wifi_t.dispHumidityValue); //VALUE型数据上报;
+
+}
