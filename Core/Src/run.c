@@ -137,15 +137,20 @@ void Decode_RunCmd(void)
 **********************************************************************/
 void AI_Function(uint8_t sig)
 {
-   static uint8_t fan_on=0xff,fan_off=0xff;
+   static uint8_t wifi_s=0xff,wifi_a=0xff;
    static uint8_t dry_on =0xff, dry_off = 0xff,ster_on=0xff,ster_off=0xff;
    if(run_t.gPower_On==1 || wifi_t.wifiPowerOn_flag==1){  //WT.EDIT 2022.08.29
 	switch(sig){
    
 	case 0x08: //AI Mode turn On (single -> Fan Mode)
 
-	     if(wifi_t.getNet_flag ==0){
-         mcu_set_wifi_mode(1);//wifi be detector AP mode,slowly
+	    if(wifi_t.getNet_flag ==0){
+          if(wifi_s !=run_t.wifi_smart_key){
+          	  wifi_s = run_t.wifi_smart_key;
+              run_t.wifi_ap_key++;
+              
+                mcu_set_wifi_mode(0);//wifi be detector AP mode,slowly
+		 }
 		 if(wifi_t.gTimer_500ms ==0){
 			  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
 		   }
@@ -159,7 +164,12 @@ void AI_Function(uint8_t sig)
            
      case 0x18 : //AI Mode turn off
            if(wifi_t.getNet_flag ==0){
-           mcu_set_wifi_mode(0);//wifi be detector smart mode,fast
+           	if(wifi_a != run_t.wifi_ap_key){
+           	   wifi_a = run_t.wifi_ap_key;
+               run_t.wifi_smart_key++;
+               mcu_set_wifi_mode(0);//wifi be detector smart mode,fast
+              
+			}
 			if(wifi_t.gTimer_1s ==0)
 			        HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
 			    else if(wifi_t.gTimer_1s > 0){

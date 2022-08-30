@@ -110,7 +110,7 @@ int main(void)
   //tuya_wif
     __HAL_UART_ENABLE_IT(&huart2,UART_IT_RXNE);  //read USART_ISR :RXNE(BIT5) ->hardware by be set and clear
     wifi_protocol_init();
-	// mcu_set_wifi_mode(0);//???????? 
+	mcu_set_wifi_mode(0);//???????? 
   /* USER CODE END 2 */
   PowerOn_Host(SetPowerOn_ForDoing);
   PowerOff_Host(SetPowerOff_ForDoing);

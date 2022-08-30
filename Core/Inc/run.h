@@ -67,7 +67,10 @@ typedef struct _RUN_T{
    uint8_t gFan_counter;
 
    //wifi 
+   uint8_t wifi_smart_key;
+   uint8_t wifi_ap_key;
    uint8_t gTimer_wifi_20ms ;
+
    
  }RUN_T;
 
