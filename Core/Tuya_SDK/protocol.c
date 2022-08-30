@@ -345,8 +345,8 @@ static unsigned char dp_download_settime_handle(const unsigned char value[], uns
     settime = mcu_get_dp_download_value(value,length);
     /*
     //VALUE type data processing
-    
     */
+     wifi_t.setTimesValue = settime; //
     
     //There should be a report after processing the DP
     ret = mcu_dp_value_update(DPID_SETTIME,settime);
@@ -374,7 +374,8 @@ static unsigned char dp_download_settemp_handle(const unsigned char value[], uns
     //VALUE type data processing
     
     */
-    
+
+	 wifi_t.SetTemperatureValue = settemp ; //set up temperature value form smart phone APP 
     //There should be a report after processing the DP
     ret = mcu_dp_value_update(DPID_SETTEMP,settemp);
     if(ret == SUCCESS)
@@ -498,7 +499,6 @@ unsigned char mcu_firm_update_handle(const unsigned char value[],unsigned long p
     return SUCCESS;
 }
 #endif
-
 #ifdef SUPPORT_GREEN_TIME
 /**
  * @brief  获取到的格林时间
@@ -508,7 +508,7 @@ unsigned char mcu_firm_update_handle(const unsigned char value[],unsigned long p
  */
 void mcu_get_greentime(unsigned char time[])
 {
-    #error "请自行完成相关代码,并删除该行"
+   // #error "请自行完成相关代码,并删除该行"
     /*
     time[0] 为是否获取时间成功标志，为 0 表示失败，为 1表示成功
     time[1] 为年份，0x00 表示 2000 年
@@ -518,11 +518,15 @@ void mcu_get_greentime(unsigned char time[])
     time[5] 为分钟，从 0 开始到59 结束
     time[6] 为秒钟，从 0 开始到59 结束
     */
+   
     if(time[0] == 1) {
         //正确接收到wifi模块返回的格林数据
-        
-    }else {
+        wifi_t.getTime_flag =0;
+		
+       
+       }else {
         //获取格林时间出错,有可能是当前wifi模块未联网
+        wifi_t.getTime_flag = 1;
     }
 }
 #endif

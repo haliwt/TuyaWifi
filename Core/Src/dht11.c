@@ -1,6 +1,7 @@
 #include "dht11.h"
 #include "run.h"
 #include "cmd_link.h"
+#include "wifi_fun.h"
 
 static void DHT11_Mode_IPU(void);
 static void DHT11_Mode_Out_PP(void);
@@ -178,10 +179,13 @@ void Display_DHT11_Value(DHT11_Data_TypeDef *DHT11)
     if(DHT11_Read_TempAndHumidity(DHT11) == 0){
         
         run_t.gDht11_humidity = (DHT11->humi_high8bit);
+		wifi_t.dispHumidityValue = run_t.gDht11_humidity; //WT.EDIT 2022.08.30
        
         
         run_t.gDht11_temperature = (DHT11->temp_high8bit);
+		wifi_t.dispTemperatureValue = run_t.gDht11_temperature;//WT.EDIT 2022.08.30
     }
+	
 
 	SendData_To_TouchKey(run_t.gDht11_humidity ,run_t.gDht11_temperature);
     

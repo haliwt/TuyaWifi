@@ -19,7 +19,7 @@ void (*SetTemperature)(void);
 static void Wifi_RunCmd(uint8_t sig);
 static void wifiPowerOn_After_data_update(void);
 
-
+uint8_t temp[7];
 
 
 void PowerOn_Host(void (* poweronHandler)(void))
@@ -70,7 +70,8 @@ void SetTemperatureHost(void(*temperatureHandler)(void))
 void Wifi_Mode(void)
 {
    
-   if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==  WIFI_CONN_CLOUD  ){ //当WIFI连接成功，打开天气数据且仅一次
+    
+    if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==  WIFI_CONN_CLOUD  ){ //当WIFI连接成功，打开天气数据且仅一次
 
    if(wifi_t.wifi_power ==1){
 
@@ -91,7 +92,12 @@ void Wifi_Mode(void)
            
     }
     if(wifi_t.wifiPowerOn_flag==1){
+
+	  if(wifi_t.getTime_flag == 0)
+          mcu_get_greentime(temp) ;
+	  
       Wifi_RunCmd(wifi_t.wifi_RunMode);
+      
     }
   }
 }
@@ -121,11 +127,11 @@ static void wifiPowerOn_After_data_update(void)
     mcu_dp_bool_update(DPID_START,1); //BOOL型数据上报;
     mcu_dp_enum_update(DPID_MODE,0); //枚举型数据上报;
     mcu_dp_fault_update(DPID_FAULT,0); //故障型数据上报;
-    mcu_dp_value_update(DPID_DISPTEMP,0); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_DISPTEMP,wifi_t.dispTemperatureValue); //VALUE型数据上报;
     mcu_dp_bool_update(DPID_KILL,1); //BOOL型数据上报;
     mcu_dp_bool_update(DPID_HEAT,1); //BOOL型数据上报;
     mcu_dp_value_update(DPID_SETTIME,0); //VALUE型数据上报;
-    mcu_dp_value_update(DPID_DISPHUM,0); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_DISPHUM,wifi_t.dispHumidityValue); //VALUE型数据上报;
     mcu_dp_value_update(DPID_SETTEMP,0); //VALUE型数据上报;
     mcu_dp_value_update(DPID_DISPTIME,0); //VALUE型数据上报;
 

@@ -21,9 +21,17 @@ typedef struct _WIFI_FUN{
 	uint8_t wifi_ai;
 	uint8_t wifi_itemAi;
 	uint8_t wifi_dry;
-	uint8_t wifi_time;
 	uint8_t wifi_kill;
-	uint8_t wifi_counter;
+	uint8_t wifi_counter; 
+
+	uint8_t setTimesValue;
+	uint8_t dispTimesValue;
+	uint8_t SetTemperatureValue;
+	uint8_t dispTemperatureValue;
+	uint8_t dispHumidityValue;
+
+    uint8_t getTime_flag;
+	uint8_t getTime[7];
 	
 
 
