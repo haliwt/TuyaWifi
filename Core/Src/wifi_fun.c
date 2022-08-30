@@ -136,14 +136,47 @@ static void wifiPowerOn_After_data_update(void)
     mcu_dp_value_update(DPID_SETTEMP,0); //VALUE型数据上报;
     mcu_dp_value_update(DPID_DISPTIME,0); //VALUE型数据上报;
 
-
-
-
 }
-
+/***********************************************
+   *
+   *Function Name: void Wifi_RunCmd(void)
+   *Funciton : separately update value 
+   *
+   *
+***********************************************/
 void wifiDisplayTemperature_Humidity(void)
 {
   mcu_dp_value_update(DPID_DISPTEMP,wifi_t.dispTemperatureValue); //VALUE型数据上报;
-   mcu_dp_value_update(DPID_DISPHUM,wifi_t.dispHumidityValue); //VALUE型数据上报;
+  mcu_dp_value_update(DPID_DISPHUM,wifi_t.dispHumidityValue); //VALUE型数据上报;
 
+}
+
+void wifiUpdate_Power_Status(uint8_t pvalue)
+{
+
+   mcu_dp_bool_update(DPID_START,pvalue); //BOOL型数据上报;
+}
+void wifiUpdate_Kill_Status(uint8_t kvalue)
+{
+   mcu_dp_bool_update(DPID_KILL,kvalue); //BOOL型数据上报;
+}
+void wifiUpdate_AI_Status(uint8_t aiv)
+{
+  mcu_dp_enum_update(DPID_MODE,aiv); //枚举型数据上报;
+}
+void wifiUpdate_Dry_Status(uint8_t dvalue)
+{
+    mcu_dp_bool_update(DPID_HEAT,dvalue); //BOOL型数据上报;
+}
+
+
+void wifiUpdate_SetTimeValue(uint8_t tv)
+{
+   mcu_dp_value_update(DPID_SETTIME,tv); //VALUE型数据上报;
+
+}
+
+void wifiUpdate_SetTemperatureValue(uint8_t temp)
+{
+   mcu_dp_value_update(DPID_SETTEMP,temp); //VALUE型数据上报;
 }

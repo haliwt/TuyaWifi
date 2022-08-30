@@ -16,7 +16,7 @@
 RUN_T run_t; 
 uint8_t times;
  
-
+static void Single_ReceiveCmd(uint8_t cmd);
 
 
 
@@ -63,6 +63,7 @@ void Decode_RunCmd(void)
 		 
 		  PowerOff();
 		  run_t.SingleMode = 0;
+		  wifiUpdate_Power_Status(0);
 			
        
        } 
@@ -71,6 +72,7 @@ void Decode_RunCmd(void)
 
 	        PowerOn();
 		    run_t.SingleMode = 1;
+		    wifiUpdate_Power_Status(1);
 
 	   }       
       
@@ -80,20 +82,8 @@ void Decode_RunCmd(void)
       case 'A': //AI function ->wifi ->indicate Fun
         
         if(run_t.gPower_On==1){
-			if(cmdType_2== 0x11){//turn off AI
-			   wifi_t.AP = 1; 
-			   wifi_t.Smart = 0;
-               run_t.Single_cmd=0x08;
-             
 			
-			}
-			else if(cmdType_2== 0x01){//tunr on AI
-			    wifi_t.AP=0;
-			    wifi_t.Smart = 1;
-			    run_t.Single_cmd = 0x18;
-			    
-
-			}
+			 Single_ReceiveCmd(cmdType_2);
 			
         }
 
@@ -125,7 +115,66 @@ void Decode_RunCmd(void)
     
 
 }
+/**********************************************************************
+	*
+	*Functin Name: void Single_ReceiveCmd(uint8_t cmd)
+	*Function : resolver is by usart port receive data  from display panle  
+	*Input Ref:  usart receive data
+	*Return Ref: NO
+	*
+**********************************************************************/
+static void Single_ReceiveCmd(uint8_t cmd)
+{
+    switch(cmd){
 
+      case 0x11: //wifi key command turn off
+        run_t.Single_cmd=0x11;
+      break;
+
+     case 0x01://wifi key command turn on
+           run_t.Single_cmd = 0x01;
+     break;
+
+     //AI key
+     case 0x08: //AI key command turn on
+
+          run_t.Single_cmd = 0x08;
+
+     break;
+
+     case 0x18: //AI turn off
+        run_t.Single_cmd = 0x18;
+
+     break;
+
+     //dry key
+     case 0x02:
+     	  run_t.Single_cmd = 0x02;
+     break;
+
+     case 0x12:
+     	  run_t.Single_cmd = 0x12;
+     break;
+
+     //kill key
+
+     case 0x04:
+     	  run_t.Single_cmd = 0x04;
+     break;
+
+     case 0x14:
+     	  run_t.Single_cmd = 0x14;
+     break;
+
+     default:
+
+         run_t.Single_cmd = 0;
+     break;
+
+
+    }
+
+}
 
 /**********************************************************************
 	*
@@ -137,17 +186,26 @@ void Decode_RunCmd(void)
 **********************************************************************/
 void AI_Function(uint8_t sig)
 {
-   static uint8_t wifi_s=0xff,wifi_a=0xff;
+   static uint8_t wifi_s=0xff,wifi_a=0xff,ai_off=0xff,ai_on=0xff;
    static uint8_t dry_on =0xff, dry_off = 0xff,ster_on=0xff,ster_off=0xff;
    if(run_t.gPower_On==1 || wifi_t.wifiPowerOn_flag==1){  //WT.EDIT 2022.08.29
 	switch(sig){
    
-	case 0x08: //AI Mode turn On (single -> Fan Mode)
+	case 0x01: //wifi Mode AP (single -> Fan Mode)
 
 	    if(wifi_t.getNet_flag ==0){
-          if(wifi_s !=run_t.wifi_smart_key){
-          	  wifi_s = run_t.wifi_smart_key;
-              run_t.wifi_ap_key++;
+          if(wifi_s !=run_t.wifi_key){
+          	  wifi_s = run_t.wifi_key;
+              run_t.wifi_key++;
+
+               run_t.ster_key_off++;
+               run_t.ster_key++;
+			   
+			   run_t.dry_key++;
+			   run_t.dry_key_off++;
+			   	
+			   run_t.ai_key++;
+			   run_t.ai_key_off++;
               
                 mcu_set_wifi_mode(0);//wifi be detector AP mode,slowly
 		 }
@@ -162,11 +220,21 @@ void AI_Function(uint8_t sig)
      
      break;
            
-     case 0x18 : //AI Mode turn off
+     case 0x11 : //wifi Mode  smart
            if(wifi_t.getNet_flag ==0){
-           	if(wifi_a != run_t.wifi_ap_key){
-           	   wifi_a = run_t.wifi_ap_key;
-               run_t.wifi_smart_key++;
+           	if(wifi_a != run_t.wifi_key_off){
+           	   wifi_a = run_t.wifi_key_off;
+               run_t.wifi_key_off++;
+
+               run_t.ster_key_off++;
+               run_t.ster_key++;
+			   
+			   run_t.dry_key++;
+			   run_t.dry_key_off++;
+			   	
+			   run_t.ai_key++;
+			   run_t.ai_key_off++;
+
                mcu_set_wifi_mode(0);//wifi be detector smart mode,fast
               
 			}
@@ -177,7 +245,7 @@ void AI_Function(uint8_t sig)
 			    	 HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_RESET);
 			}
 				
-           	}
+           }
          
      break;
      /*-------------------------------WIFI FUNCTION----------------------------------*/  
@@ -196,8 +264,11 @@ void AI_Function(uint8_t sig)
 			   run_t.dry_key++;
 			   run_t.dry_key_off++;
 			   	
-			   run_t.fan_key++;
-			   run_t.fan_key_off++;
+			   run_t.ai_key++;
+			   run_t.ai_key_off++;
+
+			   run_t.wifi_key_off++;
+			   run_t.wifi_key++;
 			  }
 			  
 			Buzzer_On();
@@ -226,8 +297,10 @@ void AI_Function(uint8_t sig)
 			   run_t.dry_key++;
 			   run_t.dry_key_off++;
 			   	
-			   run_t.fan_key++;
-			   run_t.fan_key_off++;
+			   run_t.ai_key++;
+			   run_t.ai_key_off++;
+			   run_t.wifi_key_off++;
+			   run_t.wifi_key++;
 			   
 	    	
 	           run_t.gPlasma =1;
@@ -264,8 +337,11 @@ void AI_Function(uint8_t sig)
 				 
 				   run_t.dry_key_off++;
 				   	
-				   run_t.fan_key++;
-				   run_t.fan_key_off++;
+				   run_t.ai_key++;
+				   run_t.ai_key_off++;
+
+				   run_t.wifi_key_off++;
+			       run_t.wifi_key++;
 
              	}
 			   Buzzer_On();
@@ -284,23 +360,17 @@ void AI_Function(uint8_t sig)
     case 0x12 : //dry turn off
             if((dry_off != run_t.dry_key_off && run_t.SingleMode ==1) || (wifi_t.wifi_dry==0 && wifi_t.wifi_itemAi==1)){
 			  dry_off = run_t.dry_key_off;
-			 
-
-			   
-
-			  if(wifi_t.wifi_itemAi ==1)  wifi_t.wifi_dry=2;
+			   wifi_t.wifi_dry=2;
 			  
-			   if( wifi_t.wifi_dry!=2){
-		
-				   run_t.ster_key++;
+		           run_t.ster_key++;
 				   run_t.ster_key_off++;
-				   
 				   run_t.dry_key++;
-				  
-				   	
-				   run_t.fan_key++;
-				   run_t.fan_key_off++;
-			   }
+				   run_t.ai_key++;
+				   run_t.ai_key_off++;
+
+				   run_t.wifi_key_off++;
+			       run_t.wifi_key++;
+			   
 
 			    Buzzer_On();
 			  
@@ -322,11 +392,21 @@ void AI_Function(uint8_t sig)
 
     break;
 
-	case 0x01: //wifi -> AI tunr ON
+	case 0x08: //wifi -> AI tunr ON
 
-	    if(wifi_t.wifi_ai ==0 && wifi_t.wifi_itemAi==0){
-		 
-		 wifi_t.wifi_ai =2;
+	    if((ai_on != run_t.ai_key && run_t.SingleMode ==1) ||wifi_t.wifi_ai ==0 && wifi_t.wifi_itemAi==0){
+		      ai_on = run_t.ai_key;
+		      wifi_t.wifi_ai =2;
+
+		       run_t.ster_key++;
+			   run_t.ster_key_off++;
+			   run_t.dry_key++;
+			   run_t.dry_key_off++;
+
+			   run_t.wifi_key_off++;
+			   run_t.wifi_key++;
+			   run_t.ai_key_off++;
+				 
 		
 		   Buzzer_On();
 	      
@@ -343,11 +423,30 @@ void AI_Function(uint8_t sig)
 				run_t.gFan_flag = 0; //Fan be stop flag :0 -Fan works
              
 				
-
 		}
 		
-			
-    break;
+	  break;
+
+	 case 0x18:
+	      if((ai_off != run_t.ai_key_off && run_t.SingleMode ==1) ||(wifi_t.wifi_ai ==0 && wifi_t.wifi_itemAi==1)){
+		      ai_off = run_t.ai_key_off;
+		      wifi_t.wifi_ai =2;
+
+
+		           run_t.ster_key++;
+				   run_t.ster_key_off++;
+				   run_t.dry_key++;
+				   run_t.dry_key_off++;
+
+				   run_t.wifi_key_off++;
+				   run_t.wifi_key++;
+				   run_t.ai_key++;
+				 
+     
+
+		  }
+
+	 break;
            
    
 
