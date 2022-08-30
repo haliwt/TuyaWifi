@@ -16,7 +16,7 @@
 RUN_T run_t; 
 uint8_t times;
  
-static void Single_ReceiveCmd(uint8_t cmd);
+
 
 
 
@@ -83,14 +83,10 @@ void Decode_RunCmd(void)
         
         if(run_t.gPower_On==1){
 			
-			 Single_ReceiveCmd(cmdType_2);
+			 //Single_ReceiveCmd(cmdType_2);
+        	Single_Usart_ReceiveData(cmdType_2);
 			
         }
-
-      break;
-
-      case 'W':
-
 
       break;
 
@@ -123,7 +119,7 @@ void Decode_RunCmd(void)
 	*Return Ref: NO
 	*
 **********************************************************************/
-static void Single_ReceiveCmd(uint8_t cmd)
+void Single_ReceiveCmd(uint8_t cmd)
 {
     switch(cmd){
 
@@ -387,9 +383,9 @@ void AI_Function(uint8_t sig)
 
     break;
 
-	case 0x08: //wifi -> AI tunr ON
+	case 0x08: //wifi AI and Single AI-> AI tunr ON
 
-	    if((ai_on != run_t.ai_key && run_t.SingleMode ==1) ||wifi_t.wifi_ai ==0 && wifi_t.wifi_itemAi==0){
+	    if((ai_on != run_t.ai_key && run_t.SingleMode ==1) ||(wifi_t.wifi_ai ==0 && wifi_t.wifi_itemAi==0)){
 		      ai_on = run_t.ai_key;
 		       if(wifi_t.wifi_itemAi ==0)  wifi_t.wifi_ai = 2;
 
@@ -409,7 +405,8 @@ void AI_Function(uint8_t sig)
             run_t.gFan =0;
             run_t.gPlasma =0;
             run_t.gDry =0;
-            wifiUpdate_AI_Status(0);
+            wifiUpdate_AI_Status(0);//wifi APP turn on
+            if(run_t.SingleMode ==1)wifi_t.wifi_itemAi=0;
                 
                 FAN_CCW_RUN();
                 PLASMA_SetHigh(); //
@@ -422,13 +419,14 @@ void AI_Function(uint8_t sig)
 		
 	  break;
 
-	 case 0x18:
+	 case 0x18: //wifi AI and Single AI turn off
 	      if((ai_off != run_t.ai_key_off && run_t.SingleMode ==1) ||(wifi_t.wifi_ai ==0 && wifi_t.wifi_itemAi==1)){
 		      ai_off = run_t.ai_key_off;
 		      wifi_t.wifi_ai =2;
 
 		       if(wifi_t.wifi_itemAi ==1)  wifi_t.wifi_ai = 2;
-              wifiUpdate_AI_Status(1);
+                wifiUpdate_AI_Status(1);
+                if(run_t.SingleMode ==1)wifi_t.wifi_itemAi=1;
 
 		           run_t.ster_key++;
 				   run_t.ster_key_off++;

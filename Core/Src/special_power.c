@@ -5,6 +5,7 @@
 #include "cmd_link.h"
 #include "run.h"
 
+void (*Single_Usart_ReceiveData)(uint8_t cmd);
 
 void SetPowerOn_ForDoing(void)
 {
@@ -33,8 +34,11 @@ void SetPowerOff_ForDoing(void)
 	PTC_SetLow();
 	FAN_Stop();
 
-	
-	
+}
 
+void Single_Usart_RxData(void(*rxHandler)(uint8_t dat))
+{
+
+      Single_Usart_ReceiveData=  rxHandler;
 
 }

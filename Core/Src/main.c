@@ -115,6 +115,7 @@ int main(void)
   PowerOn_Host(SetPowerOn_ForDoing);
   PowerOff_Host(SetPowerOff_ForDoing);
   AI_Function_Host(AI_Function);
+  Single_Usart_RxData(Single_ReceiveCmd);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)

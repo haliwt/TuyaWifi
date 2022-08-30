@@ -89,6 +89,7 @@ void Decode_RunCmd(void);
 void Initial_Ref(void);
 
 void AI_Function(uint8_t sig);
+void Single_ReceiveCmd(uint8_t cmd);
 
 
 
