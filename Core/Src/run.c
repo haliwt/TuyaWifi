@@ -33,7 +33,7 @@ void Initial_Ref(void)
   
   run_t.gPlasma=0;
   run_t.gDry =0;
- 
+  run_t.gAi = AIENABLE;
   run_t.gFan_counter=0;
  
 
@@ -508,7 +508,7 @@ void AI_Function(uint8_t sig)
 				   run_t.wifi_key_off++;
 				   run_t.wifi_key++;
 
-				  
+				  	Buzzer_On();
 				 wifiUpdate_AI_Status(1);
 
 		  }

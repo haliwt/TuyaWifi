@@ -41,9 +41,9 @@ typedef struct _RUN_T{
   uint8_t decodeFlag;
 	uint8_t sendtimes;
 
-  uint8_t  gAi;
-  uint8_t  gPlasma;
-	uint8_t  gDry;
+      uint8_t  gAi;
+      uint8_t  gPlasma;
+      uint8_t  gDry;
 
 	uint8_t kill_key;
 	uint8_t kill_key_off;

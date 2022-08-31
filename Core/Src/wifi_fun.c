@@ -78,8 +78,8 @@ void Wifi_Mode(void)
    if(wifi_t.wifi_power ==1){
 
       wifi_t.wifi_power = 0xf0;
-
-      PowerOn(); //default AI 
+      if(run_t.SingleMode !=1)
+           PowerOn(); //default AI 
       wifi_t.wifiPowerOn_flag =1;
       wifi_t.WifiMode =1;
       wifiPowerOn_After_data_update();

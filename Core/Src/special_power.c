@@ -33,6 +33,8 @@ void SetPowerOff_ForDoing(void)
 	run_t.gFan_continueRun =1; //the fan still run 60s
 	run_t.gPower_On=0;
     wifi_t.wifi_power=0;
+    wifi_t.wifiPowerOn_flag =0;
+    
 	PLASMA_SetLow(); //
 	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
 	PTC_SetLow();
