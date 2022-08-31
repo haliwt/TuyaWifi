@@ -5,7 +5,7 @@
 
 typedef enum{
   
-   wifi_AI=0x08 ,wifi_notAI=0x18,wifi_itemkill=0x04,wifi_itemnotkill=0x14,
+   wifi_AI=0x08 ,wifi_notAI=0x18,wifi_kill=0x04,wifi_notkill=0x14,
    wifi_heat= 0x02,wifi_notheat=0x12
 
 

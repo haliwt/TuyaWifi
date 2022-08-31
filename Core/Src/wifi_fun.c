@@ -213,7 +213,7 @@ void Wifi_RunMode(uint8_t cmd)
 
        default:
           cmd =0;
-       break
+       break;
 
 
 

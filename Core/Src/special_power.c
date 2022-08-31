@@ -18,7 +18,7 @@ void SetPowerOn_ForDoing(void)
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
     PTC_SetHigh();
 	Initial_Ref();
-    run_t.gPower_On=1;
+   // run_t.gPower_On=1;
 
 }
 
@@ -28,7 +28,7 @@ void SetPowerOff_ForDoing(void)
 	run_t.gPower_flag = 0;
 	run_t.gFan_counter=0;
 	run_t.gFan_continueRun =1; //the fan still run 60s
-	run_t.gPower_On=0;
+	//run_t.gPower_On=0;
 	PLASMA_SetLow(); //
 	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
 	PTC_SetLow();

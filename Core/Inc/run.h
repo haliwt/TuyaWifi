@@ -26,34 +26,34 @@ typedef enum
 
 typedef struct _RUN_T{
     
-   uint8_t gPower_On;
-   uint8_t gPower_flag;
-   uint8_t gDht11_flag;
-   uint8_t gTemperature;
+	uint8_t gPower_On;
+	uint8_t gPower_flag;
+	uint8_t gDht11_flag;
+	uint8_t gTemperature;
 
-   uint8_t gDht11_humidity ;
-   uint8_t gDht11_temperature;
+	uint8_t gDht11_humidity ;
+	uint8_t gDht11_temperature;
 
-   uint8_t gTimer_Counter;
-   uint8_t gFan_continueRun;
-   uint8_t SingleMode;
-   uint8_t Single_cmd;
+	uint8_t gTimer_Counter;
+	uint8_t gFan_continueRun;
+	uint8_t SingleMode;
+	uint8_t Single_cmd;
 
 
-   uint8_t gbuzzer_flag;
- 
-  uint8_t decodeFlag;
-  uint8_t gTimer_hours ;
-  uint8_t sendtimes;
- 
+	uint8_t gbuzzer_flag;
 
-  
-   uint8_t  gFan;
-   uint8_t  gFan_flag;
-   uint8_t  gPlasma;
-   uint8_t  gDry;
- 
-  uint8_t ster_key;
+	uint8_t decodeFlag;
+	uint8_t gTimer_hours ;
+	uint8_t sendtimes;
+
+
+
+	uint8_t  gFan;
+	uint8_t  gFan_flag;
+	uint8_t  gPlasma;
+	uint8_t  gDry;
+
+	uint8_t ster_key;
 	uint8_t ster_key_off;
 
 	uint8_t dry_key;
@@ -61,23 +61,23 @@ typedef struct _RUN_T{
 
 	uint8_t ai_key;
 	uint8_t ai_key_off;
-  uint8_t wifi_key;
-  uint8_t wifi_key_off;
+	uint8_t wifi_key;
+	uint8_t wifi_key_off;
 
-  uint8_t  globle_kill;
-  uint8_t  globle_notkill;
+	uint8_t  globle_kill;
+	uint8_t  globle_notkill;
 
-   uint8_t  globle_dry;
-  uint8_t  globle_notdry;
+	uint8_t  globle_dry;
+	uint8_t  globle_notdry;
 
 
-   uint8_t gTimer_60s;
-  
-   uint8_t gFan_counter;
+	uint8_t gTimer_60s;
 
-   //wifi 
-  
-   uint8_t gTimer_wifi_20ms ;
+	uint8_t gFan_counter;
+
+	//wifi 
+
+	
 
    
  }RUN_T;
