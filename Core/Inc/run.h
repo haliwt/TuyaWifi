@@ -53,8 +53,8 @@ typedef struct _RUN_T{
 	uint8_t  gPlasma;
 	uint8_t  gDry;
 
-	uint8_t ster_key;
-	uint8_t ster_key_off;
+	uint8_t kill_key;
+	uint8_t kill_key_off;
 
 	uint8_t dry_key;
 	uint8_t dry_key_off;
@@ -64,11 +64,8 @@ typedef struct _RUN_T{
 	uint8_t wifi_key;
 	uint8_t wifi_key_off;
 
-	uint8_t  globle_kill;
-	uint8_t  globle_notkill;
+	uint8_t  globle_sub_flag;
 
-	uint8_t  globle_dry;
-	uint8_t  globle_notdry;
 
 
 	uint8_t gTimer_60s;

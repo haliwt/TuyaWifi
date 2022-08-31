@@ -18,8 +18,10 @@ typedef struct _WIFI_FUN{
     uint8_t wifiPowerOn_flag;
     uint8_t wifi_RunMode;
 	uint8_t getNet_flag;
-	uint8_t AP;
-	uint8_t Smart;
+	uint8_t WifiMode;
+	 uint8_t wifi_cmd;
+
+
 
 	uint8_t wifi_ai;
 	uint8_t wifi_itemAi;

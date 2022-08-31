@@ -5,6 +5,7 @@
 #include "tim.h"
 #include "special_power.h"
 #include "wifi.h"
+#include "single_mode.h"
 
 WIFI_FUN   wifi_t;
 
@@ -79,6 +80,7 @@ void Wifi_Mode(void)
 
       PowerOn(); //default AI 
       wifi_t.wifiPowerOn_flag =1;
+      wifi_t.WifiMode =1;
       wifiPowerOn_After_data_update();
            
    }
@@ -89,14 +91,19 @@ void Wifi_Mode(void)
           wifi_t.wifiPowerOn_flag=0;
           run_t.gFan_continueRun =1;
           run_t.gFan_counter=0;
+          wifi_t.WifiMode =0;
            
     }
     if(wifi_t.wifiPowerOn_flag==1){
 
 	  if(wifi_t.getTime_flag == 0)
           mcu_get_greentime(temp) ;
+       if(wifi_t.wifi_counter ==0){
+           wifi_t.wifi_counter ++;
+           Single_RunCmd(wifi_t.wifi_RunMode);
+       }
 	  
-      Wifi_RunCmd(wifi_t.wifi_RunMode);
+       Wifi_RunCmd(wifi_t.wifi_cmd);
       
     }
   }
@@ -182,45 +189,3 @@ void wifiUpdate_SetTemperatureValue(uint8_t temp)
 }
 
 
-void Wifi_RunMode(uint8_t cmd)
-{
-
-    switch(cmd){
-       
-       case kill:
-
-       break;
-
-       case notkill:
-
-       break;
-
-       case dry:
-
-       break;
-
-       case notdry:
-
-       break;
-
-       case ai:
-
-       break;
-
-       case notai:
-
-       break;
-
-       default:
-          cmd =0;
-       break;
-
-
-
-
-    }
-
-
-
-
-}

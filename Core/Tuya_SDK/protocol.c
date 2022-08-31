@@ -205,10 +205,11 @@ static unsigned char dp_download_start_handle(const unsigned char value[], unsig
     if(start == 0) {
         //bool off
         wifi_t.wifi_power =2;//WT.EDIT 2022.08.27
-
+         wifi_t.wifi_counter=0;
     }else {
         //bool on
         wifi_t.wifi_power = 1 ;//WT.EDIT 2022.08.27
+         wifi_t.wifi_counter=0;
     }
   
     //There should be a report after processing the DP
@@ -238,7 +239,7 @@ static unsigned char dp_download_mode_handle(const unsigned char value[], unsign
 			
 			wifi_t.wifi_RunMode = wifi_AI;  //WT.EDIT .2022.08.27
 		    wifi_t.wifi_itemAi = 0;
-		
+		     wifi_t.wifi_counter=0;
         
         break;
         
@@ -246,6 +247,7 @@ static unsigned char dp_download_mode_handle(const unsigned char value[], unsign
 			
 			wifi_t.wifi_RunMode = wifi_notAI;
 		    wifi_t.wifi_itemAi = 1;
+             wifi_t.wifi_counter=0;
         break;
         
         default:
@@ -279,13 +281,13 @@ static unsigned char dp_download_kill_handle(const unsigned char value[], unsign
     if(kill == 0) {
         //bool off
         wifi_t.wifi_RunMode = wifi_notkill;
-      
+         wifi_t.wifi_counter=0;
      
 		
     }else {
         //bool on
         wifi_t.wifi_RunMode = wifi_kill ;
-       
+        wifi_t.wifi_counter=0;
        
     }
   
@@ -315,11 +317,12 @@ static unsigned char dp_download_heat_handle(const unsigned char value[], unsign
     if(heat == 0) {
         //bool off
         wifi_t.wifi_RunMode =wifi_notheat;
+        wifi_t.wifi_counter=0;
         
     }else {
         //bool on
         wifi_t.wifi_RunMode = wifi_heat;
-        
+         wifi_t.wifi_counter=0;
     }
   
     //There should be a report after processing the DP
