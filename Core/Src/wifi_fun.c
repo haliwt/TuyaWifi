@@ -20,6 +20,7 @@ void (*SetTemperature)(void);
 static void Wifi_RunCmd(uint8_t sig);
 static void wifiPowerOn_After_data_update(void);
 
+
 uint8_t temp[7];
 
 
@@ -100,7 +101,7 @@ void Wifi_Mode(void)
           mcu_get_greentime(temp) ;
        if(wifi_t.wifi_counter ==0){
            wifi_t.wifi_counter ++;
-           Single_RunCmd(wifi_t.wifi_RunMode);
+           Single_Usart_ReceiveData(wifi_t.wifi_RunMode);
        }
 	  
        Wifi_RunCmd(wifi_t.wifi_cmd);
@@ -121,6 +122,7 @@ static void Wifi_RunCmd(uint8_t sig)
    Ai_Fun(sig); //调用函数地址,有参数的函数
 
 }
+
 
 /***********************************************
    *

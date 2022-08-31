@@ -11,7 +11,7 @@ typedef enum{
 
 }wifi_mode;
 
-
+_
 typedef struct _WIFI_FUN{
 
     uint8_t wifi_power;
@@ -70,6 +70,8 @@ void wifiUpdate_Dry_Status(uint8_t dv);
 void wifiUpdate_SetTimeValue(uint8_t tv);
 void wifiUpdate_SetTemperatureValue(uint8_t temp);
 void Wifi_RunMode(uint8_t cmd);
+
+
 
 #endif 
 
