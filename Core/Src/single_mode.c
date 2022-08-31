@@ -1,6 +1,7 @@
 #include "single_mode.h"
 #include "wifi_fun.h"
 #include "run.h"
+#include "special_power.h"
 
 void Single_RunCmd(uint8_t sig)
 {
@@ -14,7 +15,7 @@ void Single_Mode(void)
    if(run_t.globe_setPriority==1){
       if(run_t.SingleMode ==1){
         
-        Single_RunCmd(run_t.Single_cmd);
+        Single_Usart_ReceiveData(run_t.Single_cmd);//Single_RunCmd(run_t.Single_cmd);
 
        }
    }
