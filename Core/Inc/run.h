@@ -11,7 +11,7 @@ typedef enum {                   /* enumeration for CProcess signals */
 
 typedef enum
 {
-  AIENABLE = 1,
+  AIENABLE = 0,
   AIDISABLE = !AIENABLE
 } AiStatus;
 
@@ -34,18 +34,15 @@ typedef struct _RUN_T{
 	uint8_t gDht11_humidity ;
 	uint8_t gDht11_temperature;
 
-	
-	uint8_t gFan_continueRun;
+  uint8_t gFan_continueRun;
 	uint8_t SingleMode;
 	uint8_t Single_cmd;
-
-
-
-	uint8_t decodeFlag;
+  
+  uint8_t decodeFlag;
 	uint8_t sendtimes;
 
-
-    uint8_t  gPlasma;
+  uint8_t  gAi;
+  uint8_t  gPlasma;
 	uint8_t  gDry;
 
 	uint8_t kill_key;

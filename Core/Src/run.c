@@ -150,6 +150,7 @@ void Single_ReceiveCmd(uint8_t cmd)
         else{
           run_t.Single_cmd = 0x08;
           run_t.globe_setPriority =1;
+         // run_t.gAi = AIENABLE;
 
          }
 
@@ -163,6 +164,7 @@ void Single_ReceiveCmd(uint8_t cmd)
         else{
             run_t.Single_cmd = 0x18;
             run_t.globe_setPriority =1;
+            //run_t.gAi = AIDISABLE;
         }
       break;
 
@@ -300,7 +302,7 @@ void AI_Function(uint8_t sig)
      case 0x04: //kill turn on
          if(run_t.globe_sub_flag != kill){
        
-         if(ster_on !=run_t.kill_key && (run_t.SingleMode ==1|| wifi_t.wifi_itemAi==1)){
+         if(ster_on !=run_t.kill_key && (run_t.gAi ==AIDISABLE || wifi_t.wifi_itemAi==1)){
 	   	    ster_on = run_t.kill_key;
            
             
@@ -335,7 +337,7 @@ void AI_Function(uint8_t sig)
     case 0x14: //kill turn off
         
           if(run_t.globe_sub_flag != notkill){
-          if((ster_off !=run_t.kill_key_off && (run_t.SingleMode  ==1 || wifi_t.wifi_itemAi==1))){
+          if((ster_off !=run_t.kill_key_off && (run_t.gAi == AIDISABLE || wifi_t.wifi_itemAi==1))){
                ster_off = run_t.kill_key_off;
 		
 			  run_t.globe_sub_flag = notkill;
@@ -375,7 +377,7 @@ void AI_Function(uint8_t sig)
 
     case 0x02: //dry turn 0n
         if(run_t.globe_sub_flag != dry){
-        if((dry_on != run_t.dry_key && (run_t.SingleMode ==1 || wifi_t.wifi_itemAi==1))){
+        if((dry_on != run_t.dry_key && (run_t.gAi == AIDISABLE || wifi_t.wifi_itemAi==1))){
 			      dry_on = run_t.dry_key;
 
 			  
@@ -410,7 +412,7 @@ void AI_Function(uint8_t sig)
          
     case 0x12 : //dry turn off
           if(run_t.globe_sub_flag !=notdry){
-          if((dry_off != run_t.dry_key_off && (run_t.SingleMode ==1 ||  wifi_t.wifi_itemAi==1))){
+          if((dry_off != run_t.dry_key_off && (run_t.gAi ==AIDISABLE ||  wifi_t.wifi_itemAi==1))){
 			  dry_off = run_t.dry_key_off;
 			  
 
@@ -449,9 +451,12 @@ void AI_Function(uint8_t sig)
 
 	case 0x08: //wifi AI and Single AI-> AI tunr ON
 
-	    if((ai_on != run_t.ai_key && (run_t.SingleMode ==1 || wifi_t.wifi_itemAi==0))){
+	    if(ai_on != run_t.ai_key){
 		      ai_on = run_t.ai_key;
 		      
+		       run_t.gAi = AIENABLE;
+               wifi_t.wifi_itemAi=AIENABLE;
+            
 			   run_t.ai_key_off++;
 
 		       run_t.kill_key++;
@@ -488,13 +493,13 @@ void AI_Function(uint8_t sig)
 	  break;
 
 	 case 0x18: //wifi AI and Single AI turn off
-	      if((ai_off != run_t.ai_key_off && (run_t.SingleMode ==1 || wifi_t.wifi_itemAi==1))){
+	      if(ai_off != run_t.ai_key_off){
 		      ai_off = run_t.ai_key_off;
 		            run_t.ai_key++;
 
-		           wifi_t.wifi_itemAi=1;
-           
-
+		           run_t.gAi = AIDISABLE;
+                   wifi_t.wifi_itemAi=AIDISABLE;
+              
 		           run_t.kill_key++;
 				   run_t.kill_key_off++;
 				   run_t.dry_key++;
@@ -504,9 +509,7 @@ void AI_Function(uint8_t sig)
 				   run_t.wifi_key++;
 
 				  
-				  
-				 
-                   wifiUpdate_AI_Status(1);
+				 wifiUpdate_AI_Status(1);
 
 		  }
 
