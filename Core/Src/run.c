@@ -430,10 +430,7 @@ void AI_Function(uint8_t sig)
 			   run_t.wifi_key++;
 			   run_t.ai_key_off++;
 
-			   run_t.globle_dry = 0;
-			   run_t.globle_notdry = 0;
-				run_t.globle_kill =0;
-			    run_t.globle_notkill =0;
+			 
 				 
 		
 		   Buzzer_On();
@@ -464,10 +461,7 @@ void AI_Function(uint8_t sig)
 		 
                 wifiUpdate_AI_Status(1);
 
-				 run_t.globle_dry = 0;
-			   run_t.globle_notdry = 0;
-				run_t.globle_kill =0;
-			    run_t.globle_notkill =0;
+				
            
 
 		           run_t.ster_key++;

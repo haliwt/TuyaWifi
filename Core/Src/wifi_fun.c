@@ -180,3 +180,47 @@ void wifiUpdate_SetTemperatureValue(uint8_t temp)
 {
    mcu_dp_value_update(DPID_SETTEMP,temp); //VALUE型数据上报;
 }
+
+
+void Wifi_RunMode(uint8_t cmd)
+{
+
+    switch(cmd){
+       
+       case kill:
+
+       break;
+
+       case notkill:
+
+       break;
+
+       case dry:
+
+       break;
+
+       case notdry:
+
+       break;
+
+       case ai:
+
+       break;
+
+       case notai:
+
+       break;
+
+       default:
+          cmd =0;
+       break
+
+
+
+
+    }
+
+
+
+
+}

@@ -6,7 +6,7 @@
 #define AI_ENABLE      1
 
 typedef enum {                   /* enumeration for CProcess signals */
-    kill =1,notkill,dry,notdry
+    kill =1,notkill,dry,notdry,ai,notai
 }Signal;
 
 typedef enum

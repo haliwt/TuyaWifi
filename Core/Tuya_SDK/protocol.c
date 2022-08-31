@@ -31,6 +31,7 @@
 #include "wifi.h"
 #include "usart.h"
 #include "wifi_fun.h"
+#include "run.h"
 
 uint8_t wifiOutputBuf[1];
 
@@ -281,11 +282,13 @@ static unsigned char dp_download_kill_handle(const unsigned char value[], unsign
         //bool off
         wifi_t.wifi_RunMode = wifi_itemnotkill;
         wifi_t.wifi_kill =0;
+        run_t.globle_notkill=0;
 		
     }else {
         //bool on
         wifi_t.wifi_RunMode = wifi_itemkill ;
         wifi_t.wifi_kill = 1;
+         run_t.globle_kill=0;
     }
   
     //There should be a report after processing the DP
