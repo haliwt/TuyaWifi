@@ -30,10 +30,10 @@ uint8_t times;
 **********************************************************************/
 void Initial_Ref(void)
 {
-  run_t.gFan = 0;
+  
   run_t.gPlasma=0;
   run_t.gDry =0;
-  run_t.gFan_flag =0;
+ 
   run_t.gFan_counter=0;
  
 
@@ -121,54 +121,72 @@ void Single_ReceiveCmd(uint8_t cmd)
        
         if(wifi_t.wifiPowerOn_flag==1){
              wifi_t.wifi_cmd = 0x11;
+             run_t.globe_setPriority = 0;
         }
-        else 
-        	run_t.Single_cmd=0x11;
+        else{
+        	  run_t.Single_cmd=0x11;
+        	  run_t.globe_setPriority = 1;
+           }
 
       break;
 
      case 0x01://wifi key command turn on
      	if(wifi_t.wifiPowerOn_flag==1){
              wifi_t.wifi_cmd = 0x01;
+             run_t.globe_setPriority = 0;
         }
-        else 
+        else{
            run_t.Single_cmd = 0x01;
+           run_t.globe_setPriority = 1;
+       }
      break;
 
      //AI key
      case 0x08: //AI key command turn on
      	if(wifi_t.wifiPowerOn_flag==1){
              wifi_t.wifi_cmd = 0x08;
+             run_t.globe_setPriority =0;
         }
-        else 
+        else{
           run_t.Single_cmd = 0x08;
+          run_t.globe_setPriority =1;
+
+         }
 
      break;
 
      case 0x18: //AI turn off
         if(wifi_t.wifiPowerOn_flag==1){
              wifi_t.wifi_cmd = 0x18;
+             run_t.globe_setPriority =0;
         }
-        else 
-        run_t.Single_cmd = 0x18;
-
-     break;
+        else{
+            run_t.Single_cmd = 0x18;
+            run_t.globe_setPriority =1;
+        }
+      break;
 
      //dry key
      case 0x02:
         if(wifi_t.wifiPowerOn_flag==1){
              wifi_t.wifi_cmd = 0x02;
+             run_t.globe_setPriority =0;
         }
-        else 
+        else{ 
      	  run_t.Single_cmd = 0x02;
+     	  run_t.globe_setPriority =1;
+     	 }
      break;
 
      case 0x12:
         if(wifi_t.wifiPowerOn_flag==1){
              wifi_t.wifi_cmd = 0x12;
+             run_t.globe_setPriority =0;
         }
-        else 
+        else{
      	  run_t.Single_cmd = 0x12;
+     	  run_t.globe_setPriority =1;
+        }
      break;
 
      //kill key
@@ -176,17 +194,23 @@ void Single_ReceiveCmd(uint8_t cmd)
      case 0x04:
         if(wifi_t.wifiPowerOn_flag==1){
              wifi_t.wifi_cmd = 0x04;
+             run_t.globe_setPriority =0;
         }
-        else 
+        else{ 
      	  run_t.Single_cmd = 0x04;
+     	  run_t.globe_setPriority =1;
+     	}
      break;
 
      case 0x14:
         if(wifi_t.wifiPowerOn_flag==1){
              wifi_t.wifi_cmd = 0x14;
+             run_t.globe_setPriority =0;
         }
-        else 
+        else{
      	  run_t.Single_cmd = 0x14;
+     	  run_t.globe_setPriority =1;
+        }
      break;
 
      default:
@@ -274,14 +298,14 @@ void AI_Function(uint8_t sig)
      /*-------------------------------WIFI FUNCTION----------------------------------*/  
      //wifi function   
      case 0x04: //kill turn on
-         if(run_t.globle_sub_flag != kill){
+         if(run_t.globe_sub_flag != kill){
        
          if(ster_on !=run_t.kill_key && (run_t.SingleMode ==1|| wifi_t.wifi_itemAi==1)){
 	   	    ster_on = run_t.kill_key;
            
             
 
-			  run_t.globle_sub_flag = kill;
+			  run_t.globe_sub_flag = kill;
               run_t.kill_key_off++;
 			   
 			   run_t.dry_key++;
@@ -296,9 +320,9 @@ void AI_Function(uint8_t sig)
 			  
 			Buzzer_On();
 	   
-		   run_t.gFan = 0; //FAN on
+		
 	       run_t.gPlasma =0;
-		   run_t.gFan_flag = 0;
+	
 		   run_t.gFan_continueRun =0;
 		   wifiUpdate_Kill_Status(1);
 	       SterIlization(0); //turn on
@@ -310,11 +334,11 @@ void AI_Function(uint8_t sig)
          
     case 0x14: //kill turn off
         
-          if(run_t.globle_sub_flag != notkill){
+          if(run_t.globe_sub_flag != notkill){
           if((ster_off !=run_t.kill_key_off && (run_t.SingleMode  ==1 || wifi_t.wifi_itemAi==1))){
                ster_off = run_t.kill_key_off;
 		
-			  run_t.globle_sub_flag = notkill;
+			  run_t.globe_sub_flag = notkill;
 			   
 			   run_t.kill_key++;
 			  
@@ -338,7 +362,7 @@ void AI_Function(uint8_t sig)
 		
            SterIlization(1); //turn off kill function
 			 if( run_t.gDry ==1){
-			 	   run_t.gFan = 1; //turn off
+			 
 				  run_t.gFan_counter =0;
 				 run_t.gFan_continueRun =1;
 			 }
@@ -350,12 +374,12 @@ void AI_Function(uint8_t sig)
 
 
     case 0x02: //dry turn 0n
-        if(run_t.globle_sub_flag != dry){
+        if(run_t.globe_sub_flag != dry){
         if((dry_on != run_t.dry_key && (run_t.SingleMode ==1 || wifi_t.wifi_itemAi==1))){
 			      dry_on = run_t.dry_key;
 
 			  
-				run_t.globle_sub_flag = dry;
+				run_t.globe_sub_flag = dry;
 
 		            run_t.dry_key_off++;
 			
@@ -373,8 +397,8 @@ void AI_Function(uint8_t sig)
 			  
             
              run_t.gDry = 0;
-             run_t.gFan =0;
-	         run_t.gFan_flag = 0;
+          
+	
 			 run_t.gFan_continueRun =0;
 			 wifiUpdate_Dry_Status(1);
 			 Dry_Function(0);
@@ -385,12 +409,12 @@ void AI_Function(uint8_t sig)
     break;
          
     case 0x12 : //dry turn off
-          if(run_t.globle_sub_flag !=notdry){
+          if(run_t.globe_sub_flag !=notdry){
           if((dry_off != run_t.dry_key_off && (run_t.SingleMode ==1 ||  wifi_t.wifi_itemAi==1))){
 			  dry_off = run_t.dry_key_off;
 			  
 
-			  run_t.globle_sub_flag = notdry;
+			  run_t.globe_sub_flag = notdry;
 			        run_t.dry_key++;
 			  
 		           run_t.kill_key++;
@@ -413,7 +437,7 @@ void AI_Function(uint8_t sig)
 		    
              if(run_t.gPlasma ==1){ //plasma turn off flag
 
-                 run_t.gFan = 1; //turn off
+                
 				 run_t.gFan_counter =0;
 				 run_t.gFan_continueRun =1;
 
@@ -446,7 +470,7 @@ void AI_Function(uint8_t sig)
 		   Buzzer_On();
 	      
 		   run_t.gFan_continueRun =0;
-            run_t.gFan =0;
+         
             run_t.gPlasma =0;
             run_t.gDry =0;
             wifiUpdate_AI_Status(0);//wifi APP turn on
@@ -456,7 +480,7 @@ void AI_Function(uint8_t sig)
                 PLASMA_SetHigh(); //
                 HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
                 PTC_SetHigh();
-				run_t.gFan_flag = 0; //Fan be stop flag :0 -Fan works
+			
              
 				
 		}
@@ -534,7 +558,7 @@ void RunCommand_Order(void)
 	}
     if(run_t.gPower_On==0)times=0;
 	
-	if((run_t.gPower_On ==0) && run_t.gFan_continueRun ==1){ //Fan be stop flag :0 -Fan works 
+	if((run_t.gPower_On ==0 || wifi_t.wifiPowerOn_flag==0) && run_t.gFan_continueRun ==1){ //Fan be stop flag :0 -Fan works 
         
          if(run_t.gFan_counter < 61){
          
@@ -544,13 +568,13 @@ void RunCommand_Order(void)
         if(run_t.gFan_counter >= 60){ //60s
         
 	     run_t.gFan_counter=0;
-	     run_t.gFan_flag =0; 
+	  
          run_t.gFan_continueRun++;
 		  FAN_Stop();
 	   }
 	  }
 	
-	 if(run_t.gFan_continueRun ==1 && run_t.gPower_On ==1){
+	 if(run_t.gFan_continueRun ==1 && (run_t.gPower_On ==1 || wifi_t.wifiPowerOn_flag==1 )){
           
                 if(run_t.gFan_counter < 61){
           
@@ -560,12 +584,12 @@ void RunCommand_Order(void)
 	           if(run_t.gFan_counter > 59){
 		           
 				   run_t.gFan_counter=0;
-				   run_t.gFan_flag =0; 
+				
 				   run_t.gFan_continueRun++;
 				   FAN_Stop();
 	           }
 	  }
-	  if(run_t.gPower_On !=0 && run_t.gFan_continueRun ==0){
+	  if((run_t.gPower_On !=0 || wifi_t.wifiPowerOn_flag !=0) && run_t.gFan_continueRun ==0){
 
 	      FAN_CCW_RUN();
       }

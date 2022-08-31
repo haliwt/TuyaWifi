@@ -34,23 +34,18 @@ typedef struct _RUN_T{
 	uint8_t gDht11_humidity ;
 	uint8_t gDht11_temperature;
 
-	uint8_t gTimer_Counter;
+	
 	uint8_t gFan_continueRun;
 	uint8_t SingleMode;
 	uint8_t Single_cmd;
 
 
-	uint8_t gbuzzer_flag;
 
 	uint8_t decodeFlag;
-	uint8_t gTimer_hours ;
 	uint8_t sendtimes;
 
 
-
-	uint8_t  gFan;
-	uint8_t  gFan_flag;
-	uint8_t  gPlasma;
+    uint8_t  gPlasma;
 	uint8_t  gDry;
 
 	uint8_t kill_key;
@@ -61,10 +56,11 @@ typedef struct _RUN_T{
 
 	uint8_t ai_key;
 	uint8_t ai_key_off;
+	
 	uint8_t wifi_key;
 	uint8_t wifi_key_off;
 
-	uint8_t  globle_sub_flag;
+	uint8_t  globe_sub_flag;
 
 
 
@@ -72,12 +68,10 @@ typedef struct _RUN_T{
 
 	uint8_t gFan_counter;
 
-	//wifi 
+	uint8_t globe_setPriority;
 
 	
-
-   
- }RUN_T;
+}RUN_T;
 
 //#define CProcessInit(me_) ((me_)->cmdCtr__ =0,(me_)->state__ = IDLE)
 extern uint8_t ReceiveBuffer[1];

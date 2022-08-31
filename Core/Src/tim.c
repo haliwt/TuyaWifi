@@ -262,7 +262,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
        tm0 =0;
        wifi_t.gTimer_1s ++;
        run_t.sendtimes++;
-	   if(run_t.gFan_flag ==1 || run_t.gFan_continueRun ==1){
+	   if(run_t.gFan_continueRun ==1){
 	   	   tm1++;
            run_t.gFan_counter++;
 		   if(tm1 > 60){

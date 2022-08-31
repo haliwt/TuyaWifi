@@ -131,9 +131,9 @@ int main(void)
        run_t.AI = AIENABLE;
 	#endif 
      
-    Wifi_Mode();
+  Wifi_Mode();
 	Decode_Function();
-    Single_Mode();
+  Single_Mode();
     
 	RunCommand_Order();
 	

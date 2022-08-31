@@ -11,7 +11,7 @@ typedef enum{
 
 }wifi_mode;
 
-_
+
 typedef struct _WIFI_FUN{
 
     uint8_t wifi_power;
