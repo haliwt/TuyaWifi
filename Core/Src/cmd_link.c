@@ -99,7 +99,7 @@ void SendData_To_TouchKey(uint8_t hum,uint8_t temp)
 	//crc=0x55;
 	outputBuf[0]='M'; //4D
 	outputBuf[1]='A'; //41
-	outputBuf[2]='D'; //44	// 'M' for motor board
+	outputBuf[2]='D'; //44	// 'D' data
 	outputBuf[3]=hum; //	// 'R' rotator motor for select filter
 	outputBuf[4]=temp; // // one command parameter
 	
@@ -112,6 +112,55 @@ void SendData_To_TouchKey(uint8_t hum,uint8_t temp)
 		transOngoingFlag=1;
 		HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
 	}
+
+
+
+}
+void SendWifiData_To_Panel(uint8_t dat1,uint8_t dat2)
+{
+   
+	//crc=0x55;
+		outputBuf[0]='M'; //4D
+		outputBuf[1]='A'; //41
+		outputBuf[2]='T'; //44	// 'T' time
+		outputBuf[3]=dat1; //	
+		outputBuf[4]=dat2; // 
+		
+		//for(i=3;i<6;i++) crc ^= outputBuf[i];
+		//outputBuf[i]=crc;
+		transferSize=5;
+		if(transferSize)
+		{
+			while(transOngoingFlag); //UART interrupt transmit flag ,disable one more send data.
+			transOngoingFlag=1;
+			HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
+		}
+
+
+
+}
+
+
+
+void SendWifiData_To_Cmd(uint8_t wdata)
+{
+  
+	//crc=0x55;
+			outputBuf[0]='M'; //4D
+			outputBuf[1]='A'; //41
+			outputBuf[2]='W'; //44	// 'M' for motor board
+			outputBuf[3]=0x55; //	// 'R' rotator motor for select filter
+			outputBuf[4]=wdata; // // one command parameter
+			
+			//for(i=3;i<6;i++) crc ^= outputBuf[i];
+			//outputBuf[i]=crc;
+			transferSize=5;
+			if(transferSize)
+			{
+				while(transOngoingFlag); //UART interrupt transmit flag ,disable one more send data.
+				transOngoingFlag=1;
+				HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
+			}
 
 
 

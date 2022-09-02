@@ -73,7 +73,7 @@ void Wifi_Mode(void)
 {
    
     
-   if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==  WIFI_CONN_CLOUD  ){ //当WIFI连接成功，打开天气数据且仅一次
+   if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==  WIFI_CONN_CLOUD){ //当WIFI连接成功，打开天气数据且仅一次
 
    if(wifi_t.wifi_power ==1){
 
@@ -93,6 +93,7 @@ void Wifi_Mode(void)
           run_t.gFan_continueRun =1;
           run_t.gFan_counter=0;
           wifi_t.WifiMode =0;
+		  run_t.SingleMode =0; //WT.EIDT 2022.09.02
            
     }
     if(wifi_t.wifiPowerOn_flag==1){

@@ -537,17 +537,47 @@ void RunCommand_Order(void)
 {
     
     static uint8_t wifidisp;
-    
+    if(run_t.gPower_flag ==0 && run_t.sendtimes> 5){
+		   run_t.sendtimes=0;
+
+	     if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==	WIFI_CONN_CLOUD){
+	
+				   wifi_t.getNet_flag =1;
+				   SendWifiData_To_Cmd(0xaa); //send wifi connetor status
+				   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
+		 }
+		 else{
+
+		    SendWifiData_To_Cmd(0x00);
+
+
+		 }
+		   
+    }
+
+
     if(run_t.sendtimes> 5 || run_t.gPower_flag == 1){ // display humidity and temperature value
 		run_t.sendtimes=0;
         times++;
         wifidisp++;
         if(times > 49)run_t.gPower_flag++;
 	     Display_DHT11_Value(&DHT11);
+		 if(wifi_t.wifiPowerOn_flag==1 && wifi_t.getNet_flag ==1){ //if or not wifi 
+	
+		       SendWifiData_To_Panel(wifi_t.setTimesValue,wifi_t.SetTemperatureValue);
+		   
+
+		 }
+		 else if(wifi_t.getNet_flag ==0){
+		     SendWifiData_To_Cmd(0x00);  //send wifi don't has wifi 
+
+         }
+		 
 
 	   if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==  WIFI_CONN_CLOUD){
 
                  wifi_t.getNet_flag =1;
+				 SendWifiData_To_Cmd(0xaa);	//send wifi connetor status
                  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
        }
          

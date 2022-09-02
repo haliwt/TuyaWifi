@@ -20,7 +20,7 @@ void SetPowerOn_ForDoing(void)
     PTC_SetHigh();
 	Initial_Ref();
     run_t.gPower_On=1;
-    wifi_t.wifi_power=1;
+   // wifi_t.wifi_power=1;
     
 
 }

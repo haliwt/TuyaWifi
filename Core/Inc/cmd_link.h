@@ -11,6 +11,12 @@ void Decode_Function(void);
 
 void SendData_To_TouchKey(uint8_t hum,uint8_t temp);
 
+void SendWifiData_To_Cmd(uint8_t wdata);
+
+void SendWifiData_To_Panel(uint8_t dat1,uint8_t dat2);
+
+
+
 
 
 
