@@ -9,6 +9,7 @@
 #include "wifi.h"
 #include "single_mode.h"
 
+
  
 
 
@@ -65,7 +66,7 @@ void Decode_RunCmd(void)
 		  run_t.gPower_On=0;
 		  run_t.SingleMode = 0;
 		  wifiUpdate_Power_Status(0);
-			
+		  run_t.globe_setPriority=1;
        
        } 
        else if(cmdType_2 ==1){ //power on
@@ -76,6 +77,7 @@ void Decode_RunCmd(void)
 		    run_t.SingleMode = 1;
 		    wifi_t.wifi_power =1; //WI.EDTI 2022.09.02
 		    wifiUpdate_Power_Status(1);
+           run_t.globe_setPriority=1;
 
 	   }       
       
@@ -86,9 +88,12 @@ void Decode_RunCmd(void)
         
         if(run_t.gPower_On==1){
 			
-			 //Single_ReceiveCmd(cmdType_2);
-			if(run_t.SingleMode  ==1 )
+			
+			if(run_t.SingleMode  ==1 ){
+                run_t.globe_setPriority=1;
         	     Single_Usart_ReceiveData(cmdType_2);
+                
+            }
 			
         }
 
@@ -120,27 +125,83 @@ void Single_ReceiveCmd(uint8_t cmd)
 
       case 0x11: //wifi key command turn off
        
-        if(wifi_t.wifiPowerOn_flag==1){
-             wifi_t.wifi_cmd = 0x11;
-             run_t.globe_setPriority = 0;
-        }
-        else{
-        	  run_t.Single_cmd=0x11;
-        	  run_t.globe_setPriority = 1;
-           }
+            wifi_t.wifi_sensor =0;
 
       break;
 
      case 0x01://wifi key command turn on
-     	if(wifi_t.wifiPowerOn_flag==1){
-             wifi_t.wifi_cmd = 0x01;
-             run_t.globe_setPriority = 0;
-        }
-        else{
-           run_t.Single_cmd = 0x01;
-           run_t.globe_setPriority = 1;
-       }
+     	   wifi_t.wifi_sensor = 1;
      break;
+
+     //AI key
+     case 0x08: //AI key command turn on
+     
+          run_t.Single_cmd = 0x08;
+          run_t.globe_setPriority =1;
+        
+
+     break;
+
+     case 0x18: //AI turn off
+       
+            run_t.Single_cmd = 0x18;
+            run_t.globe_setPriority =1;
+      
+      break;
+
+     //dry key
+     case 0x02:
+        
+     	  run_t.Single_cmd = 0x02;
+     	  run_t.globe_setPriority =1;
+     	
+     break;
+
+     case 0x12:
+       
+     	  run_t.Single_cmd = 0x12;
+     	  run_t.globe_setPriority =1;
+       
+     break;
+
+     //kill key
+
+     case 0x04:
+       
+     	  run_t.Single_cmd = 0x04;
+     	  run_t.globe_setPriority =1;
+     
+     break;
+
+     case 0x14:
+        
+     	  run_t.Single_cmd = 0x14;
+     	  run_t.globe_setPriority =1;
+      
+     break;
+
+     default:
+         
+         run_t.Single_cmd = 0;
+     break;
+
+
+    }
+
+}
+/**********************************************************************
+	*
+	*Functin Name: void Single_ReceiveCmd(uint8_t cmd)
+	*Function : resolver is by usart port receive data  from display panle  
+	*Input Ref:  usart receive data
+	*Return Ref: NO
+	*
+**********************************************************************/
+void Wifi_ReceiveCmd(uint8_t cmd)
+{
+    switch(cmd){
+
+   
 
      //AI key
      case 0x08: //AI key command turn on
@@ -148,12 +209,8 @@ void Single_ReceiveCmd(uint8_t cmd)
              wifi_t.wifi_cmd = 0x08;
              run_t.globe_setPriority =0;
         }
-        else{
-          run_t.Single_cmd = 0x08;
-          run_t.globe_setPriority =1;
-         // run_t.gAi = AIENABLE;
-
-         }
+        
+      
 
      break;
 
@@ -162,11 +219,7 @@ void Single_ReceiveCmd(uint8_t cmd)
              wifi_t.wifi_cmd = 0x18;
              run_t.globe_setPriority =0;
         }
-        else{
-            run_t.Single_cmd = 0x18;
-            run_t.globe_setPriority =1;
-            //run_t.gAi = AIDISABLE;
-        }
+       
       break;
 
      //dry key
@@ -175,10 +228,7 @@ void Single_ReceiveCmd(uint8_t cmd)
              wifi_t.wifi_cmd = 0x02;
              run_t.globe_setPriority =0;
         }
-        else{ 
-     	  run_t.Single_cmd = 0x02;
-     	  run_t.globe_setPriority =1;
-     	 }
+      
      break;
 
      case 0x12:
@@ -186,10 +236,7 @@ void Single_ReceiveCmd(uint8_t cmd)
              wifi_t.wifi_cmd = 0x12;
              run_t.globe_setPriority =0;
         }
-        else{
-     	  run_t.Single_cmd = 0x12;
-     	  run_t.globe_setPriority =1;
-        }
+    
      break;
 
      //kill key
@@ -199,10 +246,7 @@ void Single_ReceiveCmd(uint8_t cmd)
              wifi_t.wifi_cmd = 0x04;
              run_t.globe_setPriority =0;
         }
-        else{ 
-     	  run_t.Single_cmd = 0x04;
-     	  run_t.globe_setPriority =1;
-     	}
+      
      break;
 
      case 0x14:
@@ -210,22 +254,18 @@ void Single_ReceiveCmd(uint8_t cmd)
              wifi_t.wifi_cmd = 0x14;
              run_t.globe_setPriority =0;
         }
-        else{
-     	  run_t.Single_cmd = 0x14;
-     	  run_t.globe_setPriority =1;
-        }
+     
      break;
 
      default:
           wifi_t.wifi_cmd = 0;
-         run_t.Single_cmd = 0;
+        
      break;
 
 
     }
 
 }
-
 /**********************************************************************
 	*
 	*Functin Name: void RunCommand_Mode(unit8_t sig)
@@ -243,59 +283,12 @@ void AI_Function(uint8_t sig)
    
 	case 0x01: //wifi Mode AP (single -> Fan Mode)
 
-	    if(wifi_t.getNet_flag ==0){
-          if(wifi_s !=run_t.wifi_key){
-          	  wifi_s = run_t.wifi_key;
-              run_t.wifi_key++;
-
-               run_t.kill_key_off++;
-               run_t.kill_key++;
-			   
-			   run_t.dry_key++;
-			   run_t.dry_key_off++;
-			   	
-			   run_t.ai_key++;
-			   run_t.ai_key_off++;
-              
-                mcu_set_wifi_mode(0);//wifi be detector AP mode,slowly
-		 }
-		 if(wifi_t.gTimer_500ms ==0){
-			  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
-		   }
-		  else if(wifi_t.gTimer_500ms>0){
-			   if(wifi_t.gTimer_500ms >1)wifi_t.gTimer_500ms=0;
-			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_RESET);
-		  }
-	     }
+	     wifi_t.wifi_sensor =1;
      
      break;
            
      case 0x11 : //wifi Mode  smart
-           if(wifi_t.getNet_flag ==0){
-           	if(wifi_a != run_t.wifi_key_off){
-           	   wifi_a = run_t.wifi_key_off;
-               run_t.wifi_key_off++;
-
-               run_t.kill_key_off++;
-               run_t.kill_key++;
-			   
-			   run_t.dry_key++;
-			   run_t.dry_key_off++;
-			   	
-			   run_t.ai_key++;
-			   run_t.ai_key_off++;
-
-               mcu_set_wifi_mode(0);//wifi be detector smart mode,fast
-              
-			}
-			if(wifi_t.gTimer_1s ==0)
-			        HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
-			    else if(wifi_t.gTimer_1s > 0){
-					 if(wifi_t.gTimer_1s >1)wifi_t.gTimer_1s=0;
-			    	 HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_RESET);
-			}
-				
-           }
+          wifi_t.wifi_sensor = 0;
          
      break;
      /*-------------------------------WIFI FUNCTION----------------------------------*/  
@@ -537,8 +530,8 @@ void AI_Function(uint8_t sig)
 void RunCommand_Order(void)
 {
     
-    static uint8_t wifidisp;
-    if(run_t.gPower_flag ==0 && run_t.sendtimes> 5){
+    static uint8_t wifidisp,wifikey=0xff;
+    if(run_t.gPower_flag ==0 && run_t.sendtimes > 5){
 		   run_t.sendtimes=0;
 
 	     if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==	WIFI_CONN_CLOUD){
@@ -548,13 +541,35 @@ void RunCommand_Order(void)
 				   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
 		 }
 		 else{
-
+            wifi_t.getNet_flag =0;
 		    SendWifiData_To_Cmd(0x00);
-
-
-		 }
+		    
+		 
+		
+         }
 		   
     }
+
+	if( wifi_t.getNet_flag ==0 && wifi_t.wifi_sensor==1){
+
+	     if(wifikey != wifi_t.wifi_detect){
+		 	 wifikey = wifi_t.wifi_detect;
+		
+		    mcu_set_wifi_mode(0);//wifi be detector AP mode,slowly
+
+	     }
+
+	    if(wifi_t.gTimer_500ms ==0){
+				 HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
+			  }
+			 else if(wifi_t.gTimer_500ms>0){
+				  if(wifi_t.gTimer_500ms >1)wifi_t.gTimer_500ms=0;
+				  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_RESET);
+			 }
+
+
+
+	}
 
 
     if(run_t.sendtimes> 5 || run_t.gPower_flag == 1){ // display humidity and temperature value
@@ -569,7 +584,7 @@ void RunCommand_Order(void)
 		   
 
 		 }
-		 else if(wifi_t.getNet_flag ==0){
+		 else if(wifi_t.getNet_flag ==0 ){
 		     SendWifiData_To_Cmd(0x00);  //send wifi don't has wifi 
 
          }
@@ -580,6 +595,10 @@ void RunCommand_Order(void)
                  wifi_t.getNet_flag =1;
 				 SendWifiData_To_Cmd(0xaa);	//send wifi connetor status
                  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
+       }
+       else{
+          wifi_t.getNet_flag =0;
+          HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_RESET);
        }
          
        if(wifidisp > 3){

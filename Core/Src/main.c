@@ -116,6 +116,7 @@ int main(void)
   PowerOff_Host(SetPowerOff_ForDoing);
   AI_Function_Host(AI_Function);
   Single_Usart_RxData(Single_ReceiveCmd);
+  //Single_Usart_RxData(Wifi_ReceiveCmd);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -131,9 +132,9 @@ int main(void)
        run_t.AI = AIENABLE;
 	#endif 
      
-  Wifi_Mode();
+    Wifi_Mode();
 	Decode_Function();
-  Single_Mode();
+    Single_Mode();
     
 	RunCommand_Order();
 	

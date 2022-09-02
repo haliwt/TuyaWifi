@@ -40,6 +40,8 @@ typedef struct _RUN_T{
   
   uint8_t decodeFlag;
 	uint8_t sendtimes;
+    
+      
 
       uint8_t  gAi;
       uint8_t  gPlasma;
@@ -85,6 +87,7 @@ void Initial_Ref(void);
 void AI_Function(uint8_t sig);
 void Single_ReceiveCmd(uint8_t cmd);
 
+void Wifi_ReceiveCmd(uint8_t cmd);
 
 
 #endif 
