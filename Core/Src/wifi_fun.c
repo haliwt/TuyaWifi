@@ -104,8 +104,9 @@ void Wifi_Mode(void)
            wifi_t.wifi_counter ++;
           Wifi_ReceiveCmd(wifi_t.wifi_RunMode); //Wifi_ReceiveCmd(wifi_t.wifi_RunMode);//Single_Usart_ReceiveData(wifi_t.wifi_RunMode);
        }
-	  
-       Wifi_RunCmd(wifi_t.wifi_cmd);
+	   if(run_t.globe_setPriority==0){
+           Wifi_RunCmd(wifi_t.wifi_cmd);
+       }
       
     }
   }
