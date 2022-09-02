@@ -56,6 +56,7 @@ extern void (*SetTemperature)(void);
 
 void PowerOn_Host(void (*poweronHandler)(void));
 void PowerOff_Host(void (*poweroffHandler)(void));
+
 void AI_Function_Host(void(*AIhandler)(uint8_t sig));
 
 void SetTimeHost(void(*timesHandler)(void));

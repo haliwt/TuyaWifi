@@ -21,6 +21,9 @@ static void Wifi_RunCmd(uint8_t sig);
 static void wifiPowerOn_After_data_update(void);
 
 
+
+
+
 uint8_t temp[7];
 
 
