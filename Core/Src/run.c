@@ -74,6 +74,7 @@ void Decode_RunCmd(void)
 	        PowerOn();
 	        run_t.gPower_On=1;
 		    run_t.SingleMode = 1;
+		    wifi_t.wifi_power =1; //WI.EDTI 2022.09.02
 		    wifiUpdate_Power_Status(1);
 
 	   }       

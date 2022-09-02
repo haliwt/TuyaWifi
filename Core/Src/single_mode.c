@@ -14,7 +14,6 @@ void Single_Mode(void)
    
    if(run_t.globe_setPriority==1){
       if(run_t.SingleMode ==1){
-        
         Single_Usart_ReceiveData(run_t.Single_cmd);//Single_RunCmd(run_t.Single_cmd);
 
        }
