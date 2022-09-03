@@ -535,7 +535,7 @@ void AI_Function(uint8_t sig)
 void RunCommand_Order(void)
 {
     
-    static uint8_t wifidisp=0,wifikey=0xff,retimes=0,time0=0,time1=0;
+    static uint8_t wifidisp=0,wifikey=0xff,retimes=0,time0=0,time1=0,time2;
 	uint8_t sendtemperature[4];
     if(run_t.gPower_flag ==0 && run_t.sendtimes > 5){
 		   run_t.sendtimes=0;
@@ -600,25 +600,31 @@ void RunCommand_Order(void)
 
 		if(time1>2){
              time1=0;
+             time2++ ;
 		 if(wifi_t.wifiPowerOn_flag==1 && wifi_t.getNet_flag ==1){ //if or not wifi 
 
 		      
                 sendtemperature[0]=wifi_t.setTimesValue;
 				sendtemperature[2]=wifi_t.SetTemperatureValue;
 
-				if(sendtemperature[1] !=sendtemperature[0]){
-					   
-					  sendtemperature[1] =sendtemperature[0];
-                     if(run_t.SingleMode ==1)
-                      SendWifiData_To_PanelTime(wifi_t.setTimesValue);
-				}
+				if(time2< 2){
 
+					if(sendtemperature[1] !=sendtemperature[0]){
+						   
+						  sendtemperature[1] =sendtemperature[0];
+	                     if(run_t.SingleMode ==1)
+	                      SendWifiData_To_PanelTime(wifi_t.setTimesValue);
+					}
+                }
+                else{
+                	time2=0;
 			    if(sendtemperature[3] !=sendtemperature[2]){
 				      sendtemperature[3] =sendtemperature[2];
 				      if(run_t.SingleMode ==1)
                       	SendWifiData_To_PanelTemp(wifi_t.SetTemperatureValue);
 		      
 			    }
+			   }
 		   
 
 		 }
