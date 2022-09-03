@@ -618,11 +618,13 @@ void RunCommand_Order(void)
                 }
                 else{
                 	time2=0;
+                if(sendtemperature[2]> 20){
 			    if(sendtemperature[3] !=sendtemperature[2]){
 				      sendtemperature[3] =sendtemperature[2];
 				      if(run_t.SingleMode ==1)
                       	SendWifiData_To_PanelTemp(wifi_t.SetTemperatureValue);
 		      
+			    }
 			    }
 			   }
 		   
