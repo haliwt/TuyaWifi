@@ -81,11 +81,14 @@ void Wifi_Mode(void)
    if(wifi_t.wifi_power ==1){
 
       wifi_t.wifi_power = 0xf0;
-      if(run_t.SingleMode !=1)
+      if(run_t.SingleMode !=1){
            PowerOn(); //default AI 
+           SendWifiCmd_To_Order(0x80);
+      }
       wifi_t.wifiPowerOn_flag =1;
       wifi_t.WifiMode =1;
       wifiPowerOn_After_data_update();
+     
            
    }
 
@@ -97,6 +100,7 @@ void Wifi_Mode(void)
           run_t.gFan_counter=0;
           wifi_t.WifiMode =0;
 		  run_t.SingleMode =0; //WT.EIDT 2022.09.02
+          SendWifiCmd_To_Order(0x81);
            
     }
     if(wifi_t.wifiPowerOn_flag==1){

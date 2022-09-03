@@ -133,10 +133,10 @@ int main(void)
 	#endif 
      
     Wifi_Mode();
-	Decode_Function();
+	  Decode_Function();
     Single_Mode();
     
-	RunCommand_Order();
+	 RunCommand_Order();
 	
    }
   /* USER CODE END 3 */

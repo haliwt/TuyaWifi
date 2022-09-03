@@ -322,6 +322,7 @@ void AI_Function(uint8_t sig)
 		   run_t.gFan_continueRun =0;
 		   wifiUpdate_Kill_Status(1);
 	       SterIlization(0); //turn on
+	       SendWifiCmd_To_Order(0x04);
 		   
             }
 	   
@@ -362,7 +363,8 @@ void AI_Function(uint8_t sig)
 				  run_t.gFan_counter =0;
 				 run_t.gFan_continueRun =1;
 			 }
-
+    
+               SendWifiCmd_To_Order(0x14);
             }
         }
     
@@ -398,6 +400,8 @@ void AI_Function(uint8_t sig)
 			 run_t.gFan_continueRun =0;
 			 wifiUpdate_Dry_Status(1);
 			 Dry_Function(0);
+
+			  SendWifiCmd_To_Order(0x02);
 			 
          }
              
@@ -438,7 +442,7 @@ void AI_Function(uint8_t sig)
 				 run_t.gFan_continueRun =1;
 
              }
-		    
+		     SendWifiCmd_To_Order(0x12);
            }
           }
     break;
@@ -479,7 +483,7 @@ void AI_Function(uint8_t sig)
                 PLASMA_SetHigh(); //
                 HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
                 PTC_SetHigh();
-			
+			   SendWifiCmd_To_Order(0x08);
              
 				
 		}
@@ -504,6 +508,7 @@ void AI_Function(uint8_t sig)
 
 				  	Buzzer_On();
 				 wifiUpdate_AI_Status(1);
+				 SendWifiCmd_To_Order(0x18);
 
 		  }
 
@@ -539,12 +544,14 @@ void RunCommand_Order(void)
 	
 				   wifi_t.getNet_flag =1;
                     wifi_t.wifi_detect=5;
-				   SendWifiData_To_Cmd(0xaa); //send wifi connetor status
+                   if(run_t.SingleMode ==1)
+				        SendWifiData_To_Cmd(0xaa); //send wifi connetor status
 				   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
 		 }
 		 else{
             wifi_t.getNet_flag =0;
-		    SendWifiData_To_Cmd(0x00);
+            if(run_t.SingleMode ==1)
+		       SendWifiData_To_Cmd(0x00);
 		    
 		 
 		
@@ -587,7 +594,8 @@ void RunCommand_Order(void)
 		if(run_t.gPower_flag ==1){
 			
          if(time1<3)
-           Display_DHT11_Value(&DHT11);
+             if(run_t.SingleMode ==1)
+                Display_DHT11_Value(&DHT11);
 
 
 		if(time1>2){
@@ -601,13 +609,14 @@ void RunCommand_Order(void)
 				if(sendtemperature[1] !=sendtemperature[0]){
 					   
 					  sendtemperature[1] =sendtemperature[0];
-
+                     if(run_t.SingleMode ==1)
                       SendWifiData_To_PanelTime(wifi_t.setTimesValue);
 				}
 
 			    if(sendtemperature[3] !=sendtemperature[2]){
 				      sendtemperature[3] =sendtemperature[2];
-                      SendWifiData_To_PanelTemp(wifi_t.SetTemperatureValue);
+				      if(run_t.SingleMode ==1)
+                      	SendWifiData_To_PanelTemp(wifi_t.SetTemperatureValue);
 		      
 			    }
 		   
@@ -620,7 +629,8 @@ void RunCommand_Order(void)
 		   if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==  WIFI_CONN_CLOUD){
 
 	                 wifi_t.getNet_flag =1;
-					 SendWifiData_To_Cmd(0xaa);	//send wifi connetor status
+	                 if(run_t.SingleMode ==1)
+					     SendWifiData_To_Cmd(0xaa);	//send wifi connetor status
 	                 HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
 	       }
 	       else{

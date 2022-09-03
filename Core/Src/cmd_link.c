@@ -171,10 +171,35 @@ void SendWifiData_To_Cmd(uint8_t wdata)
 	//crc=0x55;
 			outputBuf[0]='M'; //4D
 			outputBuf[1]='A'; //41
-			outputBuf[2]='W'; //44	// 'M' for motor board
-			outputBuf[3]=0x55; //	// 'R' rotator motor for select filter
-			outputBuf[4]=wdata; // // one command parameter
-			
+			outputBuf[2]='W'; //44	// wifi ->infomation link wifi 
+			outputBuf[3]=0x55; //	
+			outputBuf[4]=wdata; //
+			//for(i=3;i<6;i++) crc ^= outputBuf[i];
+			//outputBuf[i]=crc;
+			transferSize=5;
+			if(transferSize)
+			{
+				while(transOngoingFlag); //UART interrupt transmit flag ,disable one more send data.
+				transOngoingFlag=1;
+				HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
+			}
+
+
+
+}
+/***************************************************************
+ * 
+ * Function: panel power on and special function
+***************************************************************/
+void SendWifiCmd_To_Order(uint8_t odata)
+{
+  
+	//crc=0x55;
+			outputBuf[0]='M'; //4D
+			outputBuf[1]='A'; //41
+			outputBuf[2]='C'; //44	// 'C' ->control 
+			outputBuf[3]=odata; //	
+			outputBuf[4]=0x0; //
 			//for(i=3;i<6;i++) crc ^= outputBuf[i];
 			//outputBuf[i]=crc;
 			transferSize=5;
