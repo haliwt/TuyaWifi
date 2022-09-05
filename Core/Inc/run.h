@@ -68,6 +68,8 @@ typedef struct _RUN_T{
 	uint8_t gFan_counter;
 
 	uint8_t globe_setPriority;
+    
+	
 
 	
 }RUN_T;

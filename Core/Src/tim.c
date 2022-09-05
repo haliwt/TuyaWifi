@@ -240,43 +240,6 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 }
 
 /* USER CODE BEGIN 1 */
-/**
-  * Function Name: void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-  * Function: Tim3 interrupt call back function
-  * Tim3 timer :timing time 10ms
-  * 
-  */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-
-    static uint8_t tm0 ,tm1,tm2;
-    if(htim->Instance==TIM3){
-	   tm0 ++ ;
-     tm2++;
-     if(tm2 > 49){
-       tm2 =0;
-       wifi_t.gTimer_500ms++;
-
-     }
-	   if(tm0 == 100){//100ms *10 = 1000ms =1s
-       tm0 =0;
-       wifi_t.gTimer_1s ++;
-       run_t.sendtimes++;
-	   if(run_t.gFan_continueRun ==1){
-	   	   tm1++;
-           run_t.gFan_counter++;
-		   if(tm1 > 60){
-		   	  tm1=0;
-	          run_t.gTimer_60s =1;
-              
-		   }
-	   }
-
-	 }
-  }
-
-} 
-    
 
     
    

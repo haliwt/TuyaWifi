@@ -537,53 +537,10 @@ void RunCommand_Order(void)
     
     static uint8_t wifidisp=0,wifikey=0xff,retimes=0,time0=0,time1=0,time2;
 	uint8_t sendtemperature[4];
-    if(run_t.gPower_flag ==0 && run_t.sendtimes > 5){
-		   run_t.sendtimes=0;
-
-	     if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==	WIFI_CONN_CLOUD){
-	
-				   wifi_t.getNet_flag =1;
-                    wifi_t.wifi_detect=5;
-                   if(run_t.SingleMode ==1)
-				        SendWifiData_To_Cmd(0xaa); //send wifi connetor status
-				   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
-		 }
-		 else{
-            wifi_t.getNet_flag =0;
-            if(run_t.SingleMode ==1)
-		       SendWifiData_To_Cmd(0x00);
-		    
-		 
-		
-         }
-		   
-    }
-
-	if( wifi_t.getNet_flag ==0 && wifi_t.wifi_sensor==1){
-
-	     if(wifikey != wifi_t.wifi_detect){
-		 	 wifikey = wifi_t.wifi_detect;
-		
-		    mcu_set_wifi_mode(0);//wifi be detector AP mode,slowly
-
-	     }
-
-	    if(wifi_t.gTimer_500ms ==0){
-				 HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
-                
-			  }
-			 else if(wifi_t.gTimer_500ms>0){
-				  if(wifi_t.gTimer_500ms >1)wifi_t.gTimer_500ms=0;
-				  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_RESET);
-                 
-			 }
+   
 
 
-
-	}
-
-
-    if(run_t.sendtimes> 5 || retimes < 30) { // display humidity and temperature value
+    if(run_t.sendtimes> 5 || retimes < 50) { // display humidity and temperature value
 		run_t.sendtimes=0;
 
         retimes++;
@@ -593,13 +550,15 @@ void RunCommand_Order(void)
 
 		if(run_t.gPower_flag ==1){
 			
-         if(time1<3)
-             if(run_t.SingleMode ==1)
+         
+          if(run_t.SingleMode ==1)
                 Display_DHT11_Value(&DHT11);
 
 
-		if(time1>2){
-             time1=0;
+		if( wifi_t.timer_wifi_send_cmd > 3){
+		     wifi_t.timer_wifi_send_cmd =0;
+
+  
              time2++ ;
 		 if(wifi_t.wifiPowerOn_flag==1 && wifi_t.getNet_flag ==1){ //if or not wifi 
 
@@ -632,8 +591,9 @@ void RunCommand_Order(void)
 		 }
         }
 		 
-       if(time0 > 10 || retimes< 30){
-	   	   time0 =0;
+       if(wifi_t.timer_wiifi_sensor >6 ){
+	   	   wifi_t.timer_wiifi_sensor=0;
+	   	   wifidisp ++ ;
 		   if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==  WIFI_CONN_CLOUD){
 
 	                 wifi_t.getNet_flag =1;
@@ -655,10 +615,67 @@ void RunCommand_Order(void)
         }
         
 	     }
-      }
+      }// END ->if(run_t.sendtimes> 5 || retimes < 30) 
+
+     if(run_t.gPower_On==0)times=0;
+
+     if(run_t.gPower_flag ==0 && run_t.sendtimes > 10){
+		   run_t.sendtimes=0;
+
+	     if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==	WIFI_CONN_CLOUD){
 	
-    if(run_t.gPower_On==0)times=0;
-	
+				   wifi_t.getNet_flag =1;
+                    wifi_t.wifi_detect=5;
+                   if(run_t.SingleMode ==1)
+				    SendWifiData_To_Cmd(0xaa); //send wifi connetor status
+				   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
+				   
+		 }
+		 else{
+            wifi_t.getNet_flag =0;
+            if(run_t.SingleMode ==1)
+		       SendWifiData_To_Cmd(0x00);
+		    
+		 
+		
+         }
+		 
+    }
+    //检测WIFI 是否连接成功
+	if( wifi_t.getNet_flag ==0 && wifi_t.wifi_sensor==1){
+
+	     if(wifikey != wifi_t.wifi_detect){
+		 	 wifikey = wifi_t.wifi_detect;
+		
+		    mcu_set_wifi_mode(0);//wifi be detector AP mode,slowly
+
+	     }
+        if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==	WIFI_CONN_CLOUD){
+        	        wifi_t.getNet_flag =1;
+                    wifi_t.wifi_detect=5;
+                   if(run_t.SingleMode ==1)
+				           SendWifiData_To_Cmd(0xaa); //send wifi connetor status
+				   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
+
+
+         }
+        else{
+		    if(wifi_t.gTimer_500ms ==0){
+					 HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
+					  SendWifiData_To_Cmd(0x00);
+	                
+				  }
+				 else if(wifi_t.gTimer_500ms>0){
+					  if(wifi_t.gTimer_500ms >1)wifi_t.gTimer_500ms=0;
+					  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_RESET);
+					   Display_DHT11_Value(&DHT11);
+	                 
+				 }
+        }
+
+
+	}
+	//Fan at power of function 
 	if((run_t.gPower_On ==0 || wifi_t.wifiPowerOn_flag==0) && run_t.gFan_continueRun ==1){ //Fan be stop flag :0 -Fan works 
         
          if(run_t.gFan_counter < 61){
@@ -699,3 +716,42 @@ void RunCommand_Order(void)
 
 }
 
+/**
+  * Function Name: void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+  * Function: Tim3 interrupt call back function
+  * Tim3 timer :timing time 10ms
+  * 
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+
+    static uint8_t tm0 ,tm1,tm2;
+    if(htim->Instance==TIM3){
+	   tm0 ++ ;
+     tm2++;
+     if(tm2 > 49){
+       tm2 =0;
+       wifi_t.gTimer_500ms++;
+
+     }
+	   if(tm0 == 100){//100ms *10 = 1000ms =1s
+       tm0 =0;
+       wifi_t.gTimer_1s ++;
+       run_t.sendtimes++;
+       wifi_t.timer_wiifi_sensor++;
+       wifi_t.timer_wifi_send_cmd++;
+	   if(run_t.gFan_continueRun ==1){
+	   	   tm1++;
+           run_t.gFan_counter++;
+		   if(tm1 > 60){
+		   	  tm1=0;
+	          run_t.gTimer_60s =1;
+              
+		   }
+	   }
+
+	 }
+  }
+
+} 
+    
