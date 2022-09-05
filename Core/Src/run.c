@@ -99,6 +99,21 @@ void Decode_RunCmd(void)
 
       break;
 
+	  case 'T':
+	      if(run_t.gPower_On==1){
+				 
+			if(run_t.SingleMode  ==1 ){
+
+			     if(cmdType_2 != 0xff){
+
+				 	mcu_dp_value_update(DPID_DISPTIME,cmdType_2); //VALUE型数据上报; --
+			     }
+				 else
+					 mcu_dp_value_update(DPID_DISPTIME,0); //VALUE型数据上报; --
+			}
+        }
+	   break;
+
 	  case 'Z' :
 	    if(run_t.gPower_On==1){
 
