@@ -313,16 +313,17 @@ void AI_Function(uint8_t sig)
 			   run_t.wifi_key_off++;
 			   run_t.wifi_key++;
 			  
-			  
-			Buzzer_On();
+			  Buzzer_On();
 	   
 		
 	       run_t.gPlasma =0;
 	
 		   run_t.gFan_continueRun =0;
+		   
 		   wifiUpdate_Kill_Status(1);
 	       SterIlization(0); //turn on
 	       SendWifiCmd_To_Order(0x04);
+		   
 		   
             }
 	   
@@ -477,6 +478,8 @@ void AI_Function(uint8_t sig)
             run_t.gPlasma =0;
             run_t.gDry =0;
             wifiUpdate_AI_Status(0);//wifi APP turn on
+            wifiUpdate_Kill_Status(1); //update kill turn on   to smart phone APP
+			wifiUpdate_Dry_Status(1);  //update dry turn on to smart phone APP
       
                 
                 FAN_CCW_RUN();
