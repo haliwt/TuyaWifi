@@ -547,7 +547,7 @@ void RunCommand_Order(void)
 	    time1++;
         wifidisp++;
         time0++;
-
+         time2++;
 		if(run_t.gPower_flag ==1){
 			
          
