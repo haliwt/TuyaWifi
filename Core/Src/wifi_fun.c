@@ -100,7 +100,10 @@ void Wifi_Mode(void)
           run_t.gFan_counter=0;
           wifi_t.WifiMode =0;
 		  run_t.SingleMode =0; //WT.EIDT 2022.09.02
+		  mcu_dp_bool_update(DPID_KILL,0); //BOOL型数据上报;
+          mcu_dp_bool_update(DPID_HEAT,0); //BOOL型数据上报;
           SendWifiCmd_To_Order(0x81);
+		  
            
     }
     if(wifi_t.wifiPowerOn_flag==1){
