@@ -99,7 +99,7 @@ void Decode_RunCmd(void)
 
       break;
 
-	  case 'T':
+	  case 'H': //remember setup time timing
 	      if(run_t.gPower_On==1){
 				 
 			if(run_t.SingleMode  ==1 ){
@@ -113,6 +113,31 @@ void Decode_RunCmd(void)
 			}
         }
 	   break;
+
+	  case 'I': // set up time timing how many ?
+	  	  if(run_t.gPower_On==1){
+				 
+			if(run_t.SingleMode  ==1 ){
+
+			     mcu_dp_value_update(DPID_SETTIME,cmdType_2); //VALUE型数据上报;
+			     
+			}
+        }
+
+
+	  break;
+
+	  case 'T': //set up temperature
+	  	if(run_t.gPower_On==1){
+				 
+			if(run_t.SingleMode  ==1 ){
+
+			    mcu_dp_value_update(DPID_SETTEMP,cmdType_2); //VALUE型数据上报;
+			     
+			}
+        }
+
+	  break;
 
 	  case 'Z' :
 	    if(run_t.gPower_On==1){
@@ -587,8 +612,10 @@ void RunCommand_Order(void)
 					if(sendtemperature[1] !=sendtemperature[0]){
 						   
 						  sendtemperature[1] =sendtemperature[0];
-	                     if(run_t.SingleMode ==1)
+	                     if(run_t.SingleMode ==1){
+						  mcu_dp_value_update(DPID_SETTIME,wifi_t.setTimesValue); //VALUE型数据上报;
 	                      SendWifiData_To_PanelTime(wifi_t.setTimesValue);
+	                     }
 					}
                 }
                 else{
@@ -596,8 +623,11 @@ void RunCommand_Order(void)
                 if(sendtemperature[2]> 20){
 			    if(sendtemperature[3] !=sendtemperature[2]){
 				      sendtemperature[3] =sendtemperature[2];
-				      if(run_t.SingleMode ==1)
+				      if(run_t.SingleMode ==1){
+					  	  mcu_dp_value_update(DPID_SETTEMP,wifi_t.SetTemperatureValue); //VALUE型数据上报;
                       	SendWifiData_To_PanelTemp(wifi_t.SetTemperatureValue);
+
+				      }
 		      
 			    }
 			    }
