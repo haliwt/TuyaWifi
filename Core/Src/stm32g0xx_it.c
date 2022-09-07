@@ -23,6 +23,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "mcu_api.h"
+#include "cmd_link.h"
+#include "wifi_fun.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -178,13 +180,36 @@ void USART1_IRQHandler(void)
 void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
-  
+  static uint8_t state=0,i=0;
   /* USER CODE END USART2_IRQn 0 */
   HAL_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_IRQn 1 */
   if(USART2->ISR & UART_FLAG_RXNE){
      rx_value = USART2->RDR;
-     uart_receive_input(rx_value); 
+     if(wifi_t.getGreenTime ==1){
+         if(state == 0){
+            switch(rx_value){
+                case 0x07 :
+                    //rx_wifi_data[0]=rx_value;
+                   state ++ ;
+                   i=0;
+                break;
+                
+               default :
+                    i=0;
+               break;
+               
+              }
+         
+         }
+         rx_wifi_data[i]=rx_value;
+         i++;
+         if(i > 6) wifi_t.getGreenTime = 0xff;
+     }
+     else
+        uart_receive_input(rx_value); 
+     
+     
       
   }
   /* USER CODE END USART2_IRQn 1 */

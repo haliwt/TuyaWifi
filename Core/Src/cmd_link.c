@@ -3,12 +3,17 @@
 #include "run.h"
 #include "fan.h"
 #include "wifi.h"
+#include "mcu_api.h"
 
 #define MAX_BUFFER_SIZE  8
 
-uint8_t inputBuf[4];
+uint8_t  inputBuf[4];
 uint8_t  inputCmd[2];
-uint8_t wifiInputBuf[1];
+uint8_t  wifiInputBuf[1];
+//unsigned char rx_value;
+
+uint8_t rx_wifi_data[14];
+
 
 static uint8_t transferSize;
 static uint8_t outputBuf[MAX_BUFFER_SIZE];
@@ -64,7 +69,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		
 	}
     
-    
+    if(huart->Instance==USART2)//if(huart==&huart1) // Motor Board receive data (filter)
+	{
+       /* USER CODE BEGIN USART2_IRQn 1 */
+//        if(USART2->ISR & UART_FLAG_RXNE){
+//	        rx_value = USART2->RDR;
+//           // rx_wifi_data[0] = rx_value;
+//	        uart_receive_input(rx_value); 
+//			
+//        }
+   }
  }
     
 /********************************************

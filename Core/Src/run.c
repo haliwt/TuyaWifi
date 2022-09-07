@@ -8,7 +8,7 @@
 #include "special_power.h"
 #include "wifi.h"
 #include "single_mode.h"
-
+#include "mcu_api.h"
 
  
 
@@ -17,6 +17,7 @@
 RUN_T run_t; 
 uint8_t times;
  
+uint8_t timeArray[7];
 
 
 
@@ -578,10 +579,12 @@ void AI_Function(uint8_t sig)
 void RunCommand_Order(void)
 {
     
-    static uint8_t wifidisp=0,wifikey=0xff,retimes=0,time0=0;
+    static uint8_t wifidisp=0,wifikey=0xff,retimes=0,time0=0,gettime;
 	uint8_t sendtemperature[4];
-   
 
+   if(run_t.gPower_On==0)times=0;
+	
+   if(run_t.gPower_On==1){
 
     if(run_t.sendtimes> 5 || retimes < 50) { // display humidity and temperature value
 		run_t.sendtimes=0;
@@ -637,15 +640,19 @@ void RunCommand_Order(void)
 		 }
         }
 		 
-       if(wifi_t.timer_wiifi_sensor >10){
+       if(wifi_t.timer_wiifi_sensor >12){
 	   	   wifi_t.timer_wiifi_sensor=0;
 	   	   wifidisp ++ ;
-		   if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==  WIFI_CONN_CLOUD){
+		   if(wifi_work_state ==  WIFI_CONN_CLOUD){
 
 	                 wifi_t.getNet_flag =1;
+					  wifi_t.wifi_detect++;
 	                 if(run_t.SingleMode ==1)
 					     SendWifiData_To_Cmd(0xaa);	//send wifi connetor status
 	                 HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
+//					  mcu_get_green_time();
+//				      if( wifi_t.getTime_flag ==0)
+//				       mcu_get_greentime(timeArray);
 	       }
 	       else{
 	          wifi_t.getNet_flag =0;
@@ -655,39 +662,26 @@ void RunCommand_Order(void)
 	   
        if(wifidisp > 3){
         	wifidisp = 0;
-	    if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==  WIFI_CONN_CLOUD){
+	    if(wifi_work_state ==  WIFI_CONN_CLOUD){
               wifiDisplayTemperature_Humidity();
          }
         }
        }
-     
-
-     if(run_t.gPower_On==0)times=0;
-
-     if(run_t.gPower_flag ==0 && run_t.sendtimes > 10){
-		   run_t.sendtimes=0;
-
-	     if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==	WIFI_CONN_CLOUD){
-	
-				   wifi_t.getNet_flag =1;
-                    wifi_t.wifi_detect=5;
-                   if(run_t.SingleMode ==1)
-				    SendWifiData_To_Cmd(0xaa); //send wifi connetor status
-				   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
-				   
-		 }
-		 else{
-            wifi_t.getNet_flag =0;
-            if(run_t.SingleMode ==1)
-		       SendWifiData_To_Cmd(0x00);
-		    
-		 
-		
-         }
-		 
+     //------------------------------------
+      if(wifi_work_state ==WIFI_CONN_CLOUD){
+         if( wifi_t.getGreenTime !=0xff){
+          wifi_t.getGreenTime =1;
+           mcu_get_green_time();
+	       //mcu_get_greentime(timeArray)
+        }
+        else{
+        
+            // mcu_get_green_time();
+        }
     }
+
     //检测WIFI 是否连接成功
-	if( wifi_t.getNet_flag ==0 && wifi_t.wifi_sensor==1 && (wifi_work_state != WIFI_CONNECTED || wifi_work_state !=WIFI_CONN_CLOUD)){
+	if( wifi_t.getNet_flag ==0 && wifi_t.wifi_sensor==1 &&  (wifi_work_state !=WIFI_CONN_CLOUD)){
 
 	     if(wifikey != wifi_t.wifi_detect){
 		 	 wifikey = wifi_t.wifi_detect;
@@ -708,10 +702,10 @@ void RunCommand_Order(void)
 	                 
 				 }
         }
-      else if(wifi_work_state == WIFI_CONNECTED || wifi_work_state ==	WIFI_CONN_CLOUD){
+      else if( wifi_work_state ==	WIFI_CONN_CLOUD){
         	        wifi_t.getNet_flag =1;
                     wifi_t.wifi_detect=5;
-                   if(run_t.SingleMode ==1 && wifi_t.wifi_timer_send_info> 10 ){
+                   if(run_t.SingleMode ==1 && wifi_t.wifi_timer_send_info> 16 ){
 				   	        wifi_t.wifi_timer_send_info=0;
 				           SendWifiData_To_Cmd(0xaa); //send wifi connetor status
 				           
@@ -759,9 +753,31 @@ void RunCommand_Order(void)
       }
       
       
+ }
 
 }
 
+
+void GetGreen_Time(void)
+{
+     static uint8_t getn=0;
+
+	 switch(getn){
+
+      case 0:
+
+	 	timeArray[0]=rx_wifi_data[0];
+	    if(timeArray[0] == 0x55 ) getn =1;
+
+	  break;
+
+
+
+
+	 }
+
+
+}
 /**
   * Function Name: void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   * Function: Tim3 interrupt call back function

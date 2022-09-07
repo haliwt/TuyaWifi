@@ -2,6 +2,9 @@
 #define __CMD_LINK_H_
 #include "main.h"
 
+
+extern uint8_t rx_wifi_data[14];
+
 extern uint8_t inputBuf[4];
 
 extern uint8_t  inputCmd[2];

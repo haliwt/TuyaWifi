@@ -110,6 +110,7 @@ int main(void)
   //tuya_wif
     __HAL_UART_ENABLE_IT(&huart2,UART_IT_RXNE);  //read USART_ISR :RXNE(BIT5) ->hardware by be set and clear
     wifi_protocol_init();
+    mcu_get_green_time();
 	// mcu_set_wifi_mode(0);//???????? 
   /* USER CODE END 2 */
   PowerOn_Host(SetPowerOn_ForDoing);
@@ -125,12 +126,9 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	
-    #ifdef WIFI_TUYA
+    
       wifi_uart_service();
-   //   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
-    #else 
-       run_t.AI = AIENABLE;
-	#endif 
+  
      
     Wifi_Mode();
 	  Decode_Function();

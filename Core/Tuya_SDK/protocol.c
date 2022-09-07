@@ -35,7 +35,7 @@
 
 uint8_t wifiOutputBuf[1];
 
-
+uint8_t timesArrary[7];
 
 #ifdef WEATHER_ENABLE
 /**
@@ -114,7 +114,7 @@ void uart_transmit_output(unsigned char value)
    // #error "请将MCU串口发送函数填入该函数,并删除该行"
     wifiOutputBuf[0]=value;
  
-   HAL_UART_Transmit(&huart2, wifiOutputBuf, 1,0xffff); //WT.EDIT 2022.08.27
+	   HAL_UART_Transmit(&huart2, wifiOutputBuf, 1,0xffff); //WT.EDIT 2022.08.27
 	
     
    // HAL_UART_Transmit_IT(&huart2,wifiOutputBuf, 1);
@@ -527,10 +527,12 @@ void mcu_get_greentime(unsigned char time[])
         //正确接收到wifi模块返回的格林数据
         wifi_t.getTime_flag =0;
 		
+		
        
        }else {
         //获取格林时间出错,有可能是当前wifi模块未联网
         wifi_t.getTime_flag = 1;
+           
     }
 }
 #endif
