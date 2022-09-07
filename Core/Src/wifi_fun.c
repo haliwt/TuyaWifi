@@ -134,16 +134,10 @@ static void Wifi_RunCmd(uint8_t sig)
 
 void Decode_GMT(uint8_t *gmt)
 {
-   static uint8_t state=0;
+   static uint8_t state=1;
 	switch(state){
 
-      case 0: 
-	  	    if(gmt[0]== 0x07){
-              state = 1;
-            }
-			
-
-	  break;
+    
 
 	  case 1: 
 	  	    if(gmt[1]== 0x01){
@@ -157,11 +151,11 @@ void Decode_GMT(uint8_t *gmt)
 
 	  case 2: 
            
-	       state =0;
+	       state =1;
 			wifi_t.getGreenTime = 0xFE;
-            gmt[5] = gmt[5] +8;
-			if(gmt[5] > 24){
-				gmt[5] = gmt[5] -24 ;
+            gmt[4] = gmt[4] +8;
+			if(gmt[4] > 24){
+				gmt[4] = gmt[4] -24 ;
 
 			}
 			

@@ -30,6 +30,9 @@ typedef struct _WIFI_FUN{
 	uint8_t wifi_counter; 
 	uint8_t wifi_detect;
 
+	uint8_t real_hours;
+	uint8_t real_minutes;
+
 	uint8_t setTimesValue;
 	uint8_t dispTimesValue;
 	uint8_t SetTemperatureValue;

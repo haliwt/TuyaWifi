@@ -204,7 +204,11 @@ void USART2_IRQHandler(void)
          }
          rx_wifi_data[i]=rx_value;
          i++;
-         if(i > 5) wifi_t.getGreenTime = 0xff;
+         if(i > 5){ 
+             wifi_t.getGreenTime = 0xff;
+             state = 0;
+             i=0;
+         }
      }
      else
         uart_receive_input(rx_value); 

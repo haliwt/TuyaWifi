@@ -709,23 +709,27 @@ void RunCommand_Order(void)
            mcu_get_green_time();
 	      
         }
-		
-        if(wifi_t.getGreenTime == 0xff && wifi_t.getGreenTime !=0xFE){
+		if(wifi_t.getGreenTime == 0xff && wifi_t.getGreenTime !=0xFE && wifi_t.getGreenTime !=0){
             
             run_t.sed_GMT_times = 1;
-           //  wifi_t.getGreenTime =0xFE;
-            Decode_GMT(rx_wifi_data);
+             wifi_t.getGreenTime =0xFE;
+           // Decode_GMT(rx_wifi_data);
+              
+             wifi_t.real_hours = rx_wifi_data[4] + 8;
+			if(wifi_t.real_hours > 24){
+				wifi_t.real_hours = wifi_t.real_hours -24 ;
+
+			}
+			wifi_t.real_minutes = rx_wifi_data[5];
          
-           // SendData_Real_GMT(rx_wifi_data[5],rx_wifi_data[6]); //gmt[4]->hours, gmt[5]->minutes
+            SendData_Real_GMT(wifi_t.real_hours ,wifi_t.real_minutes); //gmt[4]->hours, gmt[5]->minutes
 		    
 		}
         else{
-              if(wifi_t.gTimer_gmt > 0){ //10 minute 
+              if(wifi_t.gTimer_gmt > 2){ //10 minute 
                 wifi_t.gTimer_gmt = 0;    
-               wifi_t.getGreenTime =1;
-               mcu_get_green_time();
-              
-              }
+                wifi_t.getGreenTime =0;
+             }
             
         }
     }
@@ -758,24 +762,10 @@ void RunCommand_Order(void)
 	 	run_t.gTimer_send_0xaa=0;
         wifi_t.wifi_detect++;
 	    send_0xaa++;
-		if(send_0xaa == 1){
-			SendWifiData_To_Cmd(0xaa);	
-	 	    HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
+		
+		 SendWifiData_To_Cmd(0xaa);	
 
-		}
-		else{
-		    if(run_t.sed_GMT_times == 1){
-				run_t.sed_GMT_times ++;
-	            Decode_GMT(rx_wifi_data);
-	         }
-			else{
-			  SendWifiData_To_Cmd(0xaa);	
-
-
-			}
-		}
-        
-        if(send_0xaa > 30){
+         if(send_0xaa > 30){
            send_0xaa =0 ;
           wifiDisplayTemperature_Humidity();
         
