@@ -132,6 +132,55 @@ static void Wifi_RunCmd(uint8_t sig)
 
 }
 
+void Decode_GMT(uint8_t *gmt)
+{
+   static uint8_t state=0;
+	switch(state){
+
+      case 0: 
+	  	    if(gmt[0]== 0x07){
+              state = 1;
+            }
+			else{
+               wifi_t.getGreenTime = 1;
+			}
+
+	  break;
+
+	  case 1: 
+	  	    if(gmt[1]== 0x01){
+              state = 2;
+            }
+			else{
+               wifi_t.getGreenTime = 1;
+			}
+
+	  break;
+
+
+	  case 2: 
+           
+	       state =0;
+			wifi_t.getGreenTime = 0xFE;
+            gmt[4] = gmt[4] +8;
+			if(gmt[4] > 24){
+				gmt[4] = gmt[4] -24 ;
+
+			}
+			
+	        SendData_Real_GMT(gmt[4],gmt[5]); //gmt[4]->hours, gmt[5]->minutes
+
+	  break;
+
+	  default :
+
+	  break;
+
+    }
+
+
+}
+
 
 /***********************************************
    *
