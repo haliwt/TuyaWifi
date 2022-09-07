@@ -764,7 +764,7 @@ void RunCommand_Order(void)
 	    send_0xaa++;
 		
 		 SendWifiData_To_Cmd(0xaa);	
-
+         HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
          if(send_0xaa > 30){
            send_0xaa =0 ;
           wifiDisplayTemperature_Humidity();

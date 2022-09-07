@@ -14,13 +14,19 @@ void SetPowerOn_ForDoing(void)
     run_t.gFan_counter=0;
     run_t.gPower_flag = 1; //turn on power
     run_t.gFan_continueRun =0;
+    run_t.gPower_On=1;
+    run_t.SingleMode = 1;
+	wifi_t.SetTemperatureValue=0;
+	wifi_t.setTimesValue=0;
+	run_t.gmt_time_flag=0;
+
+	
     FAN_CCW_RUN();
     PLASMA_SetHigh(); //
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
     PTC_SetHigh();
 	Initial_Ref();
-    run_t.gPower_On=1;
-    run_t.SingleMode = 1;
+    
     
 
 }
@@ -36,6 +42,8 @@ void SetPowerOff_ForDoing(void)
     wifi_t.wifiPowerOn_flag =0;
     run_t.SingleMode = 0;
 	wifi_t.getGreenTime = 0;
+	wifi_t.SetTemperatureValue=0;
+	wifi_t.setTimesValue=0;
    
     
 	PLASMA_SetLow(); //
