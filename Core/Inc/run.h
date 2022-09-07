@@ -34,12 +34,13 @@ typedef struct _RUN_T{
 	uint8_t gDht11_humidity ;
 	uint8_t gDht11_temperature;
 
-  uint8_t gFan_continueRun;
+    uint8_t gFan_continueRun;
 	uint8_t SingleMode;
 	uint8_t Single_cmd;
   
-  uint8_t decodeFlag;
+    uint8_t decodeFlag;
 	uint8_t sendtimes;
+    uint8_t setup_timer_flag;
     
       
 
@@ -68,6 +69,8 @@ typedef struct _RUN_T{
 	uint8_t gFan_counter;
 
 	uint8_t globe_setPriority;
+   
+    
     
 	
 

@@ -20,7 +20,7 @@ void SetPowerOn_ForDoing(void)
     PTC_SetHigh();
 	Initial_Ref();
     run_t.gPower_On=1;
-   // wifi_t.wifi_power=1;
+    run_t.SingleMode = 1;
     
 
 }
@@ -34,6 +34,7 @@ void SetPowerOff_ForDoing(void)
 	run_t.gPower_On=0;
     wifi_t.wifi_power=0;
     wifi_t.wifiPowerOn_flag =0;
+    run_t.SingleMode = 0;
     
 	PLASMA_SetLow(); //
 	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 

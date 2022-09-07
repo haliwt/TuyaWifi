@@ -44,6 +44,7 @@ typedef struct _WIFI_FUN{
     uint8_t timer_wiifi_sensor;
 	uint8_t wifi_timer_send_info;
     uint8_t getGreenTime;
+    uint8_t gTimer_gmt;
 	
 	uint8_t getTime[7];
 	

@@ -76,7 +76,7 @@ void Wifi_Mode(void)
 {
    
     
-   if(wifi_work_state ==  WIFI_CONN_CLOUD){ //当WIFI连接成功，打开天气数据且仅一次
+   if(wifi_work_state ==  WIFI_CONN_CLOUD){ //当WIFI连接成功，
 
    if(wifi_t.wifi_power ==1){
 

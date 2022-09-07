@@ -704,7 +704,7 @@ void RunCommand_Order(void)
         }
       else if( wifi_work_state ==	WIFI_CONN_CLOUD){
         	        wifi_t.getNet_flag =1;
-                    wifi_t.wifi_detect=5;
+                    wifi_t.wifi_detect++;
                    if(run_t.SingleMode ==1 && wifi_t.wifi_timer_send_info> 16 ){
 				   	        wifi_t.wifi_timer_send_info=0;
 				           SendWifiData_To_Cmd(0xaa); //send wifi connetor status
