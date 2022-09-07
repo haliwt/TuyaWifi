@@ -167,12 +167,12 @@ void Single_ReceiveCmd(uint8_t cmd)
 
       case 0x11: //wifi key command turn off
        
-            wifi_t.wifi_sensor =0;
+            wifi_t.wifi_sensor =1;
 
       break;
 
      case 0x01://wifi key command turn on
-     	   wifi_t.wifi_sensor = 1;
+     	   wifi_t.wifi_sensor = 0;
      break;
 
      //AI key
@@ -701,7 +701,9 @@ void RunCommand_Order(void)
 
 		 }
         }
-		 
+
+
+	  if( wifi_t.wifi_sensor ==0){
       /*------------------GMT ------------------*/
       if(wifi_work_state == WIFI_CONN_CLOUD && run_t.gmt_time_flag == 0 ){
          if( wifi_t.getGreenTime !=0xff && wifi_t.getGreenTime !=0xFE ){
@@ -735,7 +737,8 @@ void RunCommand_Order(void)
     }
 
     //检测WIFI 是否连接成功
-	if(wifi_work_state !=WIFI_CONN_CLOUD){
+    
+	if(wifi_work_state !=WIFI_CONN_CLOUD ){
 
 	     if(wifikey != wifi_t.wifi_detect){
 		 	 wifikey = wifi_t.wifi_detect;
@@ -772,6 +775,7 @@ void RunCommand_Order(void)
         }
 		
      }
+    	}
        
 	//Fan at power of function 
 	if((run_t.gPower_On ==0 || wifi_t.wifiPowerOn_flag==0) && run_t.gFan_continueRun ==1){ //Fan be stop flag :0 -Fan works 

@@ -129,8 +129,8 @@ int main(void)
     
      wifi_uart_service();
   
-     
-    Wifi_Mode();
+    
+           Wifi_Mode();
 	 Decode_Function();
     Single_Mode();
     
