@@ -107,9 +107,6 @@ void Wifi_Mode(void)
            
     }
     if(wifi_t.wifiPowerOn_flag==1){
-
-	  if(wifi_t.getTime_flag == 0)
-          mcu_get_greentime(temp) ;
        if(wifi_t.wifi_counter ==0){
            wifi_t.wifi_counter ++;
           Wifi_ReceiveCmd(wifi_t.wifi_RunMode); //Wifi_ReceiveCmd(wifi_t.wifi_RunMode);//Single_Usart_ReceiveData(wifi_t.wifi_RunMode);

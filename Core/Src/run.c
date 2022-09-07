@@ -579,7 +579,7 @@ void AI_Function(uint8_t sig)
 void RunCommand_Order(void)
 {
     
-    static uint8_t wifidisp=0,wifikey=0xff,retimes=0,time0=0,gettime;
+    static uint8_t wifidisp=0,wifikey=0xff,retimes=0,time0=0;
 	uint8_t sendtemperature[4];
 
    if(run_t.gPower_On==0)times=0;
@@ -610,7 +610,7 @@ void RunCommand_Order(void)
                 sendtemperature[0]=wifi_t.setTimesValue;
 				sendtemperature[2]=wifi_t.SetTemperatureValue;
 
-				if(time0<2){
+				if(time0<2 && wifi_t.setTimesValue>0 ){
 
 					if(sendtemperature[1] !=sendtemperature[0]){
 						   
@@ -618,6 +618,8 @@ void RunCommand_Order(void)
 	                     if(run_t.SingleMode ==1){
 						  mcu_dp_value_update(DPID_SETTIME,wifi_t.setTimesValue); //VALUE型数据上报;
 	                      SendWifiData_To_PanelTime(wifi_t.setTimesValue);
+						  run_t.gmt_time_flag  = 1;
+						  
 	                     }
 					}
                 }
@@ -650,33 +652,34 @@ void RunCommand_Order(void)
 	                 if(run_t.SingleMode ==1)
 					     SendWifiData_To_Cmd(0xaa);	//send wifi connetor status
 	                 HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
-//					  mcu_get_green_time();
-//				      if( wifi_t.getTime_flag ==0)
-//				       mcu_get_greentime(timeArray);
 	       }
 	       else{
 	          wifi_t.getNet_flag =0;
 	          HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_RESET);
 	       }
        
-	   
-       if(wifidisp > 3){
+	     if(wifidisp > 3){ //36s 
         	wifidisp = 0;
 	    if(wifi_work_state ==  WIFI_CONN_CLOUD){
               wifiDisplayTemperature_Humidity();
          }
         }
        }
-     //------------------------------------
-      if(wifi_work_state ==WIFI_CONN_CLOUD){
+     //------------------GMT ------------------
+      if(wifi_work_state ==WIFI_CONN_CLOUD && run_t.gmt_time_flag == 0 ){
          if( wifi_t.getGreenTime !=0xff){
           wifi_t.getGreenTime =1;
            mcu_get_green_time();
-	       //mcu_get_greentime(timeArray)
+	      
         }
         else{
-        
-            // mcu_get_green_time();
+              if(wifi_t.gTimer_gmt > 9){ //10 minute 
+                wifi_t.gTimer_gmt = 0;    
+               wifi_t.getGreenTime =1;
+               mcu_get_green_time();
+              
+              }
+            
         }
     }
 
@@ -702,18 +705,7 @@ void RunCommand_Order(void)
 	                 
 				 }
         }
-      else if( wifi_work_state ==	WIFI_CONN_CLOUD){
-        	        wifi_t.getNet_flag =1;
-                    wifi_t.wifi_detect++;
-                   if(run_t.SingleMode ==1 && wifi_t.wifi_timer_send_info> 16 ){
-				   	        wifi_t.wifi_timer_send_info=0;
-				           SendWifiData_To_Cmd(0xaa); //send wifi connetor status
-				           
-				          HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
-                   	}
-
-
-       }
+     
        
 	//Fan at power of function 
 	if((run_t.gPower_On ==0 || wifi_t.wifiPowerOn_flag==0) && run_t.gFan_continueRun ==1){ //Fan be stop flag :0 -Fan works 
@@ -758,26 +750,6 @@ void RunCommand_Order(void)
 }
 
 
-void GetGreen_Time(void)
-{
-     static uint8_t getn=0;
-
-	 switch(getn){
-
-      case 0:
-
-	 	timeArray[0]=rx_wifi_data[0];
-	    if(timeArray[0] == 0x55 ) getn =1;
-
-	  break;
-
-
-
-
-	 }
-
-
-}
 /**
   * Function Name: void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   * Function: Tim3 interrupt call back function
@@ -787,7 +759,7 @@ void GetGreen_Time(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 
-    static uint8_t tm0 ,tm1,tm2;
+    static uint8_t tm0 ,tm1,tm2,tm3;
     if(htim->Instance==TIM3){
 	   tm0 ++ ;
      tm2++;
@@ -798,6 +770,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
      }
 	   if(tm0 == 100){//100ms *10 = 1000ms =1s
        tm0 =0;
+        tm3++;
        wifi_t.gTimer_1s ++;
        run_t.sendtimes++;
        wifi_t.timer_wiifi_sensor++;
@@ -812,6 +785,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
               
 		   }
 	   }
+      if(tm3 > 59){ // 1minute 
+         tm3=0;
+         wifi_t.gTimer_gmt++;
+      
+      }
 
 	 }
   }
