@@ -189,7 +189,7 @@ void USART2_IRQHandler(void)
      if(wifi_t.getGreenTime ==1){
          if(state == 0){
             switch(rx_value){
-                case 0x07 :
+                case 0x01 :
                     //rx_wifi_data[0]=rx_value;
                    state ++ ;
                    i=0;
@@ -204,7 +204,7 @@ void USART2_IRQHandler(void)
          }
          rx_wifi_data[i]=rx_value;
          i++;
-         if(i > 7) wifi_t.getGreenTime = 0xff;
+         if(i > 5) wifi_t.getGreenTime = 0xff;
      }
      else
         uart_receive_input(rx_value); 

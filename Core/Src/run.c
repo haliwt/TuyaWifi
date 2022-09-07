@@ -704,19 +704,23 @@ void RunCommand_Order(void)
 		 
       /*------------------GMT ------------------*/
       if(wifi_work_state == WIFI_CONN_CLOUD && run_t.gmt_time_flag == 0 ){
-         if( wifi_t.getGreenTime !=0xff){
+         if( wifi_t.getGreenTime !=0xff && wifi_t.getGreenTime !=0xFE ){
           wifi_t.getGreenTime =1;
            mcu_get_green_time();
 	      
         }
-		if(wifi_t.getGreenTime == 0xff && wifi_t.getGreenTime !=0xFE){
+		
+        if(wifi_t.getGreenTime == 0xff && wifi_t.getGreenTime !=0xFE){
             
             run_t.sed_GMT_times = 1;
+           //  wifi_t.getGreenTime =0xFE;
             Decode_GMT(rx_wifi_data);
+         
+           // SendData_Real_GMT(rx_wifi_data[5],rx_wifi_data[6]); //gmt[4]->hours, gmt[5]->minutes
 		    
 		}
         else{
-              if(wifi_t.gTimer_gmt > 9){ //10 minute 
+              if(wifi_t.gTimer_gmt > 0){ //10 minute 
                 wifi_t.gTimer_gmt = 0;    
                wifi_t.getGreenTime =1;
                mcu_get_green_time();
@@ -750,7 +754,7 @@ void RunCommand_Order(void)
 	                 
 				 }
        }
-     if((wifi_work_state ==WIFI_CONN_CLOUD)   && (run_t.gTimer_send_0xaa > 4 || send_0xaa < 4 )){
+     if((wifi_work_state ==WIFI_CONN_CLOUD)   && (run_t.gTimer_send_0xaa > 10 || send_0xaa < 4 )){
 	 	run_t.gTimer_send_0xaa=0;
         wifi_t.wifi_detect++;
 	    send_0xaa++;

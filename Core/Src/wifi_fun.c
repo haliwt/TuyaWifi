@@ -141,9 +141,7 @@ void Decode_GMT(uint8_t *gmt)
 	  	    if(gmt[0]== 0x07){
               state = 1;
             }
-			else{
-               wifi_t.getGreenTime = 1;
-			}
+			
 
 	  break;
 
@@ -151,9 +149,8 @@ void Decode_GMT(uint8_t *gmt)
 	  	    if(gmt[1]== 0x01){
               state = 2;
             }
-			else{
-               wifi_t.getGreenTime = 1;
-			}
+			else
+				wifi_t.getGreenTime =1;
 
 	  break;
 
