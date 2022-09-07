@@ -639,7 +639,7 @@ void AI_Function(uint8_t sig)
 void RunCommand_Order(void)
 {
     
-    static uint8_t wifidisp=0,wifikey=0xff,retimes=0,time0=0;
+    static uint8_t wifidisp=0,wifikey=0xff,retimes=0,time0=0,send_0xaa;
 	uint8_t sendtemperature[4];
 
    if(run_t.gPower_On==0)times=0;
@@ -702,25 +702,6 @@ void RunCommand_Order(void)
 		 }
         }
 		 
-       if(wifi_t.timer_wiifi_sensor >12 &&  wifi_work_state ==  WIFI_CONN_CLOUD ){
-	   	   wifi_t.timer_wiifi_sensor=0;
-	   	   wifidisp ++ ;
-		 
-
-	                 wifi_t.getNet_flag =1;
-					  wifi_t.wifi_detect++;
-	                 if(run_t.SingleMode ==1)
-					     SendWifiData_To_Cmd(0xaa);	//send wifi connetor status
-	                 HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
-	       
-	      
-	     if(wifidisp > 3){ //36s 
-        	wifidisp = 0;
-	        if(wifi_work_state ==  WIFI_CONN_CLOUD){
-              wifiDisplayTemperature_Humidity();
-            }
-         }
-       }
       /*------------------GMT ------------------*/
       if(wifi_work_state == WIFI_CONN_CLOUD && run_t.gmt_time_flag == 0 ){
          if( wifi_t.getGreenTime !=0xff){
@@ -730,9 +711,9 @@ void RunCommand_Order(void)
         }
 		if(wifi_t.getGreenTime == 0xff && wifi_t.getGreenTime !=0xFE){
             
+            run_t.sed_GMT_times = 1;
             Decode_GMT(rx_wifi_data);
-
-
+		    
 		}
         else{
               if(wifi_t.gTimer_gmt > 9){ //10 minute 
@@ -768,10 +749,34 @@ void RunCommand_Order(void)
 					   
 	                 
 				 }
+       }
+     if((wifi_work_state ==WIFI_CONN_CLOUD)   && (run_t.gTimer_send_0xaa > 4 || send_0xaa < 4 )){
+	 	run_t.gTimer_send_0xaa=0;
+        wifi_t.wifi_detect++;
+	    send_0xaa++;
+		if(send_0xaa == 1){
+			SendWifiData_To_Cmd(0xaa);	
+	 	    HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
+
+		}
+		else{
+		    if(run_t.sed_GMT_times == 1){
+				run_t.sed_GMT_times ++;
+	            Decode_GMT(rx_wifi_data);
+	         }
+			else{
+			  SendWifiData_To_Cmd(0xaa);	
+
+
+			}
+		}
+        
+        if(send_0xaa > 30){
+           send_0xaa =0 ;
+          wifiDisplayTemperature_Humidity();
+        
         }
-     if((wifi_work_state ==WIFI_CONN_CLOUD)){
-	 	wifi_t.wifi_detect++;
-	 	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
+		
      }
        
 	//Fan at power of function 
@@ -843,6 +848,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
        wifi_t.timer_wiifi_sensor++;
        wifi_t.timer_wifi_send_cmd++;
 	   wifi_t.wifi_timer_send_info++;
+	   run_t.gTimer_send_0xaa++;
 	   if(run_t.gFan_continueRun ==1){
 	   	   tm1++;
            run_t.gFan_counter++;

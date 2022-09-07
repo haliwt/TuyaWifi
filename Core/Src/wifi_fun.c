@@ -162,13 +162,13 @@ void Decode_GMT(uint8_t *gmt)
            
 	       state =0;
 			wifi_t.getGreenTime = 0xFE;
-            gmt[4] = gmt[4] +8;
-			if(gmt[4] > 24){
-				gmt[4] = gmt[4] -24 ;
+            gmt[5] = gmt[5] +8;
+			if(gmt[5] > 24){
+				gmt[5] = gmt[5] -24 ;
 
 			}
 			
-	        SendData_Real_GMT(gmt[4],gmt[5]); //gmt[4]->hours, gmt[5]->minutes
+	        SendData_Real_GMT(gmt[5],gmt[6]); //gmt[4]->hours, gmt[5]->minutes
 
 	  break;
 
