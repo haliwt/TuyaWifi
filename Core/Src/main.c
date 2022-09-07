@@ -127,11 +127,11 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	
     
-      wifi_uart_service();
+     wifi_uart_service();
   
      
     Wifi_Mode();
-	  Decode_Function();
+	 Decode_Function();
     Single_Mode();
     
 	 RunCommand_Order();

@@ -68,6 +68,7 @@ void Decode_RunCmd(void)
 		  run_t.SingleMode = 0;
 		  wifiUpdate_Power_Status(0);
 		  run_t.globe_setPriority=1;
+		   
        
        } 
        else if(cmdType_2 ==1){ //power on
@@ -119,7 +120,7 @@ void Decode_RunCmd(void)
 	  	  if(run_t.gPower_On==1){
 				 
 			if(run_t.SingleMode  ==1 ){
-
+                 wifi_t.getGreenTime = 1; //don't display GMT 
 			     mcu_dp_value_update(DPID_SETTIME,cmdType_2); //VALUE型数据上报;
 			     
 			}
@@ -221,6 +222,18 @@ void Single_ReceiveCmd(uint8_t cmd)
       
      break;
 
+     case 0x88:
+	          run_t.Single_cmd = 0x88; //turn on plasma and dry ->set up temperature value
+			  run_t.globe_setPriority =1;
+
+
+	 break;
+
+	 case 0x87:
+			 run_t.Single_cmd = 0x87;  //tunr off plasma and dry machine ->set up temperature value 
+     	     run_t.globe_setPriority =1;
+	 break;
+
      default:
          
          run_t.Single_cmd = 0;
@@ -317,7 +330,7 @@ void Wifi_ReceiveCmd(uint8_t cmd)
 **********************************************************************/
 void AI_Function(uint8_t sig)
 {
-   static uint8_t ai_off=0xff,ai_on=0xff;
+   static uint8_t ai_off=0xff,ai_on=0xff, settemp=0xff,settemp_off= 0xff;
    static uint8_t dry_on =0xff, dry_off = 0xff,ster_on=0xff,ster_off=0xff;
 
 	switch(sig){
@@ -527,7 +540,7 @@ void AI_Function(uint8_t sig)
                 PLASMA_SetHigh(); //
                 HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
                 PTC_SetHigh();
-			   SendWifiCmd_To_Order(0x08);
+			    SendWifiCmd_To_Order(0x08);
              
 				
 		}
@@ -550,12 +563,59 @@ void AI_Function(uint8_t sig)
 				   run_t.wifi_key_off++;
 				   run_t.wifi_key++;
 
-				  	Buzzer_On();
+				  Buzzer_On();
 				 wifiUpdate_AI_Status(1);
 				 SendWifiCmd_To_Order(0x18);
 
 		  }
 
+	 break;
+
+	 case 0x87: //set up temperature  value auto shut off plasma and dry machine 
+	       if(settemp != run_t.set_temperature_off){
+		   	   settemp = run_t.set_temperature_off;
+                 run_t.set_temperature_on++;
+			   
+			   run_t.gFan_continueRun =1;
+			   run_t.gFan_counter = 0;
+
+               Buzzer_On(); 
+			   wifiUpdate_AI_Status(1);//wifi APP turn off
+               wifiUpdate_Kill_Status(0); //update kill turn off   to smart phone APP
+			   wifiUpdate_Dry_Status(0);  //update dry turn on off smart phone APP
+			   
+              
+
+			   PLASMA_SetLow(); //
+			   HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
+			   PTC_SetLow();
+			   FAN_Stop();
+			  
+
+			   
+			   
+	     }
+	 break;
+
+	 case 0x88: // setu up temperature value auto turn on plasma and dry machine 
+          if(settemp_off != run_t.set_temperature_on){
+		   	   settemp_off = run_t.set_temperature_on;
+                 run_t.set_temperature_off++;
+
+				   run_t.gFan_continueRun =0;
+
+			    Buzzer_On(); 
+			   wifiUpdate_AI_Status(0);//wifi APP turn off
+               wifiUpdate_Kill_Status(1); //update kill turn off   to smart phone APP
+			   wifiUpdate_Dry_Status(1);  //update dry turn on off smart phone APP
+
+				FAN_CCW_RUN();
+                PLASMA_SetHigh(); //
+                HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
+                PTC_SetHigh();
+			  
+	 
+          }
 	 break;
            
    

@@ -35,6 +35,7 @@ void SetPowerOff_ForDoing(void)
     wifi_t.wifi_power=0;
     wifi_t.wifiPowerOn_flag =0;
     run_t.SingleMode = 0;
+	wifi_t.getGreenTime = 0;
     
 	PLASMA_SetLow(); //
 	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
