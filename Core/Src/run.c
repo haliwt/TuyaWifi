@@ -777,22 +777,7 @@ void RunCommand_Order(void)
      }
     	}
        
-	//Fan at power of function 
-	if((run_t.gPower_On ==0 || wifi_t.wifiPowerOn_flag==0) && run_t.gFan_continueRun ==1){ //Fan be stop flag :0 -Fan works 
-        
-         if(run_t.gFan_counter < 61){
-         
-             FAN_CCW_RUN();
-         }        
-       
-        if(run_t.gFan_counter >= 60){ //60s
-        
-	     run_t.gFan_counter=0;
-	  
-         run_t.gFan_continueRun++;
-		  FAN_Stop();
-	   }
-	  }
+	
 	
 	 if(run_t.gFan_continueRun ==1 && (run_t.gPower_On ==1 || wifi_t.wifiPowerOn_flag==1 )){
           
@@ -816,6 +801,23 @@ void RunCommand_Order(void)
       
       
  }
+
+   //Fan at power of function 
+  if((run_t.gPower_On ==0 || wifi_t.wifiPowerOn_flag==0) && run_t.gFan_continueRun ==1){ //Fan be stop flag :0 -Fan works 
+        
+         if(run_t.gFan_counter < 61){
+         
+             FAN_CCW_RUN();
+         }        
+       
+        if(run_t.gFan_counter >= 60){ //60s
+        
+	     run_t.gFan_counter=0;
+	  
+         run_t.gFan_continueRun++;
+		  FAN_Stop();
+	   }
+   }
 
 }
 

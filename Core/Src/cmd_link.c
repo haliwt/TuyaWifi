@@ -12,7 +12,7 @@ uint8_t  inputCmd[2];
 uint8_t  wifiInputBuf[1];
 //unsigned char rx_value;
 
-uint8_t rx_wifi_data[6];
+uint8_t rx_wifi_data[7];
 
 
 static uint8_t transferSize;

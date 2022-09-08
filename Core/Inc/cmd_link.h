@@ -3,7 +3,7 @@
 #include "main.h"
 
 
-extern uint8_t rx_wifi_data[6];
+extern uint8_t rx_wifi_data[7];
 
 extern uint8_t inputBuf[4];
 

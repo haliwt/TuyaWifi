@@ -204,7 +204,7 @@ void USART2_IRQHandler(void)
          }
          rx_wifi_data[i]=rx_value;
          i++;
-         if(i > 5){ 
+         if(i > 6){ 
              wifi_t.getGreenTime = 0xff;
              state = 0;
              i=0;
