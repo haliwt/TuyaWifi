@@ -32,6 +32,7 @@ typedef struct _WIFI_FUN{
 
 	uint8_t real_hours;
 	uint8_t real_minutes;
+	uint8_t real_seconds;
 
 	uint8_t setTimesValue;
 	uint8_t dispTimesValue;
@@ -81,7 +82,7 @@ void wifiUpdate_Dry_Status(uint8_t dv);
 void wifiUpdate_SetTimeValue(uint8_t tv);
 void wifiUpdate_SetTemperatureValue(uint8_t temp);
 void Wifi_RunMode(uint8_t cmd);
-void Decode_GMT(uint8_t *gmt);
+
 
 
 

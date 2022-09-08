@@ -723,8 +723,9 @@ void RunCommand_Order(void)
 
 			}
 			wifi_t.real_minutes = rx_wifi_data[5];
+			wifi_t.real_seconds = rx_wifi_data[6];
          
-            SendData_Real_GMT(wifi_t.real_hours ,wifi_t.real_minutes); //gmt[4]->hours, gmt[5]->minutes
+            SendData_Real_GMT(wifi_t.real_hours ,wifi_t.real_minutes,rx_wifi_data[6]); //gmt[4]->hours, gmt[5]->minutes
 		    
 		}
         else{

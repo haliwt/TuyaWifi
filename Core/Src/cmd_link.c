@@ -219,7 +219,7 @@ void SendWifiCmd_To_Order(uint8_t odata)
 
 }
 
-void SendData_Real_GMT(uint8_t hdata,uint8_t mdata)
+void SendData_Real_GMT(uint8_t hdata,uint8_t mdata,uint8_t sdata)
 {
    
 
@@ -228,9 +228,10 @@ void SendData_Real_GMT(uint8_t hdata,uint8_t mdata)
 	outputBuf[2]='B'; //44	// 'C' ->control 
 	outputBuf[3]=hdata; //	
 	outputBuf[4]=mdata; //
+	outputBuf[5] =sdata;
 	//for(i=3;i<6;i++) crc ^= outputBuf[i];
 	//outputBuf[i]=crc;
-	transferSize=5;
+	transferSize=6;
 	if(transferSize)
 	{
 		while(transOngoingFlag); //UART interrupt transmit flag ,disable one more send data.
