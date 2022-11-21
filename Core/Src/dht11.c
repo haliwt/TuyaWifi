@@ -11,7 +11,7 @@ DHT11_Data_TypeDef DHT11;
 #define Bit_SET   1
 
 //等待us级别
-void delay_us(unsigned long i)
+void dh_delay_us(unsigned long i)
 {
 	unsigned long j;
 	for(;i>0;i--)
@@ -86,7 +86,7 @@ static uint8_t DHT11_ReadByte ( void )
 		/*DHT11 以26~28us的高电平表示“0”，以70us高电平表示“1”，
 		 *通过检测 x us后的电平即可区别这两个状 ，x 即下面的延时 
 		 */
-		delay_us(40); //延时x us 这个延时需要大于数据0持续的时间即可	   	  
+		dh_delay_us(40); //延时x us 这个延时需要大于数据0持续的时间即可	   	  
 
 		if(DHT11_Data_IN()==Bit_SET)/* x us后仍为高电平表示数据“1” */
 		{
@@ -125,11 +125,11 @@ uint8_t DHT11_Read_TempAndHumidity(DHT11_Data_TypeDef *DHT11_Data)
 	/*总线拉高 主机延时30us*/
 	DHT11_Dout_HIGH(); 
 
-	delay_us(30);   //延时30us
+	dh_delay_us(30);   //延时30us
 
 	/*主机设为输入 判断从机响应信号*/ 
 	DHT11_Mode_IPU();
-  delay_us(40);   //延时30us
+  dh_delay_us(40);   //延时30us
 	/*判断从机是否有低电平响应信号 如不响应则跳出，响应则向下运行*/   
 	if(DHT11_Data_IN()==Bit_RESET)     
 	{

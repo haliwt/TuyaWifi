@@ -2,6 +2,7 @@
 #include "main.h"
 #include "tim.h"
 #include "run.h"
+#include "delay.h"
 
 
 static void Delay_BuzzerUs(uint8_t t);
@@ -41,19 +42,12 @@ static void Delay_BuzzerUs(uint8_t t)
 
 void Buzzer_On(void)
 {
-  static uint8_t i;
-  #if 1
-  for(i=0;i<50;i++){//
-//        BUZZER_SetHigh();
-//        Delay_BuzzerUs(10);//HAL_Delay(1);
-//        BUZZER_SetLow() ;
+  unsigned int m=200;//80
+	while(m--){
 		BUZZER_TOGGLE() ; 
-        Delay_BuzzerUs(10);//HAL_Delay(1);
-        
-       
-		
-  }
-  #endif 
+        delay_us(400);
+        }
+  
  }
 
 void ShutDown_AllFunction(void)
