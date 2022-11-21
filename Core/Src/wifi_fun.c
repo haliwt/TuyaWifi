@@ -74,8 +74,21 @@ void SetTemperatureHost(void(*temperatureHandler)(void))
 ***********************************************/
 void Wifi_Mode(void)
 {
-   
-  if(wifi_t.wifi_sensor ==0){  
+     static uint8_t no_wifi;
+     if(wifi_work_state != WIFI_CONN_CLOUD && run_t.gPower_On ==1 ){
+             if(no_wifi <10){
+                 no_wifi ++ ;
+                 mcu_set_wifi_mode(SMART_CONFIG_STATE );//smart config 
+                 
+             }
+      }
+
+
+    if(wifi_t.wifi_sensor ==0){  
+      
+      
+      
+      
    if(wifi_work_state ==  WIFI_CONN_CLOUD){ //当WIFI连接成功，
 
    if(wifi_t.wifi_power ==1){
@@ -88,9 +101,10 @@ void Wifi_Mode(void)
       wifi_t.wifiPowerOn_flag =1;
       wifi_t.WifiMode =1;
       wifiPowerOn_After_data_update();
-     
+      
            
    }
+  
 
    if(wifi_t.wifi_power ==2 ){
           wifi_t.wifi_power = 0xff;
@@ -117,7 +131,8 @@ void Wifi_Mode(void)
       
     }
   }
-  	}
+ 
+  }
 }
 /***********************************************
    *
