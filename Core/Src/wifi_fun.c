@@ -84,7 +84,7 @@ void Wifi_Mode(void)
       }
 
 
-    if(wifi_t.wifi_sensor ==0){  
+    if(wifi_t.wifi_sensor ==0){ //tunr on 
       
       
       
@@ -92,6 +92,7 @@ void Wifi_Mode(void)
    if(wifi_work_state ==  WIFI_CONN_CLOUD){ //当WIFI连接成功，
 
    if(wifi_t.wifi_power ==1){
+      SendWifiData_To_Cmd(0xAA);
 
       wifi_t.wifi_power = 0xf0;
       if(run_t.SingleMode !=1){

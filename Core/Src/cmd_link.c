@@ -177,7 +177,7 @@ void SendWifiData_To_Cmd(uint8_t wdata)
 			outputBuf[0]='M'; //4D
 			outputBuf[1]='A'; //41
 			outputBuf[2]='W'; //44	// wifi ->infomation link wifi 
-			outputBuf[3]=0x55; //	
+			outputBuf[3]=0xAA; //	
 			outputBuf[4]=wdata; //
 			//for(i=3;i<6;i++) crc ^= outputBuf[i];
 			//outputBuf[i]=crc;
