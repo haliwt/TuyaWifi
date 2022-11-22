@@ -24,7 +24,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "tim.h"
-
+#include "stm32g0xx_hal_tim.h"
 /* USER CODE BEGIN 0 */
 #include "run.h"
 #include "wifi_fun.h"

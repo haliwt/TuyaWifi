@@ -35,7 +35,7 @@ void Initial_Ref(void)
   
   run_t.gPlasma=0;
   run_t.gDry =0;
-  run_t.gAi = AIENABLE;
+  run_t.gRat_control= 0;
   run_t.gFan_counter=0;
  
 
@@ -328,29 +328,18 @@ void Wifi_ReceiveCmd(uint8_t cmd)
 	*Return Ref: NO
 	*
 **********************************************************************/
-void AI_Function(uint8_t sig)
+void Special_Function(uint8_t sig)
 {
    static uint8_t ai_off=0xff,ai_on=0xff, settemp=0xff,settemp_off= 0xff;
    static uint8_t dry_on =0xff, dry_off = 0xff,ster_on=0xff,ster_off=0xff;
 
 	switch(sig){
-   
-//	case 0x01: //wifi Mode AP (single -> Fan Mode)
-//
-//	     wifi_t.wifi_sensor =1;
-//     
-//     break;
-//           
-//     case 0x11 : //wifi turn off 
-//          wifi_t.wifi_sensor = 0;
-//         
-//     break;
-     /*-------------------------------WIFI FUNCTION----------------------------------*/  
+
      //wifi function   
      case 0x04: //kill turn on
          if(run_t.globe_sub_flag != kill){
        
-         if(ster_on !=run_t.kill_key && (run_t.gAi ==AIDISABLE || wifi_t.wifi_itemAi==1)){
+         if(ster_on !=run_t.kill_key){
 	   	    ster_on = run_t.kill_key;
            
             
@@ -361,8 +350,8 @@ void AI_Function(uint8_t sig)
 			   run_t.dry_key++;
 			   run_t.dry_key_off++;
 			   	
-			   run_t.ai_key++;
-			   run_t.ai_key_off++;
+			   run_t.rat_key++;
+			   run_t.rat_key_off++;
 
 			   run_t.wifi_key_off++;
 			   run_t.wifi_key++;
@@ -375,7 +364,7 @@ void AI_Function(uint8_t sig)
 		   run_t.gFan_continueRun =0;
 		   
 		   wifiUpdate_Kill_Status(1);
-	       SterIlization(0); //turn on
+	      UV_Function(0); //turn on
 	       SendWifiCmd_To_Order(0x04);
 		   
 		   
@@ -384,10 +373,10 @@ void AI_Function(uint8_t sig)
         }
      break;
          
-    case 0x14: //kill turn off
+    case 0x14: //kill turn off->UV
         
           if(run_t.globe_sub_flag != notkill){
-          if((ster_off !=run_t.kill_key_off && (run_t.gAi == AIDISABLE || wifi_t.wifi_itemAi==1))){
+          if(ster_off !=run_t.kill_key_off){
                ster_off = run_t.kill_key_off;
 		
 			  run_t.globe_sub_flag = notkill;
@@ -399,8 +388,8 @@ void AI_Function(uint8_t sig)
 			   run_t.dry_key_off++;
 			  
 			   	
-			   run_t.ai_key++;
-			   run_t.ai_key_off++;
+			   run_t.rat_key++;
+			   run_t.rat_key_off++;
 			   
 			   run_t.wifi_key_off++;
 			   run_t.wifi_key++;
@@ -412,7 +401,7 @@ void AI_Function(uint8_t sig)
             run_t.gPlasma =1; //turn off plasma 
 			wifiUpdate_Kill_Status(0);
 		
-           SterIlization(1); //turn off kill function
+           UV_Function(1); //turn off kill function
 			 if( run_t.gDry ==1){
 			 
 				  run_t.gFan_counter =0;
@@ -428,7 +417,7 @@ void AI_Function(uint8_t sig)
 
     case 0x02: //dry turn 0n
         if(run_t.globe_sub_flag != dry){
-        if((dry_on != run_t.dry_key && (run_t.gAi == AIDISABLE || wifi_t.wifi_itemAi==1))){
+        if(dry_on != run_t.dry_key){
 			      dry_on = run_t.dry_key;
 
 			  
@@ -439,8 +428,8 @@ void AI_Function(uint8_t sig)
 				   run_t.kill_key++;
 				   run_t.kill_key_off++;
 				   
-				   run_t.ai_key++;
-				   run_t.ai_key_off++;
+				   run_t.rat_key++;
+				   run_t.rat_key_off++;
 
 				   run_t.wifi_key_off++;
 			       run_t.wifi_key++;
@@ -465,7 +454,7 @@ void AI_Function(uint8_t sig)
          
     case 0x12 : //dry turn off
           if(run_t.globe_sub_flag !=notdry){
-          if((dry_off != run_t.dry_key_off && (run_t.gAi ==AIDISABLE ||  wifi_t.wifi_itemAi==1))){
+          if(dry_off != run_t.dry_key_off){
 			  dry_off = run_t.dry_key_off;
 			  
 
@@ -475,8 +464,8 @@ void AI_Function(uint8_t sig)
 		           run_t.kill_key++;
 				   run_t.kill_key_off++;
 				   
-				   run_t.ai_key++;
-				   run_t.ai_key_off++;
+				   run_t.rat_key++;
+				   run_t.rat_key_off++;
 
 				   run_t.wifi_key_off++;
 			       run_t.wifi_key++;
@@ -502,15 +491,15 @@ void AI_Function(uint8_t sig)
           }
     break;
 
-	case 0x08: //wifi AI and Single AI-> AI tunr ON
+	case 0x08: // rat_control turn on
 
-	    if(ai_on != run_t.ai_key){
-		      ai_on = run_t.ai_key;
+	    if(ai_on != run_t.rat_key){
+		      ai_on = run_t.rat_key;
 		      
-		       run_t.gAi = AIENABLE;
+		       run_t.gRat_control= AIENABLE;
                wifi_t.wifi_itemAi=AIENABLE;
             
-			   run_t.ai_key_off++;
+			   run_t.rat_key_off++;
 
 		       run_t.kill_key++;
 			   run_t.kill_key_off++;
@@ -531,16 +520,9 @@ void AI_Function(uint8_t sig)
          
             run_t.gPlasma =0;
             run_t.gDry =0;
-           // wifiUpdate_AI_Status(0);//wifi APP turn on
+           Rat_Control_Function(0);
            wifiUpdate_Rat_Control_Status(0);
-            wifiUpdate_Kill_Status(1); //update kill turn on   to smart phone APP
-			wifiUpdate_Dry_Status(1);  //update dry turn on to smart phone APP
-      
-                
-                FAN_CCW_RUN();
-                PLASMA_SetHigh(); //
-                HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
-                PTC_SetHigh();
+        
 			    SendWifiCmd_To_Order(0x08);
              
 				
@@ -548,12 +530,12 @@ void AI_Function(uint8_t sig)
 		
 	  break;
 
-	 case 0x18: //wifi AI and Single AI turn off
-	      if(ai_off != run_t.ai_key_off){
-		      ai_off = run_t.ai_key_off;
-		            run_t.ai_key++;
+	 case 0x18: //turn off-> turn rat control
+	      if(ai_off != run_t.rat_key_off){
+		      ai_off = run_t.rat_key_off;
+		            run_t.rat_key++;
 
-		           run_t.gAi = AIDISABLE;
+		           run_t.gRat_control= AIDISABLE;
                    wifi_t.wifi_itemAi=AIDISABLE;
               
 		           run_t.kill_key++;
@@ -565,7 +547,7 @@ void AI_Function(uint8_t sig)
 				   run_t.wifi_key++;
 
 				  Buzzer_On();
-				// wifiUpdate_AI_Status(1);
+				 Rat_Control_Function(1);
                  wifiUpdate_Rat_Control_Status(1);
 				 SendWifiCmd_To_Order(0x18);
 
@@ -582,18 +564,7 @@ void AI_Function(uint8_t sig)
 			   run_t.gFan_counter = 0;
 
                Buzzer_On(); 
-			  // wifiUpdate_AI_Status(1);//wifi APP turn off
-               wifiUpdate_Rat_Control_Status(1);
-               wifiUpdate_Kill_Status(0); //update kill turn off   to smart phone APP
-			   wifiUpdate_Dry_Status(0);  //update dry turn on off smart phone APP
-			   
-              
 
-			   PLASMA_SetLow(); //
-			   HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
-			   PTC_SetLow();
-			   FAN_Stop();
-			  
 
 			   
 			   
@@ -608,16 +579,7 @@ void AI_Function(uint8_t sig)
 				   run_t.gFan_continueRun =0;
 
 			    Buzzer_On(); 
-			   //wifiUpdate_AI_Status(0);//wifi APP turn off
-              wifiUpdate_Rat_Control_Status(0);
-               wifiUpdate_Kill_Status(1); //update kill turn off   to smart phone APP
-			   wifiUpdate_Dry_Status(1);  //update dry turn on off smart phone APP
 
-				FAN_CCW_RUN();
-                PLASMA_SetHigh(); //
-                HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
-                PTC_SetHigh();
-			  
 	 
           }
 	 break;

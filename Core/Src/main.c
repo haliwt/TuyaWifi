@@ -118,7 +118,7 @@ int main(void)
   /* USER CODE END 2 */
   PowerOn_Host(SetPowerOn_ForDoing);
   PowerOff_Host(SetPowerOff_ForDoing);
-  AI_Function_Host(AI_Function);
+  AI_Function_Host(Special_Function);
   Single_Usart_RxData(Single_ReceiveCmd);
   //Single_Usart_RxData(Wifi_ReceiveCmd);
   /* Infinite loop */

@@ -49,6 +49,8 @@ void SterIlization(uint8_t sel);
 void Buzzer_On(void);
 void ShutDown_AllFunction(void);
 void Dry_Function(uint8_t sel);
+void UV_Function(uint8_t sel);
 
+void Rat_Control_Function(uint8_t uv);
 
 #endif 
