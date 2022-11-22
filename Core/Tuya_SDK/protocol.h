@@ -31,7 +31,7 @@
 /******************************************************************************
                        1:修改产品信息
 ******************************************************************************/
-#define PRODUCT_KEY "zivxwtzw0adtg0jg"    //开发平台创建产品后生成的16位字符产品唯一标识
+#define PRODUCT_KEY "faw0t5mfdd4wdgpf"    //开发平台创建产品后生成的16位字符产品唯一标识
 
 #define MCU_VER "1.0.0"         //用户的软件版本,用于MCU固件升级,MCU升级版本需修改
 
@@ -175,7 +175,7 @@ wifi_test_result内部有#err提示,完成函数后请删除该#err
 并在protocol.c文件mcu_get_mac函数内查看结果,
 mcu_get_mac内部有#err提示,完成函数后请删除该#err
 ******************************************************************************/
-//#define         GET_MODULE_MAC_ENABLE                   //开启获取模块mac地址功能 
+//#define         GET_MODULE_MAC_ENABLE                   //开启获取模块mac地址功能
 
 /******************************************************************************
                       13:MCU是否需要支持获取格林时间功能
@@ -184,7 +184,7 @@ mcu_get_mac内部有#err提示,完成函数后请删除该#err
 mcu_get_greentime内部有#err提示,完成函数后请删除该#err
 mcu在wifi模块正确联网后可调用mcu_get_green_time()函数发起校时功能
 ******************************************************************************/
-#define         SUPPORT_GREEN_TIME                //开启格林时间功能     //WT.EDIT 2022.08.30
+#define         SUPPORT_GREEN_TIME                //开启格林时间功能 //WT.EDIT 
 
 /******************************************************************************
                       14:MCU是否需要开启同步状态上报功能
@@ -257,37 +257,30 @@ BLE_test_result内部有#err提示,完成函数后请删除该#err
                         1:dp数据点序列号重新定义
           **此为自动生成代码,如在开发平台有相关修改请重新下载MCU_SDK**         
 ******************************************************************************/
-//启动(可下发可上报)
+//开关(可下发可上报)
 //备注:
-#define DPID_START 1
-//智能模式(可下发可上报)
+#define DPID_SWITCH 1
+//UV杀菌(可下发可上报)
 //备注:
-#define DPID_MODE 2
-//故障告警(只上报)
+#define DPID_UV 3
+//烘干(可下发可上报)
 //备注:
-#define DPID_FAULT 6
-//显示温度值(只上报)
+#define DPID_DRYING 5
+//当前温度(只上报)
 //备注:
-#define DPID_DISPTEMP 101
-//杀菌(可下发可上报)
+#define DPID_TEMP_CURRENT 9
+//设置定时关机(可下发可上报)
 //备注:
-#define DPID_KILL 102
-//加热(可下发可上报)
+#define DPID_SET_TIMGING 101
+//当前湿度(只上报)
 //备注:
-#define DPID_HEAT 103
-//设置定时时间(可下发可上报)
+#define DPID_HUMIDITY 102
+//驱鼠(可下发可上报)
 //备注:
-#define DPID_SETTIME 104
-//显示湿度(只上报)
+#define DPID_RAT_CONTROL 103
+//设置温度(可下发可上报)
 //备注:
-#define DPID_DISPHUM 105
-//设置温度值(可下发可上报)
-//备注:
-#define DPID_SETTEMP 106
-//显示定时时间(只上报)
-//备注:
-#define DPID_DISPTIME 107
-
+#define DPID_SET_TEMPERATURE 104
 
 
 

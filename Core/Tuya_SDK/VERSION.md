@@ -9,11 +9,11 @@
 ** 协议版本: v1.2.3
 ** 描　  述: 1：修改 mcu_get_dp_download_enum 和 mcu_get_dp_download_value 注释
 			2：在 my_strcpy 函数中，增加入参判空检查
-			3：在 wifi_protocol_init 函数中对 stop_update_flag 赋初值 WIFIDISABLE
+			3：在 wifi_protocol_init 函数中对 stop_update_flag 赋初值 DISABLE
 			4：支持多个字节数据一次性存入串口接收缓存
 			5：增加天气conditionNum参数
 			6：增加免责声明
-			7：将 WIFISUCCESS、WIFIENABLE等常用宏定义名称增加 TY 前缀，以免和用户使用的其他文件冲突
+			7：将 SUCCESS、ENABLE等常用宏定义名称增加 TY 前缀，以免和用户使用的其他文件冲突
 
 
 
@@ -85,7 +85,7 @@
 ** 版  本: v2.3.8
 ** 日　期: 2018年1月17日
 ** 描　述: 1:变量添加volatile防止编译器优化
-           2:添加#WIFIERROR提示
+           2:添加#error提示
 
 ** 版  本: v2.3.7
 ** 日　期: 2017年4月18日

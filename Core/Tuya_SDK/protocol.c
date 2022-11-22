@@ -84,17 +84,14 @@ const char *weather_choose[WEATHER_CHOOSE_CNT] = {
 ******************************************************************************/
 const DOWNLOAD_CMD_S download_cmd[] =
 {
-  {DPID_START, DP_TYPE_BOOL},
-  {DPID_MODE, DP_TYPE_ENUM},
-  {DPID_FAULT, DP_TYPE_BITMAP},
-  {DPID_DISPTEMP, DP_TYPE_VALUE},
-  {DPID_KILL, DP_TYPE_BOOL},
-  {DPID_HEAT, DP_TYPE_BOOL},
-  {DPID_SETTIME, DP_TYPE_VALUE},
-  {DPID_DISPHUM, DP_TYPE_VALUE},
-  {DPID_SETTEMP, DP_TYPE_VALUE},
-  {DPID_DISPTIME, DP_TYPE_VALUE},
-
+  {DPID_SWITCH, DP_TYPE_BOOL},
+  {DPID_UV, DP_TYPE_BOOL},
+  {DPID_DRYING, DP_TYPE_BOOL},
+  {DPID_TEMP_CURRENT, DP_TYPE_VALUE},
+  {DPID_SET_TIMGING, DP_TYPE_VALUE},
+  {DPID_HUMIDITY, DP_TYPE_VALUE},
+  {DPID_RAT_CONTROL, DP_TYPE_BOOL},
+  {DPID_SET_TEMPERATURE, DP_TYPE_VALUE},
 };
 
 
@@ -112,12 +109,11 @@ const DOWNLOAD_CMD_S download_cmd[] =
 void uart_transmit_output(unsigned char value)
 {
    // #error "请将MCU串口发送函数填入该函数,并删除该行"
-    wifiOutputBuf[0]=value;
+      wifiOutputBuf[0]=value;
  
 	   HAL_UART_Transmit(&huart2, wifiOutputBuf, 1,0xffff); //WT.EDIT 2022.08.27
 	
     
-   // HAL_UART_Transmit_IT(&huart2,wifiOutputBuf, 1);
 /*
     //Example:
     extern void Uart_PutChar(unsigned char value);
@@ -153,29 +149,25 @@ void all_data_update(void)
 {
    // #error "请在此处理可下发可上报数据及只上报数据示例,处理完成后删除该行"
     
-    mcu_dp_bool_update(DPID_START,0); //BOOL型数据上报;
-    mcu_dp_enum_update(DPID_MODE,0); //枚举型数据上报;
-    mcu_dp_fault_update(DPID_FAULT,0); //故障型数据上报;
-    mcu_dp_value_update(DPID_DISPTEMP,0); //VALUE型数据上报;
-    mcu_dp_bool_update(DPID_KILL,0); //BOOL型数据上报;
-    mcu_dp_bool_update(DPID_HEAT,0); //BOOL型数据上报;
-    mcu_dp_value_update(DPID_SETTIME,0); //VALUE型数据上报;
-    mcu_dp_value_update(DPID_DISPHUM,0); //VALUE型数据上报;
-    mcu_dp_value_update(DPID_SETTEMP,0); //VALUE型数据上报;
-    mcu_dp_value_update(DPID_DISPTIME,0); //VALUE型数据上报;
     
+    mcu_dp_bool_update(DPID_SWITCH,0); //BOOL型数据上报;
+    mcu_dp_bool_update(DPID_UV,0); //BOOL型数据上报;
+    mcu_dp_bool_update(DPID_DRYING,0); //BOOL型数据上报;
+    mcu_dp_value_update(DPID_TEMP_CURRENT,0); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_SET_TIMGING,0); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_HUMIDITY,0); //VALUE型数据上报;
+    mcu_dp_bool_update(DPID_RAT_CONTROL,0); //BOOL型数据上报;
+    mcu_dp_value_update(DPID_SET_TEMPERATURE,0); //VALUE型数据上报;
     /*
     //此代码为平台自动生成，请按照实际数据修改每个可下发可上报函数和只上报函数
-    mcu_dp_bool_update(DPID_START,当前启动); //BOOL型数据上报;
-    mcu_dp_enum_update(DPID_MODE,当前智能模式); //枚举型数据上报;
-    mcu_dp_fault_update(DPID_FAULT,当前故障告警); //故障型数据上报;
-    mcu_dp_value_update(DPID_DISPTEMP,当前显示温度值); //VALUE型数据上报;
-    mcu_dp_bool_update(DPID_KILL,当前杀菌); //BOOL型数据上报;
-    mcu_dp_bool_update(DPID_HEAT,当前加热); //BOOL型数据上报;
-    mcu_dp_value_update(DPID_SETTIME,当前设置定时时间); //VALUE型数据上报;
-    mcu_dp_value_update(DPID_DISPHUM,当前显示湿度); //VALUE型数据上报;
-    mcu_dp_value_update(DPID_SETTEMP,当前设置温度值); //VALUE型数据上报;
-    mcu_dp_value_update(DPID_DISPTIME,当前显示定时时间); //VALUE型数据上报;
+    mcu_dp_bool_update(DPID_SWITCH,当前开关); //BOOL型数据上报;
+    mcu_dp_bool_update(DPID_UV,当前UV杀菌); //BOOL型数据上报;
+    mcu_dp_bool_update(DPID_DRYING,当前烘干); //BOOL型数据上报;
+    mcu_dp_value_update(DPID_TEMP_CURRENT,当前当前温度); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_SET_TIMGING,当前设置定时关机); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_HUMIDITY,当前当前湿度); //VALUE型数据上报;
+    mcu_dp_bool_update(DPID_RAT_CONTROL,当前驱鼠); //BOOL型数据上报;
+    mcu_dp_value_update(DPID_SET_TEMPERATURE,当前设置温度); //VALUE型数据上报;
 
     */
 }
@@ -187,206 +179,177 @@ void all_data_update(void)
 自动化代码模板函数,具体请用户自行实现数据处理
 ******************************************************************************/
 /*****************************************************************************
-函数名称 : dp_download_start_handle
-功能描述 : 针对DPID_START的处理函数
+函数名称 : dp_download_switch_handle
+功能描述 : 针对DPID_SWITCH的处理函数
 输入参数 : value:数据源数据
         : length:数据长度
 返回参数 : 成功返回:SUCCESS/失败返回:ERROR
 使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
 *****************************************************************************/
-static unsigned char dp_download_start_handle(const unsigned char value[], unsigned short length)
+static unsigned char dp_download_switch_handle(const unsigned char value[], unsigned short length)
 {
     //示例:当前DP类型为BOOL
     unsigned char ret;
     //0:off/1:on
-    unsigned char start;
+    unsigned char switch_1;
     
-    start = mcu_get_dp_download_bool(value,length);
-    if(start == 0) {
+    switch_1 = mcu_get_dp_download_bool(value,length);
+    if(switch_1 == 0) {
         //bool off
-        wifi_t.wifi_power =2;//WT.EDIT 2022.08.27
-         wifi_t.wifi_counter=0;
     }else {
         //bool on
-        wifi_t.wifi_power = 1 ;//WT.EDIT 2022.08.27
-         wifi_t.wifi_counter=0;
     }
   
     //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_START,start);
+    ret = mcu_dp_bool_update(DPID_SWITCH,switch_1);
     if(ret == SUCCESS)
         return SUCCESS;
     else
         return ERROR;
 }
 /*****************************************************************************
-函数名称 : dp_download_mode_handle
-功能描述 : 针对DPID_MODE的处理函数
+函数名称 : dp_download_uv_handle
+功能描述 : 针对DPID_UV的处理函数
 输入参数 : value:数据源数据
         : length:数据长度
 返回参数 : 成功返回:SUCCESS/失败返回:ERROR
 使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
 *****************************************************************************/
-static unsigned char dp_download_mode_handle(const unsigned char value[], unsigned short length)
-{
-    //示例:当前DP类型为ENUM
-    unsigned char ret;
-    unsigned char mode;
-    
-    mode = mcu_get_dp_download_enum(value,length);
-    switch(mode) {
-        case 0:
-			
-			wifi_t.wifi_RunMode = wifi_AI;  //WT.EDIT .2022.08.27
-		    wifi_t.wifi_itemAi = 0;
-		     wifi_t.wifi_counter=0;
-        
-        break;
-        
-        case 1:
-			
-			wifi_t.wifi_RunMode = wifi_notAI;
-		    wifi_t.wifi_itemAi = 1;
-             wifi_t.wifi_counter=0;
-        break;
-        
-        default:
-    
-        break;
-    }
-    
-    //There should be a report after processing the DP
-    ret = mcu_dp_enum_update(DPID_MODE, mode);
-    if(ret == SUCCESS)
-        return SUCCESS;
-    else
-        return ERROR;
-}
-/*****************************************************************************
-函数名称 : dp_download_kill_handle
-功能描述 : 针对DPID_KILL的处理函数
-输入参数 : value:数据源数据
-        : length:数据长度
-返回参数 : 成功返回:SUCCESS/失败返回:ERROR
-使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
-*****************************************************************************/
-static unsigned char dp_download_kill_handle(const unsigned char value[], unsigned short length)
+static unsigned char dp_download_uv_handle(const unsigned char value[], unsigned short length)
 {
     //示例:当前DP类型为BOOL
     unsigned char ret;
     //0:off/1:on
-    unsigned char kill;
+    unsigned char uv;
     
-    kill = mcu_get_dp_download_bool(value,length);
-    if(kill == 0) {
+    uv = mcu_get_dp_download_bool(value,length);
+    if(uv == 0) {
         //bool off
-        wifi_t.wifi_RunMode = wifi_notkill;
-         wifi_t.wifi_counter=0;
-     
-		
     }else {
         //bool on
-        wifi_t.wifi_RunMode = wifi_kill ;
-        wifi_t.wifi_counter=0;
-       
     }
   
     //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_KILL,kill);
+    ret = mcu_dp_bool_update(DPID_UV,uv);
     if(ret == SUCCESS)
         return SUCCESS;
     else
         return ERROR;
 }
 /*****************************************************************************
-函数名称 : dp_download_heat_handle
-功能描述 : 针对DPID_HEAT的处理函数
+函数名称 : dp_download_drying_handle
+功能描述 : 针对DPID_DRYING的处理函数
 输入参数 : value:数据源数据
         : length:数据长度
 返回参数 : 成功返回:SUCCESS/失败返回:ERROR
 使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
 *****************************************************************************/
-static unsigned char dp_download_heat_handle(const unsigned char value[], unsigned short length)
+static unsigned char dp_download_drying_handle(const unsigned char value[], unsigned short length)
 {
     //示例:当前DP类型为BOOL
     unsigned char ret;
     //0:off/1:on
-    unsigned char heat;
+    unsigned char drying;
     
-    heat = mcu_get_dp_download_bool(value,length);
-    if(heat == 0) {
+    drying = mcu_get_dp_download_bool(value,length);
+    if(drying == 0) {
         //bool off
-        wifi_t.wifi_RunMode =wifi_notheat;
-        wifi_t.wifi_counter=0;
-        
     }else {
         //bool on
-        wifi_t.wifi_RunMode = wifi_heat;
-         wifi_t.wifi_counter=0;
     }
   
     //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_HEAT,heat);
+    ret = mcu_dp_bool_update(DPID_DRYING,drying);
     if(ret == SUCCESS)
         return SUCCESS;
     else
         return ERROR;
 }
 /*****************************************************************************
-函数名称 : dp_download_settime_handle
-功能描述 : 针对DPID_SETTIME的处理函数
+函数名称 : dp_download_set_timging_handle
+功能描述 : 针对DPID_SET_TIMGING的处理函数
 输入参数 : value:数据源数据
         : length:数据长度
 返回参数 : 成功返回:SUCCESS/失败返回:ERROR
 使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
 *****************************************************************************/
-static unsigned char dp_download_settime_handle(const unsigned char value[], unsigned short length)
+static unsigned char dp_download_set_timging_handle(const unsigned char value[], unsigned short length)
 {
     //示例:当前DP类型为VALUE
     unsigned char ret;
-    unsigned long settime;
+    unsigned long set_timging;
     
-    settime = mcu_get_dp_download_value(value,length);
-    /*
-    //VALUE type data processing
-    */
-     wifi_t.setTimesValue = settime; //
-    
-    //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_SETTIME,settime);
-    if(ret == SUCCESS)
-        return SUCCESS;
-    else
-        return ERROR;
-}
-/*****************************************************************************
-函数名称 : dp_download_settemp_handle
-功能描述 : 针对DPID_SETTEMP的处理函数
-输入参数 : value:数据源数据
-        : length:数据长度
-返回参数 : 成功返回:SUCCESS/失败返回:ERROR
-使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
-*****************************************************************************/
-static unsigned char dp_download_settemp_handle(const unsigned char value[], unsigned short length)
-{
-    //示例:当前DP类型为VALUE
-    unsigned char ret;
-    unsigned long settemp;
-    
-    settemp = mcu_get_dp_download_value(value,length);
+    set_timging = mcu_get_dp_download_value(value,length);
     /*
     //VALUE type data processing
     
     */
+    
+    //There should be a report after processing the DP
+    ret = mcu_dp_value_update(DPID_SET_TIMGING,set_timging);
+    if(ret == SUCCESS)
+        return SUCCESS;
+    else
+        return ERROR;
+}
+/*****************************************************************************
+函数名称 : dp_download_rat_control_handle
+功能描述 : 针对DPID_RAT_CONTROL的处理函数
+输入参数 : value:数据源数据
+        : length:数据长度
+返回参数 : 成功返回:SUCCESS/失败返回:ERROR
+使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
+*****************************************************************************/
+static unsigned char dp_download_rat_control_handle(const unsigned char value[], unsigned short length)
+{
+    //示例:当前DP类型为BOOL
+    unsigned char ret;
+    //0:off/1:on
+    unsigned char rat_control;
+    
+    rat_control = mcu_get_dp_download_bool(value,length);
+    if(rat_control == 0) {
+        //bool off
+    }else {
+        //bool on
+    }
+  
+    //There should be a report after processing the DP
+    ret = mcu_dp_bool_update(DPID_RAT_CONTROL,rat_control);
+    if(ret == SUCCESS)
+        return SUCCESS;
+    else
+        return ERROR;
+}
+/*****************************************************************************
+函数名称 : dp_download_set_temperature_handle
+功能描述 : 针对DPID_SET_TEMPERATURE的处理函数
+输入参数 : value:数据源数据
+        : length:数据长度
+返回参数 : 成功返回:SUCCESS/失败返回:ERROR
+使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
+*****************************************************************************/
+static unsigned char dp_download_set_temperature_handle(const unsigned char value[], unsigned short length)
+{
+    //示例:当前DP类型为VALUE
+    unsigned char ret;
+    unsigned long set_temperature;
+    
+    set_temperature = mcu_get_dp_download_value(value,length);
+    /*
+    //VALUE type data processing
+    
+    */
+    
+    //There should be a report after processing the DP
+    ret = mcu_dp_value_update(DPID_SET_TEMPERATURE,set_temperature);
+    if(ret == SUCCESS)
+        return SUCCESS;
+    else
+        return ERROR;
+}
 
-	 wifi_t.SetTemperatureValue = settemp ; //set up temperature value form smart phone APP 
-    //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_SETTEMP,settemp);
-    if(ret == SUCCESS)
-        return SUCCESS;
-    else
-        return ERROR;
-}
+
 
 
 /******************************************************************************
@@ -413,29 +376,29 @@ unsigned char dp_download_handle(unsigned char dpid,const unsigned char value[],
     ***********************************/
     unsigned char ret;
     switch(dpid) {
-        case DPID_START:
-            //启动处理函数
-            ret = dp_download_start_handle(value,length);
+        case DPID_SWITCH:
+            //开关处理函数
+            ret = dp_download_switch_handle(value,length);
         break;
-        case DPID_MODE:
-            //智能模式处理函数
-            ret = dp_download_mode_handle(value,length);
+        case DPID_UV:
+            //UV杀菌处理函数
+            ret = dp_download_uv_handle(value,length);
         break;
-        case DPID_KILL:
-            //杀菌处理函数
-            ret = dp_download_kill_handle(value,length);
+        case DPID_DRYING:
+            //烘干处理函数
+            ret = dp_download_drying_handle(value,length);
         break;
-        case DPID_HEAT:
-            //加热处理函数
-            ret = dp_download_heat_handle(value,length);
+        case DPID_SET_TIMGING:
+            //设置定时关机处理函数
+            ret = dp_download_set_timging_handle(value,length);
         break;
-        case DPID_SETTIME:
-            //设置定时时间处理函数
-            ret = dp_download_settime_handle(value,length);
+        case DPID_RAT_CONTROL:
+            //驱鼠处理函数
+            ret = dp_download_rat_control_handle(value,length);
         break;
-        case DPID_SETTEMP:
-            //设置温度值处理函数
-            ret = dp_download_settemp_handle(value,length);
+        case DPID_SET_TEMPERATURE:
+            //设置温度处理函数
+            ret = dp_download_set_temperature_handle(value,length);
         break;
 
         
@@ -444,7 +407,6 @@ unsigned char dp_download_handle(unsigned char dpid,const unsigned char value[],
     }
     return ret;
 }
-
 
 /**
  * @brief  获取所有dp命令总和
@@ -503,6 +465,7 @@ unsigned char mcu_firm_update_handle(const unsigned char value[],unsigned long p
     return SUCCESS;
 }
 #endif
+
 #ifdef SUPPORT_GREEN_TIME
 /**
  * @brief  获取到的格林时间
@@ -522,17 +485,13 @@ void mcu_get_greentime(unsigned char time[])
     time[5] 为分钟，从 0 开始到59 结束
     time[6] 为秒钟，从 0 开始到59 结束
     */
-   
     if(time[0] == 1) {
         //正确接收到wifi模块返回的格林数据
-        wifi_t.getTime_flag =0;
-		
-		
-       
-       }else {
+         wifi_t.getTime_flag =0;
+        
+    }else {
         //获取格林时间出错,有可能是当前wifi模块未联网
-        wifi_t.getTime_flag = 1;
-           
+         wifi_t.getTime_flag =1;
     }
 }
 #endif
@@ -578,7 +537,7 @@ void mcu_write_rtctime(unsigned char time[])
  */
 void wifi_test_result(unsigned char result,unsigned char rssi)
 {
-   // #error "请自行实现wifi功能测试成功/失败代码,完成后请删除该行"
+  //  #error "请自行实现wifi功能测试成功/失败代码,完成后请删除该行"
     if(result == 0) {
         //测试失败
         if(rssi == 0x00) {

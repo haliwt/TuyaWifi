@@ -76,7 +76,10 @@ void Wifi_Mode(void);
 void wifiDisplayTemperature_Humidity(void);
 void wifiUpdate_Power_Status(uint8_t pv);
 void wifiUpdate_Kill_Status(uint8_t kv);
-void wifiUpdate_AI_Status(uint8_t av);
+//void wifiUpdate_AI_Status(uint8_t av);
+void wifiUpdate_Rat_Control_Status(uint8_t rm);
+
+
 void wifiUpdate_Dry_Status(uint8_t dv);
 
 void wifiUpdate_SetTimeValue(uint8_t tv);

@@ -26,11 +26,6 @@
   #define SYSTEM_EXTERN   extern
 #endif
 
-#define RESET_WIFI_ERROR     0            //WT.EDIT 2022.08.23
-#define RESET_WIFI_SUCCESS    1
-
-#define  SET_WIFICONFIG_ERROR       0   //(SMART_CONFIG):杩涘叆smartconfig妯″紡
-#define SET_WIFICONFIG_SUCCESS      1
 //=============================================================================
 //Byte order of the frame
 //=============================================================================

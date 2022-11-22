@@ -108,10 +108,10 @@ void Decode_RunCmd(void)
 
 			     if(cmdType_2 != 0xff){
 
-				 	mcu_dp_value_update(DPID_DISPTIME,cmdType_2); //VALUE型数据上报; --
+				 	mcu_dp_value_update(DPID_TEMP_CURRENT,cmdType_2); //VALUE型数据上报; --
 			     }
 				 else
-					 mcu_dp_value_update(DPID_DISPTIME,0); //VALUE型数据上报; --
+					 mcu_dp_value_update(DPID_TEMP_CURRENT,0); //VALUE型数据上报; --
 			}
         }
 	   break;
@@ -121,7 +121,7 @@ void Decode_RunCmd(void)
 				 
 			if(run_t.SingleMode  ==1 ){
                  wifi_t.getGreenTime = 1; //don't display GMT 
-			     mcu_dp_value_update(DPID_SETTIME,cmdType_2); //VALUE型数据上报;
+			     mcu_dp_value_update(DPID_SET_TIMGING,cmdType_2); //VALUE型数据上报;
 			     
 			}
         }
@@ -134,7 +134,7 @@ void Decode_RunCmd(void)
 				 
 			if(run_t.SingleMode  ==1 ){
 
-			    mcu_dp_value_update(DPID_SETTEMP,cmdType_2); //VALUE型数据上报;
+			    mcu_dp_value_update(DPID_SET_TEMPERATURE,cmdType_2); //VALUE型数据上报;
 			     
 			}
         }
@@ -531,7 +531,8 @@ void AI_Function(uint8_t sig)
          
             run_t.gPlasma =0;
             run_t.gDry =0;
-            wifiUpdate_AI_Status(0);//wifi APP turn on
+           // wifiUpdate_AI_Status(0);//wifi APP turn on
+           wifiUpdate_Rat_Control_Status(0);
             wifiUpdate_Kill_Status(1); //update kill turn on   to smart phone APP
 			wifiUpdate_Dry_Status(1);  //update dry turn on to smart phone APP
       
@@ -564,7 +565,8 @@ void AI_Function(uint8_t sig)
 				   run_t.wifi_key++;
 
 				  Buzzer_On();
-				 wifiUpdate_AI_Status(1);
+				// wifiUpdate_AI_Status(1);
+                 wifiUpdate_Rat_Control_Status(1);
 				 SendWifiCmd_To_Order(0x18);
 
 		  }
@@ -580,7 +582,8 @@ void AI_Function(uint8_t sig)
 			   run_t.gFan_counter = 0;
 
                Buzzer_On(); 
-			   wifiUpdate_AI_Status(1);//wifi APP turn off
+			  // wifiUpdate_AI_Status(1);//wifi APP turn off
+               wifiUpdate_Rat_Control_Status(1);
                wifiUpdate_Kill_Status(0); //update kill turn off   to smart phone APP
 			   wifiUpdate_Dry_Status(0);  //update dry turn on off smart phone APP
 			   
@@ -605,7 +608,8 @@ void AI_Function(uint8_t sig)
 				   run_t.gFan_continueRun =0;
 
 			    Buzzer_On(); 
-			   wifiUpdate_AI_Status(0);//wifi APP turn off
+			   //wifiUpdate_AI_Status(0);//wifi APP turn off
+              wifiUpdate_Rat_Control_Status(0);
                wifiUpdate_Kill_Status(1); //update kill turn off   to smart phone APP
 			   wifiUpdate_Dry_Status(1);  //update dry turn on off smart phone APP
 
@@ -676,7 +680,7 @@ void RunCommand_Order(void)
 						   
 						  sendtemperature[1] =sendtemperature[0];
 	                     if(run_t.SingleMode ==1){
-						  mcu_dp_value_update(DPID_SETTIME,wifi_t.setTimesValue); //VALUE型数据上报;
+						  mcu_dp_value_update(DPID_SET_TIMGING,wifi_t.setTimesValue); //VALUE型数据上报;
 	                      SendWifiData_To_PanelTime(wifi_t.setTimesValue);
 						  run_t.gmt_time_flag  = 1;
 						  
@@ -689,7 +693,7 @@ void RunCommand_Order(void)
 			    if(sendtemperature[3] !=sendtemperature[2]){
 				      sendtemperature[3] =sendtemperature[2];
 				      if(run_t.SingleMode ==1){
-					  	  mcu_dp_value_update(DPID_SETTEMP,wifi_t.SetTemperatureValue); //VALUE型数据上报;
+					  	  mcu_dp_value_update(DPID_SET_TEMPERATURE,wifi_t.SetTemperatureValue); //VALUE型数据上报;
                       	SendWifiData_To_PanelTemp(wifi_t.SetTemperatureValue);
 
 				      }
