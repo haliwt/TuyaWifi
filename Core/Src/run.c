@@ -86,7 +86,7 @@ void Decode_RunCmd(void)
           
       break;
       
-      case 'A': //AI function ->wifi ->indicate Fun
+      case 'A': //AI control function ->wifi ->indicate Fun
         
         if(run_t.gPower_On==1){
 			
@@ -94,7 +94,7 @@ void Decode_RunCmd(void)
 			if(run_t.SingleMode  ==1 ){
                 run_t.globe_setPriority=1;
         	     Single_Usart_ReceiveData(cmdType_2);
-                
+                 Special_Function(run_t.Single_cmd);
             }
 			
         }
@@ -184,7 +184,7 @@ void Single_ReceiveCmd(uint8_t cmd)
 
      break;
 
-     case 0x18: //AI turn off
+     case 0x18: //AI turn off -> rat control
        
             run_t.Single_cmd = 0x18;
             run_t.globe_setPriority =1;
@@ -258,7 +258,7 @@ void Wifi_ReceiveCmd(uint8_t cmd)
    
 
      //AI key
-     case 0x08: //AI key command turn on
+     case 0x08: //rat_control
      	if(wifi_t.wifiPowerOn_flag==1){
              wifi_t.wifi_cmd = 0x08;
              run_t.globe_setPriority =0;
@@ -268,7 +268,7 @@ void Wifi_ReceiveCmd(uint8_t cmd)
 
      break;
 
-     case 0x18: //AI turn off
+     case 0x18: //rat_control turn off
         if(wifi_t.wifiPowerOn_flag==1){
              wifi_t.wifi_cmd = 0x18;
              run_t.globe_setPriority =0;
@@ -330,7 +330,7 @@ void Wifi_ReceiveCmd(uint8_t cmd)
 **********************************************************************/
 void Special_Function(uint8_t sig)
 {
-   static uint8_t ai_off=0xff,ai_on=0xff, settemp=0xff,settemp_off= 0xff;
+   static uint8_t rat_off=0xff,rat_on=0xff, settemp=0xff,settemp_off= 0xff;
    static uint8_t dry_on =0xff, dry_off = 0xff,ster_on=0xff,ster_off=0xff;
 
 	switch(sig){
@@ -362,10 +362,10 @@ void Special_Function(uint8_t sig)
 	       run_t.gPlasma =0;
 	
 		   run_t.gFan_continueRun =0;
-		   
+		   SendWifiCmd_To_Order(0x04);
 		   wifiUpdate_Kill_Status(1);
-	      UV_Function(0); //turn on
-	       SendWifiCmd_To_Order(0x04);
+	       UV_Function(0); //turn on
+	       
 		   
 		   
             }
@@ -493,8 +493,8 @@ void Special_Function(uint8_t sig)
 
 	case 0x08: // rat_control turn on
 
-	    if(ai_on != run_t.rat_key){
-		      ai_on = run_t.rat_key;
+	    if(rat_on != run_t.rat_key){
+		      rat_on = run_t.rat_key;
 		      
 		       run_t.gRat_control= AIENABLE;
                wifi_t.wifi_itemAi=AIENABLE;
@@ -531,12 +531,14 @@ void Special_Function(uint8_t sig)
 	  break;
 
 	 case 0x18: //turn off-> turn rat control
-	      if(ai_off != run_t.rat_key_off){
-		      ai_off = run_t.rat_key_off;
+	      if(rat_off != run_t.rat_key_off){
+		      rat_off = run_t.rat_key_off;
 		            run_t.rat_key++;
 
 		           run_t.gRat_control= AIDISABLE;
                    wifi_t.wifi_itemAi=AIDISABLE;
+
+				   
               
 		           run_t.kill_key++;
 				   run_t.kill_key_off++;

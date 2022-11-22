@@ -3,17 +3,13 @@
 #include "main.h"
 
 #define WIFI_TUYA      1  //
-#define AI_ENABLE      1
+
 
 typedef enum {                   /* enumeration for CProcess signals */
     kill =1,notkill,dry,notdry,rat_control,notrat_control
 }Signal;
 
-typedef enum
-{
-  AIENABLE = 0,
-  AIDISABLE = !AIENABLE
-} AiStatus;
+
 
 typedef enum
 {

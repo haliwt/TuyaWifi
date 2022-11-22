@@ -33,7 +33,6 @@
 #include "cmd_link.h"
 #include "wifi_fun.h"
 #include "special_power.h"
-#include "single_mode.h"
 #include "delay.h"
 /* USER CODE END Includes */
 
@@ -134,7 +133,7 @@ int main(void)
     
      Wifi_Mode();
 	 Decode_Function();
-     Single_Mode();
+    
     
 	 RunCommand_Order();
 	
