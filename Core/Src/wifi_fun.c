@@ -153,35 +153,45 @@ static void Wifi_RunMode(void)
        case wifi_not_kill:
 	   	  
            SendWifiCmd_To_Order(0x14);
+	       Buzzer_On();
+	      wifi_t.wifi_RunMode=0;
 
 	   break;
 
 	   case wifi_kill:
 
            SendWifiCmd_To_Order(0x04);
+		   Buzzer_On();
+	       wifi_t.wifi_RunMode=0;
 	   break;
 
 
 	   case wifi_not_heat:
 	   	 SendWifiCmd_To_Order(0x12);
+		 Buzzer_On();
+	     wifi_t.wifi_RunMode=0;
 
 	   break;
 
 
 	   case wifi_heat:
 	   	   SendWifiCmd_To_Order(0x02);
-
+		   Buzzer_On();
+           wifi_t.wifi_RunMode=0;
 	   break;
 
 	   case wifi_not_rat_control:
 
 	          SendWifiCmd_To_Order(0x18);
+			  Buzzer_On();
+	   wifi_t.wifi_RunMode=0;
 
 	   break;
 
 	   case wifi_rat_control:
 	   	      SendWifiCmd_To_Order(0x08);
-
+			  Buzzer_On();
+			wifi_t.wifi_RunMode=0;
 	   break;
 
 
