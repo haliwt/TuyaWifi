@@ -148,9 +148,60 @@ static void Wifi_RunMode(void)
   }
 
    if( wifi_t.wifiPowerOn_flag ==1){
-     
+       switch(wifi_t.wifi_RunMode){
 
-    }
+       case wifi_not_kill:
+	   	  
+           SendWifiCmd_To_Order(0x14);
+
+	   break;
+
+	   case wifi_kill:
+
+           SendWifiCmd_To_Order(0x04);
+	   break;
+
+
+	   case wifi_not_heat:
+	   	 SendWifiCmd_To_Order(0x12);
+
+	   break;
+
+
+	   case wifi_heat:
+	   	   SendWifiCmd_To_Order(0x02);
+
+	   break;
+
+	   case wifi_not_rat_control:
+
+	          SendWifiCmd_To_Order(0x18);
+
+	   break;
+
+	   case wifi_rat_control:
+	   	      SendWifiCmd_To_Order(0x08);
+
+	   break;
+
+
+	   default:
+
+	     wifi_t.wifi_RunMode=0;
+
+	   break;
+
+
+
+
+
+
+
+
+	   }
+
+
+   }
   
      
 
