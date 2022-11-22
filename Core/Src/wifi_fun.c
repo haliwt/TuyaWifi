@@ -78,7 +78,7 @@ void Wifi_Mode(void)
      if(wifi_work_state != WIFI_CONN_CLOUD && run_t.gPower_On ==1 && wifi_t.wifi_sensor ==0 ){
              if(no_wifi <10){
                  no_wifi ++ ;
-                 mcu_set_wifi_mode(SMART_CONFIG_STATE );//smart config 
+                 mcu_set_wifi_mode(SMART_CONFIG_STATE);//smart config 
                  
              }
       }
@@ -128,9 +128,7 @@ void Wifi_Mode(void)
            wifi_t.wifi_counter ++;
           Wifi_ReceiveCmd(wifi_t.wifi_RunMode); //Wifi_ReceiveCmd(wifi_t.wifi_RunMode);//Single_Usart_ReceiveData(wifi_t.wifi_RunMode);
        }
-	   if(run_t.globe_setPriority==0){
-           Wifi_RunCmd(wifi_t.wifi_cmd);
-       }
+	   
       
     }
   }
@@ -140,8 +138,8 @@ void Wifi_Mode(void)
   
   if(wifi_work_state == WIFI_CONN_CLOUD && run_t.gPower_On ==1 && wifi_t.wifi_sensor ==0 ){
 
-            if(run_t.gTimer_send_0xaa > 10){
-			  run_t.gTimer_send_0xaa=0;
+            if(wifi_t.gTimer_1s > 10){
+			  wifi_t.gTimer_1s=0;
 
 			  SendWifiData_To_Cmd(0xAA);
 
@@ -155,13 +153,32 @@ void Wifi_Mode(void)
    *
    *
 ***********************************************/
-static void Wifi_RunCmd(uint8_t sig)
+void Wifi_RunMode(uint8_t cmd)
 {
-   Ai_Fun(sig); //调用函数地址,有参数的函数
+   static uint8_t powerOn;
+   if(wifi_t.wifi_power==1 && powerOn==0){
+   	
+      PowerOn();
+	  powerOn++;
+
+   }
+   else if(wifi_t.wifi_power==2){
+
+      PowerOff();
+
+   }
+
+   if(wifi_t.wifi_power ==1){
+     
+
+
+
+
+   }
+  
+     
 
 }
-
-
 
 
 /***********************************************
@@ -190,7 +207,7 @@ static void wifiPowerOn_After_data_update(void)
 }
 /***********************************************
    *
-   *Function Name: void Wifi_RunCmd(void)
+   *Function Name: void wifiDisplayTemperature_Humidity(void)
    *Funciton : separately update value 
    *
    *
@@ -237,5 +254,6 @@ void wifiUpdate_SetTemperatureValue(uint8_t temp)
 {
    mcu_dp_value_update(DPID_SET_TEMPERATURE,temp); //VALUE型数据上报;
 }
+
 
 

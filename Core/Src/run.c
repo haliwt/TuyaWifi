@@ -731,29 +731,23 @@ void RunCommand_Order(void)
     
 	if(wifi_work_state !=WIFI_CONN_CLOUD ){
 
-	     if(wifikey != wifi_t.wifi_detect){
-		 	 wifikey = wifi_t.wifi_detect;
-		
-		    mcu_set_wifi_mode(0);//wifi be detector AP mode,slowly
-
-	     }
-      
-		    if(wifi_t.gTimer_500ms ==0){
+	    
+		 if(wifi_t.gTimer_500ms ==0){
 					 HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_SET);
 					  SendWifiData_To_Cmd(0x00);
 			       
 	                
-				  }
-				 else if(wifi_t.gTimer_500ms>0){
-					  if(wifi_t.gTimer_500ms >1)wifi_t.gTimer_500ms=0;
+		 }
+		 else if(wifi_t.gTimer_500ms>0){
+			if(wifi_t.gTimer_500ms >1)wifi_t.gTimer_500ms=0;
 					  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12,GPIO_PIN_RESET);
 					   Display_DHT11_Value(&DHT11);
 					   
 	                 
-				 }
+			}
        }
      if((wifi_work_state ==WIFI_CONN_CLOUD)   && (run_t.gTimer_send_0xaa > 5 || send_0xaa < 4 )){
-	 	//run_t.gTimer_send_0xaa=0;
+	 	run_t.gTimer_send_0xaa=0;
         wifi_t.wifi_detect++;
 	    send_0xaa++;
 		
@@ -834,12 +828,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	   if(tm0 == 100){//100ms *10 = 1000ms =1s
        tm0 =0;
         tm3++;
-       wifi_t.gTimer_1s ++;
+   
        run_t.sendtimes++;
-       wifi_t.timer_wiifi_sensor++;
        wifi_t.timer_wifi_send_cmd++;
-	   wifi_t.wifi_timer_send_info++;
 	   run_t.gTimer_send_0xaa++;
+	   wifi_t.gTimer_1s++;
 	   if(run_t.gFan_continueRun ==1){
 	   	   tm1++;
            run_t.gFan_counter++;
