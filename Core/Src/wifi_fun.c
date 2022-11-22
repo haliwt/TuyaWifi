@@ -111,18 +111,21 @@ void Wifi_Mode(void)
 **********************************************************************/
 static void Wifi_RunMode(void)
 {
-   static uint8_t powerOn;
+   
   if(wifi_work_state ==  WIFI_CONN_CLOUD){ //当WIFI连接成功，
-   if(wifi_t.wifi_power==1 && powerOn==0){
+   if(wifi_t.wifi_power==1 && wifi_t.wifi_power_times ==0){
    	   
    	
       PowerOn();
 	  SendWifiCmd_To_Order(0x80);
+      HAL_Delay(100);
       SendWifiData_To_Cmd(0xAA);
+      HAL_Delay(100);  
 	  wifi_t.wifiPowerOn_flag =1;
       wifi_t.WifiMode =1;
       wifiPowerOn_After_data_update();
-	  powerOn++;
+      SendWifiCmd_To_Order(0x80);
+	  wifi_t.wifi_power_times++;
 
    }
   if(wifi_t.wifi_power==2){
@@ -136,6 +139,7 @@ static void Wifi_RunMode(void)
 		  mcu_dp_bool_update(DPID_UV,0); //BOOL型数据上报;
           mcu_dp_bool_update(DPID_DRYING,0); //BOOL型数据上报;//dry
           mcu_dp_bool_update(DPID_RAT_CONTROL,0);//BOOL型数据上报;//RAT_CONTROL
+           wifi_t.wifi_power_times=0;
           
           SendWifiCmd_To_Order(0x81);
 		  

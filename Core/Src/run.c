@@ -243,13 +243,7 @@ void Single_ReceiveCmd(uint8_t cmd)
     }
 
 }
-/**********************************************************************
-	*
-	*Functin Name: void Single_ReceiveCmd(uint8_t cmd)
-	*Function : resolver is by usart port receive data  from display panle  
-	*Input Ref:  usart receive data
-	*Return Ref: NO
-	*
+
 /**********************************************************************
 	*
 	*Functin Name: void RunCommand_Mode(unit8_t sig)
@@ -559,7 +553,7 @@ void Special_Function(uint8_t sig)
 void RunCommand_Order(void)
 {
     
-    static uint8_t wifidisp=0,wifikey=0xff,retimes=0,time0=0,send_0xaa;
+    static uint8_t wifidisp=0,retimes=0,time0=0,send_0xaa;
 	uint8_t sendtemperature[4];
 
    if(run_t.gPower_On==0)times=0;

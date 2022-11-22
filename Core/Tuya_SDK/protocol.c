@@ -197,10 +197,12 @@ static unsigned char dp_download_switch_handle(const unsigned char value[], unsi
     if(switch_1 == 0) {
         //bool off
          wifi_t.wifi_power =2;//WT.EDIT 2022.08.27
+        
          wifi_t.wifi_counter=0;
     }else {
         //bool on
          wifi_t.wifi_power = 1 ;//WT.EDIT 2022.08.27
+         wifi_t.wifi_power_times=0;
          wifi_t.wifi_counter=0;
     }
   
