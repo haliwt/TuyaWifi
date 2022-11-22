@@ -728,8 +728,8 @@ void RunCommand_Order(void)
 	                 
 				 }
        }
-     if((wifi_work_state ==WIFI_CONN_CLOUD)   && (run_t.gTimer_send_0xaa > 10 || send_0xaa < 4 )){
-	 	run_t.gTimer_send_0xaa=0;
+     if((wifi_work_state ==WIFI_CONN_CLOUD)   && (run_t.gTimer_send_0xaa > 5 || send_0xaa < 4 )){
+	 	//run_t.gTimer_send_0xaa=0;
         wifi_t.wifi_detect++;
 	    send_0xaa++;
 		

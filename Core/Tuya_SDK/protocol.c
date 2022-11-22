@@ -196,8 +196,12 @@ static unsigned char dp_download_switch_handle(const unsigned char value[], unsi
     switch_1 = mcu_get_dp_download_bool(value,length);
     if(switch_1 == 0) {
         //bool off
+         wifi_t.wifi_power =2;//WT.EDIT 2022.08.27
+         wifi_t.wifi_counter=0;
     }else {
         //bool on
+         wifi_t.wifi_power = 1 ;//WT.EDIT 2022.08.27
+         wifi_t.wifi_counter=0;
     }
   
     //There should be a report after processing the DP
@@ -225,8 +229,12 @@ static unsigned char dp_download_uv_handle(const unsigned char value[], unsigned
     uv = mcu_get_dp_download_bool(value,length);
     if(uv == 0) {
         //bool off
+         wifi_t.wifi_RunMode = wifi_not_kill;
+         wifi_t.wifi_counter=0;
     }else {
         //bool on
+        wifi_t.wifi_RunMode = wifi_kill ;
+        wifi_t.wifi_counter=0;
     }
   
     //There should be a report after processing the DP
@@ -254,8 +262,12 @@ static unsigned char dp_download_drying_handle(const unsigned char value[], unsi
     drying = mcu_get_dp_download_bool(value,length);
     if(drying == 0) {
         //bool off
+        wifi_t.wifi_RunMode =wifi_not_heat;
+        wifi_t.wifi_counter=0;
     }else {
         //bool on
+         wifi_t.wifi_RunMode = wifi_heat;
+         wifi_t.wifi_counter=0;
     }
   
     //There should be a report after processing the DP
@@ -284,7 +296,7 @@ static unsigned char dp_download_set_timging_handle(const unsigned char value[],
     //VALUE type data processing
     
     */
-    
+     wifi_t.setTimesValue =  set_timging ; //WT.EDIT 2022.11.22
     //There should be a report after processing the DP
     ret = mcu_dp_value_update(DPID_SET_TIMGING,set_timging);
     if(ret == SUCCESS)
@@ -310,8 +322,13 @@ static unsigned char dp_download_rat_control_handle(const unsigned char value[],
     rat_control = mcu_get_dp_download_bool(value,length);
     if(rat_control == 0) {
         //bool off
+        wifi_t.wifi_RunMode= wifi_not_rat_control;
+         wifi_t.wifi_counter=0;
+        
     }else {
         //bool on
+         wifi_t.wifi_RunMode= wifi_rat_control;
+         wifi_t.wifi_counter=0;
     }
   
     //There should be a report after processing the DP
@@ -340,7 +357,7 @@ static unsigned char dp_download_set_temperature_handle(const unsigned char valu
     //VALUE type data processing
     
     */
-    
+     wifi_t.SetTemperatureValue = set_temperature ;
     //There should be a report after processing the DP
     ret = mcu_dp_value_update(DPID_SET_TEMPERATURE,set_temperature);
     if(ret == SUCCESS)

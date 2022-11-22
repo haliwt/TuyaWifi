@@ -107,7 +107,7 @@ void Wifi_Mode(void)
    }
   
 
-   if(wifi_t.wifi_power ==2 ){
+   if(wifi_t.wifi_power ==2 ){ //wifi receive data ->control ->mainboard ,turn shut down power
           wifi_t.wifi_power = 0xff;
 			 PowerOff();
           wifi_t.wifiPowerOn_flag=0;
@@ -137,10 +137,16 @@ void Wifi_Mode(void)
  
   }
 
-  if(wifi_t.wifi_sensor ==1){
-   //  wifi_heart_stop();
+  
+  if(wifi_work_state == WIFI_CONN_CLOUD && run_t.gPower_On ==1 && wifi_t.wifi_sensor ==0 ){
 
-  }
+            if(run_t.gTimer_send_0xaa > 10){
+			  run_t.gTimer_send_0xaa=0;
+
+			  SendWifiData_To_Cmd(0xAA);
+
+            }
+    }
 }
 /***********************************************
    *

@@ -108,8 +108,7 @@ int main(void)
   
    HAL_TIM_Base_Start_IT(&htim3);//HAL_TIM_Base_Start(&htim3);
    UART_Start_Receive_IT(&huart1,inputBuf,1);
-   //DMA usart2
-   //UART_Start_Receive_IT(&huart2,wifiInputBuf,1);
+  
   //tuya_wif
     __HAL_UART_ENABLE_IT(&huart2,UART_IT_RXNE);  //read USART_ISR :RXNE(BIT5) ->hardware by be set and clear
     wifi_protocol_init();
@@ -120,7 +119,7 @@ int main(void)
   PowerOff_Host(SetPowerOff_ForDoing);
   AI_Function_Host(Special_Function);
   Single_Usart_RxData(Single_ReceiveCmd);
-  //Single_Usart_RxData(Wifi_ReceiveCmd);
+ 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
