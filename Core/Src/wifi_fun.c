@@ -17,9 +17,10 @@ void (*Ai_Fun)(uint8_t sig);
 void (*SetTimes)(void);
 void (*SetTemperature)(void);
 
-static void Wifi_RunCmd(uint8_t sig);
+
 static void wifiPowerOn_After_data_update(void);
 
+static void Wifi_RunMode(void);
 
 
 
@@ -86,31 +87,48 @@ void Wifi_Mode(void)
 
     if(wifi_t.wifi_sensor ==0){ //tunr on 
       
+      Wifi_RunMode();
       
-      
-      
-   if(wifi_work_state ==  WIFI_CONN_CLOUD){ //当WIFI连接成功，
+ 
+     if(wifi_work_state == WIFI_CONN_CLOUD && run_t.gPower_On ==1 && wifi_t.wifi_sensor ==0 ){
 
-   if(wifi_t.wifi_power ==1){
+            if(wifi_t.gTimer_1s > 10){
+			  wifi_t.gTimer_1s=0;
+
+			  SendWifiData_To_Cmd(0xAA);
+
+            }
+    }
+}
+}
+/**********************************************************************
+	*
+	*Functin Name: void Wifi_RunMode(uint8_t cmd)
+	*Function : resolver is by usart port receive data  from display panle  
+	*Input Ref:  usart receive data
+	*Return Ref: NO
+	*
+**********************************************************************/
+static void Wifi_RunMode(void)
+{
+   static uint8_t powerOn;
+  if(wifi_work_state ==  WIFI_CONN_CLOUD){ //当WIFI连接成功，
+   if(wifi_t.wifi_power==1 && powerOn==0){
+   	   
+   	
+      PowerOn();
+	  SendWifiCmd_To_Order(0x80);
       SendWifiData_To_Cmd(0xAA);
-
-      wifi_t.wifi_power = 0xf0;
-      if(run_t.SingleMode !=1){
-           PowerOn(); //default AI 
-           SendWifiCmd_To_Order(0x80);
-      }
-      wifi_t.wifiPowerOn_flag =1;
+	  wifi_t.wifiPowerOn_flag =1;
       wifi_t.WifiMode =1;
       wifiPowerOn_After_data_update();
-      
-           
-   }
-  
+	  powerOn++;
 
-   if(wifi_t.wifi_power ==2 ){ //wifi receive data ->control ->mainboard ,turn shut down power
-          wifi_t.wifi_power = 0xff;
-			 PowerOff();
-          wifi_t.wifiPowerOn_flag=0;
+   }
+  if(wifi_t.wifi_power==2){
+
+      PowerOff();
+	  wifi_t.wifiPowerOn_flag=0;
           run_t.gFan_continueRun =1;
           run_t.gFan_counter=0;
           wifi_t.WifiMode =0;
@@ -121,60 +139,14 @@ void Wifi_Mode(void)
           
           SendWifiCmd_To_Order(0x81);
 		  
-           
-    }
-    if(wifi_t.wifiPowerOn_flag==1){
-       if(wifi_t.wifi_counter ==0){
-           wifi_t.wifi_counter ++;
-          Wifi_ReceiveCmd(wifi_t.wifi_RunMode); //Wifi_ReceiveCmd(wifi_t.wifi_RunMode);//Single_Usart_ReceiveData(wifi_t.wifi_RunMode);
-       }
-	   
-      
-    }
-  }
- 
-  }
-
-  
-  if(wifi_work_state == WIFI_CONN_CLOUD && run_t.gPower_On ==1 && wifi_t.wifi_sensor ==0 ){
-
-            if(wifi_t.gTimer_1s > 10){
-			  wifi_t.gTimer_1s=0;
-
-			  SendWifiData_To_Cmd(0xAA);
-
-            }
-    }
-}
-/***********************************************
-   *
-   *Function Name: void Wifi_RunCmd(void)
-   *Funciton : wifi power on default is AI mode
-   *
-   *
-***********************************************/
-void Wifi_RunMode(uint8_t cmd)
-{
-   static uint8_t powerOn;
-   if(wifi_t.wifi_power==1 && powerOn==0){
-   	
-      PowerOn();
-	  powerOn++;
 
    }
-   else if(wifi_t.wifi_power==2){
+  }
 
-      PowerOff();
-
-   }
-
-   if(wifi_t.wifi_power ==1){
+   if( wifi_t.wifiPowerOn_flag ==1){
      
 
-
-
-
-   }
+    }
   
      
 
