@@ -150,14 +150,14 @@ void all_data_update(void)
    // #error "请在此处理可下发可上报数据及只上报数据示例,处理完成后删除该行"
     
     
-    mcu_dp_bool_update(DPID_SWITCH,0); //BOOL型数据上报;
-    mcu_dp_bool_update(DPID_UV,0); //BOOL型数据上报;
-    mcu_dp_bool_update(DPID_DRYING,0); //BOOL型数据上报;
-    mcu_dp_value_update(DPID_TEMP_CURRENT,0); //VALUE型数据上报;
-    mcu_dp_value_update(DPID_SET_TIMGING,0); //VALUE型数据上报;
-    mcu_dp_value_update(DPID_HUMIDITY,0); //VALUE型数据上报;
-    mcu_dp_bool_update(DPID_RAT_CONTROL,0); //BOOL型数据上报;
-    mcu_dp_value_update(DPID_SET_TEMPERATURE,0); //VALUE型数据上报;
+    mcu_dp_bool_update(DPID_SWITCH,1); //BOOL型数据上报;
+    mcu_dp_bool_update(DPID_UV,1); //BOOL型数据上报;
+    mcu_dp_bool_update(DPID_DRYING,1); //BOOL型数据上报;
+    mcu_dp_value_update(DPID_TEMP_CURRENT,1); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_SET_TIMGING,1); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_HUMIDITY,1); //VALUE型数据上报;
+    mcu_dp_bool_update(DPID_RAT_CONTROL,1); //BOOL型数据上报;
+    mcu_dp_value_update(DPID_SET_TEMPERATURE,1); //VALUE型数据上报;
     /*
     //此代码为平台自动生成，请按照实际数据修改每个可下发可上报函数和只上报函数
     mcu_dp_bool_update(DPID_SWITCH,当前开关); //BOOL型数据上报;
@@ -323,7 +323,7 @@ static unsigned char dp_download_rat_control_handle(const unsigned char value[],
     if(rat_control == 0) {
         //bool off
         wifi_t.wifi_RunMode= wifi_not_rat_control;
-         wifi_t.wifi_counter=0;
+        wifi_t.wifi_counter=0;
         
     }else {
         //bool on
