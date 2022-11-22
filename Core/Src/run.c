@@ -7,7 +7,7 @@
 #include "cmd_link.h"
 #include "special_power.h"
 #include "wifi.h"
-#include "single_mode.h"
+
 #include "mcu_api.h"
 
  
@@ -352,9 +352,10 @@ void Special_Function(uint8_t sig)
 			   	
 			   run_t.rat_key++;
 			   run_t.rat_key_off++;
+               run_t.set_temperature_on++;
+                   run_t.set_temperature_off++;
 
-			   run_t.wifi_key_off++;
-			   run_t.wifi_key++;
+			
 			  
 			  Buzzer_On();
 	   
@@ -390,9 +391,10 @@ void Special_Function(uint8_t sig)
 			   	
 			   run_t.rat_key++;
 			   run_t.rat_key_off++;
+                run_t.set_temperature_on++;
+                   run_t.set_temperature_off++;
 			   
-			   run_t.wifi_key_off++;
-			   run_t.wifi_key++;
+			 
 			   
 	    	 
 			  
@@ -430,9 +432,10 @@ void Special_Function(uint8_t sig)
 				   
 				   run_t.rat_key++;
 				   run_t.rat_key_off++;
+              run_t.set_temperature_on++;
+                   run_t.set_temperature_off++;
 
-				   run_t.wifi_key_off++;
-			       run_t.wifi_key++;
+			
 
              	
 			   Buzzer_On();
@@ -466,12 +469,10 @@ void Special_Function(uint8_t sig)
 				   
 				   run_t.rat_key++;
 				   run_t.rat_key_off++;
-
-				   run_t.wifi_key_off++;
-			       run_t.wifi_key++;
-			   
-
-			    Buzzer_On();
+                run_t.set_temperature_on++;
+                   run_t.set_temperature_off++;
+              
+                  Buzzer_On();
 			  
         
              run_t.gDry =1;
@@ -492,12 +493,14 @@ void Special_Function(uint8_t sig)
     break;
 
 	case 0x08: // rat_control turn on
-
+        if(run_t.globe_sub_flag !=rat_control){
 	    if(rat_on != run_t.rat_key){
 		      rat_on = run_t.rat_key;
+
+		      run_t.globe_sub_flag = rat_control;
 		      
-		       run_t.gRat_control= AIENABLE;
-               wifi_t.wifi_itemAi=AIENABLE;
+		       run_t.gRat_control= 0;
+              
             
 			   run_t.rat_key_off++;
 
@@ -507,11 +510,10 @@ void Special_Function(uint8_t sig)
 			   run_t.dry_key++;
 			   run_t.dry_key_off++;
 
-			   run_t.wifi_key_off++;
-			   run_t.wifi_key++;
-			  
-               wifi_t.wifi_itemAi=0;
 			 
+		
+			  run_t.set_temperature_on++;
+               run_t.set_temperature_off++;
 				 
 		
 		   Buzzer_On();
@@ -527,16 +529,19 @@ void Special_Function(uint8_t sig)
              
 				
 		}
-		
+        }
 	  break;
 
 	 case 0x18: //turn off-> turn rat control
+	      if(run_t.globe_sub_flag !=notrat_control){
 	      if(rat_off != run_t.rat_key_off){
 		      rat_off = run_t.rat_key_off;
 		            run_t.rat_key++;
 
-		           run_t.gRat_control= AIDISABLE;
-                   wifi_t.wifi_itemAi=AIDISABLE;
+					run_t.globe_sub_flag =notrat_control;
+
+		           run_t.gRat_control= 1;
+                 
 
 				   
               
@@ -544,9 +549,9 @@ void Special_Function(uint8_t sig)
 				   run_t.kill_key_off++;
 				   run_t.dry_key++;
 				   run_t.dry_key_off++;
-
-				   run_t.wifi_key_off++;
-				   run_t.wifi_key++;
+                   run_t.set_temperature_on++;
+                   run_t.set_temperature_off++;
+				
 
 				  Buzzer_On();
 				 Rat_Control_Function(1);
@@ -554,7 +559,7 @@ void Special_Function(uint8_t sig)
 				 SendWifiCmd_To_Order(0x18);
 
 		  }
-
+	      	}
 	 break;
 
 	 case 0x87: //set up temperature  value auto shut off plasma and dry machine 
@@ -566,6 +571,14 @@ void Special_Function(uint8_t sig)
 			   run_t.gFan_counter = 0;
 
                Buzzer_On(); 
+
+			       run_t.kill_key++;
+				   run_t.kill_key_off++;
+				   run_t.dry_key++;
+				   run_t.dry_key_off++;
+
+				   run_t.rat_key_off++;
+				   run_t.rat_key++;
 
 
 			   
@@ -579,6 +592,15 @@ void Special_Function(uint8_t sig)
                  run_t.set_temperature_off++;
 
 				   run_t.gFan_continueRun =0;
+
+				   
+				run_t.kill_key++;
+				  run_t.kill_key_off++;
+				  run_t.dry_key++;
+				  run_t.dry_key_off++;
+
+				  run_t.rat_key_off++;
+				  run_t.rat_key++;
 
 			    Buzzer_On(); 
 

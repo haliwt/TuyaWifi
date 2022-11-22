@@ -55,9 +55,7 @@ typedef struct _RUN_T{
 	uint8_t rat_key;
 	uint8_t rat_key_off;
 	
-	
-	uint8_t wifi_key;
-	uint8_t wifi_key_off;
+
 
 	uint8_t  globe_sub_flag;
 	uint8_t set_temperature_on;

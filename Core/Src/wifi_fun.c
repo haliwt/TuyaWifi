@@ -5,7 +5,7 @@
 #include "tim.h"
 #include "special_power.h"
 #include "wifi.h"
-#include "single_mode.h"
+
 
 WIFI_FUN   wifi_t;
 
