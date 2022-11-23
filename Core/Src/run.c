@@ -209,9 +209,9 @@ void Single_ReceiveCmd(uint8_t cmd)
             run_t.gPlasma =0;
             run_t.gDry =0;
            Rat_Control_Function(0);
-           wifiUpdate_Rat_Control_Status(0);
+           wifiUpdate_Rat_Control_Status(1);
         
-			   // SendWifiCmd_To_Order(0x08);
+			 SendWifiCmd_To_Order(0x08);
              
 				
 		}
@@ -245,8 +245,8 @@ void Single_ReceiveCmd(uint8_t cmd)
 
 				  Buzzer_On();
 				 Rat_Control_Function(1);
-                 wifiUpdate_Rat_Control_Status(1);
-				// SendWifiCmd_To_Order(0x18);
+                 wifiUpdate_Rat_Control_Status(0);
+				 SendWifiCmd_To_Order(0x18);
 
 		  }
       
@@ -285,7 +285,7 @@ void Single_ReceiveCmd(uint8_t cmd)
 			 wifiUpdate_Dry_Status(1);
 			 Dry_Function(0);
 
-			//  SendWifiCmd_To_Order(0x02);
+			  SendWifiCmd_To_Order(0x02);
 			 
          }
              
@@ -325,7 +325,7 @@ void Single_ReceiveCmd(uint8_t cmd)
 				 run_t.gFan_continueRun =1;
 
              }
-		   //  SendWifiCmd_To_Order(0x12);
+		    SendWifiCmd_To_Order(0x12);
            }
           }
        
@@ -364,7 +364,7 @@ void Single_ReceiveCmd(uint8_t cmd)
 		  
 		   wifiUpdate_Kill_Status(1);
 	      UV_Function(0); //turn on
-	       // SendWifiCmd_To_Order(0x04);
+	        SendWifiCmd_To_Order(0x04);
 		   
 		   
             }
@@ -409,7 +409,7 @@ void Single_ReceiveCmd(uint8_t cmd)
 				 run_t.gFan_continueRun =1;
 			 }
     
-              // SendWifiCmd_To_Order(0x14);
+              SendWifiCmd_To_Order(0x14);
             }
         }
       
