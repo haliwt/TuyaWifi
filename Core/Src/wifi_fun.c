@@ -272,7 +272,7 @@ void wifiUpdate_Kill_Status(uint8_t kvalue)
 
 void wifiUpdate_Rat_Control_Status(uint8_t aiv)
 {
-  mcu_dp_enum_update(DPID_RAT_CONTROL,aiv); //枚举型数据上报;
+   mcu_dp_bool_update(DPID_RAT_CONTROL,aiv); //BOOL型数据上报;
 }
 
 void wifiUpdate_Dry_Status(uint8_t dvalue)

@@ -37,12 +37,12 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		switch(state)
 		{
 		case 0:  //#0
-			if(inputBuf[0] == 'T')  //hex :54 - "T" -fixed
+			if(inputBuf[0] == 'T')  //hex :54 - "T" -touch
 				state=1; //=1
 		
 			break;
 		case 1: //#1
-             if(inputBuf[0] == 'K')  //hex :4B - "K" -fixed
+             if(inputBuf[0] == 'K')  //hex :4B - "K" -key
 				state=2; //=1
 			else
 			   state =0;

@@ -88,7 +88,7 @@ void RunCommand_Order(void);
 void Decode_RunCmd(void);
 void Initial_Ref(void);
 
-void Special_Function(uint8_t sig);
+
 void Single_ReceiveCmd(uint8_t cmd);
 
 void Wifi_ReceiveCmd(uint8_t cmd);

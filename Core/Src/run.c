@@ -86,15 +86,15 @@ void Decode_RunCmd(void)
           
       break;
       
-      case 'A': //AI control function ->wifi ->indicate Fun
+      case 'A': //wifi  control function ->wifi ->indicate Fun
         
         if(run_t.gPower_On==1){
 			
 			
 			if(run_t.SingleMode  ==1 ){
                 run_t.globe_setPriority=1;
-        	     Single_Usart_ReceiveData(cmdType_2);
-                 Special_Function(run_t.Single_cmd);
+        	     Single_ReceiveCmd(cmdType_2);
+                
             }
 			
         }
@@ -163,7 +163,9 @@ void Decode_RunCmd(void)
 **********************************************************************/
 void Single_ReceiveCmd(uint8_t cmd)
 {
-    switch(cmd){
+  static uint8_t rat_off=0xff,rat_on=0xff, settemp=0xff,settemp_off= 0xff;
+   static uint8_t dry_on =0xff, dry_off = 0xff,ster_on=0xff,ster_off=0xff;
+	switch(cmd){
 
       case 0x11: //wifi key command turn off
        
@@ -175,34 +177,157 @@ void Single_ReceiveCmd(uint8_t cmd)
      	   wifi_t.wifi_sensor = 0;
      break;
 
-     //AI key
-     case 0x08: //AI key command turn on
-     
-          run_t.Single_cmd = 0x08;
-          run_t.globe_setPriority =1;
+     //rat_control
+     case 0x08: //rat_control key command turn on
+         if(run_t.globe_sub_flag !=rat_control){
+	    if(rat_on != run_t.rat_key){
+		      rat_on = run_t.rat_key;
+
+		      run_t.globe_sub_flag = rat_control;
+		      
+		       run_t.gRat_control= 0;
+              
+            
+			   run_t.rat_key_off++;
+
+		       run_t.kill_key++;
+			   run_t.kill_key_off++;
+			   
+			   run_t.dry_key++;
+			   run_t.dry_key_off++;
+
+			 
+		
+			  run_t.set_temperature_on++;
+               run_t.set_temperature_off++;
+				 
+		
+		   Buzzer_On();
+	      
+		   run_t.gFan_continueRun =0;
+         
+            run_t.gPlasma =0;
+            run_t.gDry =0;
+           Rat_Control_Function(0);
+           wifiUpdate_Rat_Control_Status(0);
+        
+			   // SendWifiCmd_To_Order(0x08);
+             
+				
+		}
+        }
+          
         
 
      break;
 
-     case 0x18: //AI turn off -> rat control
+     case 0x18: //rat_control turn off -> rat control
        
-            run_t.Single_cmd = 0x18;
-            run_t.globe_setPriority =1;
+            if(run_t.globe_sub_flag !=notrat_control){
+	      if(rat_off != run_t.rat_key_off){
+		      rat_off = run_t.rat_key_off;
+		            run_t.rat_key++;
+
+					run_t.globe_sub_flag =notrat_control;
+
+		           run_t.gRat_control= 1;
+                 
+
+				   
+              
+		           run_t.kill_key++;
+				   run_t.kill_key_off++;
+				   run_t.dry_key++;
+				   run_t.dry_key_off++;
+                   run_t.set_temperature_on++;
+                   run_t.set_temperature_off++;
+				
+
+				  Buzzer_On();
+				 Rat_Control_Function(1);
+                 wifiUpdate_Rat_Control_Status(1);
+				// SendWifiCmd_To_Order(0x18);
+
+		  }
       
       break;
 
      //dry key
      case 0x02:
         
-     	  run_t.Single_cmd = 0x02;
-     	  run_t.globe_setPriority =1;
+     	  if(run_t.globe_sub_flag != dry){
+        if(dry_on != run_t.dry_key){
+			      dry_on = run_t.dry_key;
+
+			  
+				run_t.globe_sub_flag = dry;
+
+		            run_t.dry_key_off++;
+			
+				   run_t.kill_key++;
+				   run_t.kill_key_off++;
+				   
+				   run_t.rat_key++;
+				   run_t.rat_key_off++;
+              run_t.set_temperature_on++;
+                   run_t.set_temperature_off++;
+
+			
+
+             	
+			   Buzzer_On();
+			  
+            
+             run_t.gDry = 0;
+          
+	
+			 run_t.gFan_continueRun =0;
+			 wifiUpdate_Dry_Status(1);
+			 Dry_Function(0);
+
+			//  SendWifiCmd_To_Order(0x02);
+			 
+         }
+             
+        }
      	
      break;
 
      case 0x12:
-       
-     	  run_t.Single_cmd = 0x12;
-     	  run_t.globe_setPriority =1;
+       if(run_t.globe_sub_flag !=notdry){
+          if(dry_off != run_t.dry_key_off){
+			  dry_off = run_t.dry_key_off;
+			  
+
+			  run_t.globe_sub_flag = notdry;
+			        run_t.dry_key++;
+			  
+		           run_t.kill_key++;
+				   run_t.kill_key_off++;
+				   
+				   run_t.rat_key++;
+				   run_t.rat_key_off++;
+                run_t.set_temperature_on++;
+                   run_t.set_temperature_off++;
+              
+                  Buzzer_On();
+			  
+        
+             run_t.gDry =1;
+		 	
+			wifiUpdate_Dry_Status(0);
+		    Dry_Function(1) ;//Display_Function_OnOff();
+		    
+             if(run_t.gPlasma ==1){ //plasma turn off flag
+
+                
+				 run_t.gFan_counter =0;
+				 run_t.gFan_continueRun =1;
+
+             }
+		   //  SendWifiCmd_To_Order(0x12);
+           }
+          }
        
      break;
 
@@ -210,58 +335,7 @@ void Single_ReceiveCmd(uint8_t cmd)
 
      case 0x04:
        
-     	  run_t.Single_cmd = 0x04;
-     	  run_t.globe_setPriority =1;
-     
-     break;
-
-     case 0x14:
-        
-     	  run_t.Single_cmd = 0x14;
-     	  run_t.globe_setPriority =1;
-      
-     break;
-
-     case 0x88:
-	          run_t.Single_cmd = 0x88; //turn on plasma and dry ->set up temperature value
-			  run_t.globe_setPriority =1;
-
-
-	 break;
-
-	 case 0x87:
-			 run_t.Single_cmd = 0x87;  //tunr off plasma and dry machine ->set up temperature value 
-     	     run_t.globe_setPriority =1;
-	 break;
-
-     default:
-         
-         run_t.Single_cmd = 0;
-     break;
-
-
-    }
-
-}
-
-/**********************************************************************
-	*
-	*Functin Name: void RunCommand_Mode(unit8_t sig)
-	*Function : wifi functio AI 
-	*Input Ref:  key of value
-	*Return Ref: NO
-	*
-**********************************************************************/
-void Special_Function(uint8_t sig)
-{
-   static uint8_t rat_off=0xff,rat_on=0xff, settemp=0xff,settemp_off= 0xff;
-   static uint8_t dry_on =0xff, dry_off = 0xff,ster_on=0xff,ster_off=0xff;
-
-	switch(sig){
-
-     //wifi function   
-     case 0x04: //kill turn on
-         if(run_t.globe_sub_flag != kill){
+     	if(run_t.globe_sub_flag != kill){
        
          if(ster_on !=run_t.kill_key){
 	   	    ster_on = run_t.kill_key;
@@ -287,20 +361,21 @@ void Special_Function(uint8_t sig)
 	       run_t.gPlasma =0;
 	
 		   run_t.gFan_continueRun =0;
-		   SendWifiCmd_To_Order(0x04);
+		  
 		   wifiUpdate_Kill_Status(1);
-	       UV_Function(0); //turn on
-	       
+	      UV_Function(0); //turn on
+	       // SendWifiCmd_To_Order(0x04);
 		   
 		   
             }
 	   
         }
+     
      break;
-         
-    case 0x14: //kill turn off->UV
+
+     case 0x14:
         
-          if(run_t.globe_sub_flag != notkill){
+     	  if(run_t.globe_sub_flag != notkill){
           if(ster_off !=run_t.kill_key_off){
                ster_off = run_t.kill_key_off;
 		
@@ -334,160 +409,38 @@ void Special_Function(uint8_t sig)
 				 run_t.gFan_continueRun =1;
 			 }
     
-               SendWifiCmd_To_Order(0x14);
+              // SendWifiCmd_To_Order(0x14);
             }
         }
-    
-    break;
+      
+     break;
 
+     case 0x88:
+	            if(settemp_off != run_t.set_temperature_on){
+		   	   settemp_off = run_t.set_temperature_on;
+                 run_t.set_temperature_off++;
 
-    case 0x02: //dry turn 0n
-        if(run_t.globe_sub_flag != dry){
-        if(dry_on != run_t.dry_key){
-			      dry_on = run_t.dry_key;
+				   run_t.gFan_continueRun =0;
 
-			  
-				run_t.globe_sub_flag = dry;
-
-		            run_t.dry_key_off++;
-			
-				   run_t.kill_key++;
-				   run_t.kill_key_off++;
 				   
-				   run_t.rat_key++;
-				   run_t.rat_key_off++;
-              run_t.set_temperature_on++;
-                   run_t.set_temperature_off++;
+				run_t.kill_key++;
+				  run_t.kill_key_off++;
+				  run_t.dry_key++;
+				  run_t.dry_key_off++;
 
-			
+				  run_t.rat_key_off++;
+				  run_t.rat_key++;
 
-             	
-			   Buzzer_On();
-			  
-            
-             run_t.gDry = 0;
-          
-	
-			 run_t.gFan_continueRun =0;
-			 wifiUpdate_Dry_Status(1);
-			 Dry_Function(0);
+			    Buzzer_On(); 
 
-			  SendWifiCmd_To_Order(0x02);
-			 
-         }
-             
-        }
-    break;
-         
-    case 0x12 : //dry turn off
-          if(run_t.globe_sub_flag !=notdry){
-          if(dry_off != run_t.dry_key_off){
-			  dry_off = run_t.dry_key_off;
-			  
-
-			  run_t.globe_sub_flag = notdry;
-			        run_t.dry_key++;
-			  
-		           run_t.kill_key++;
-				   run_t.kill_key_off++;
-				   
-				   run_t.rat_key++;
-				   run_t.rat_key_off++;
-                run_t.set_temperature_on++;
-                   run_t.set_temperature_off++;
-              
-                  Buzzer_On();
-			  
-        
-             run_t.gDry =1;
-		 	
-			wifiUpdate_Dry_Status(0);
-		    Dry_Function(1) ;//Display_Function_OnOff();
-		    
-             if(run_t.gPlasma ==1){ //plasma turn off flag
-
-                
-				 run_t.gFan_counter =0;
-				 run_t.gFan_continueRun =1;
-
-             }
-		     SendWifiCmd_To_Order(0x12);
-           }
+	 
           }
-    break;
 
-	case 0x08: // rat_control turn on
-        if(run_t.globe_sub_flag !=rat_control){
-	    if(rat_on != run_t.rat_key){
-		      rat_on = run_t.rat_key;
 
-		      run_t.globe_sub_flag = rat_control;
-		      
-		       run_t.gRat_control= 0;
-              
-            
-			   run_t.rat_key_off++;
-
-		       run_t.kill_key++;
-			   run_t.kill_key_off++;
-			   
-			   run_t.dry_key++;
-			   run_t.dry_key_off++;
-
-			 
-		
-			  run_t.set_temperature_on++;
-               run_t.set_temperature_off++;
-				 
-		
-		   Buzzer_On();
-	      
-		   run_t.gFan_continueRun =0;
-         
-            run_t.gPlasma =0;
-            run_t.gDry =0;
-           Rat_Control_Function(0);
-           wifiUpdate_Rat_Control_Status(0);
-        
-			    SendWifiCmd_To_Order(0x08);
-             
-				
-		}
-        }
-	  break;
-
-	 case 0x18: //turn off-> turn rat control
-	      if(run_t.globe_sub_flag !=notrat_control){
-	      if(rat_off != run_t.rat_key_off){
-		      rat_off = run_t.rat_key_off;
-		            run_t.rat_key++;
-
-					run_t.globe_sub_flag =notrat_control;
-
-		           run_t.gRat_control= 1;
-                 
-
-				   
-              
-		           run_t.kill_key++;
-				   run_t.kill_key_off++;
-				   run_t.dry_key++;
-				   run_t.dry_key_off++;
-                   run_t.set_temperature_on++;
-                   run_t.set_temperature_off++;
-				
-
-				  Buzzer_On();
-				 Rat_Control_Function(1);
-                 wifiUpdate_Rat_Control_Status(1);
-				 SendWifiCmd_To_Order(0x18);
-
-		  }
-	      	}
 	 break;
 
-	 case 0x87: //set up temperature  value auto shut off plasma and dry machine 
-	       if(settemp != run_t.set_temperature_off){
+	 case 0x87:
+			  if(settemp != run_t.set_temperature_off){
 		   	   settemp = run_t.set_temperature_off;
                  run_t.set_temperature_on++;
 			   
@@ -510,38 +463,16 @@ void Special_Function(uint8_t sig)
 	     }
 	 break;
 
-	 case 0x88: // setu up temperature value auto turn on plasma and dry machine 
-          if(settemp_off != run_t.set_temperature_on){
-		   	   settemp_off = run_t.set_temperature_on;
-                 run_t.set_temperature_off++;
+     default:
+         
+         run_t.Single_cmd = 0;
+     break;
 
-				   run_t.gFan_continueRun =0;
 
-				   
-				run_t.kill_key++;
-				  run_t.kill_key_off++;
-				  run_t.dry_key++;
-				  run_t.dry_key_off++;
-
-				  run_t.rat_key_off++;
-				  run_t.rat_key++;
-
-			    Buzzer_On(); 
-
-	 
-          }
-	 break;
-           
-   
-
-	default:
-     sig = 0;
-
-	break;
     }
- }
 
-
+}
+}
 /**********************************************************************
 	*
 	*Functin Name: void RunCommand_Order(void)
