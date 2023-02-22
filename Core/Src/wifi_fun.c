@@ -7,6 +7,7 @@
 #include "wifi.h"
 #include "flash.h"
 #include "gpio.h"
+#include "dht11.h"
 
 WIFI_FUN   wifi_t;
 
@@ -119,51 +120,32 @@ void RunWifi_Command_Handler(void)
 	            first_cloud_data++;
 	          
 			    wifiPowerOn_After_data_update();
-				wifi_t.wifiRun_Cammand_label= wifi_up_update_tuya_cloud_data;
+				wifi_t.wifiRun_Cammand_label= 0xff;
 	           
 	   	    }
-		    else
-				wifi_t.wifiRun_Cammand_label= wifi_up_update_tuya_cloud_data;
+		   
             
-		  
+		 
 		
 		 
        	break;
 
-	   	case wifi_up_update_tuya_cloud_data://05
-            
-      
-           if(wifi_t.gTimer_up_dht11 >0){ //1 minutes
-		   	  wifi_t.gTimer_up_dht11=0;
-             // wifi_t.gTimer_beijing_time=0;
-		      wifiDisplayTemperature_Humidity();
-			
-		   	 wifi_t.wifiRun_Cammand_label= wifi_get_beijing_time;
-           	}
-		    else{
+	  
 
-			    wifi_t.wifiRun_Cammand_label= wifi_get_beijing_time;
-
-
-			}
-            
-		
-	   break;
-
-		case wifi_get_beijing_time://7
-	       if(wifi_t.gTimer_beijing_time > 29){
-               wifi_t.gTimer_beijing_time=0;
-               SendData_Real_GMT(wifi_t.getGreenwichTime[0],wifi_t.getGreenwichTime[1],wifi_t.getGreenwichTime[2]);
-		     
-		     wifi_t.wifiRun_Cammand_label=wifi_up_update_tuya_cloud_data;
-
-	       	}
-		    else{
-
-				wifi_t.wifiRun_Cammand_label=wifi_up_update_tuya_cloud_data;
-			}
-		   
-	   break;
+//		case wifi_get_beijing_time://7
+//	       if(wifi_t.gTimer_beijing_time > 29){
+//               wifi_t.gTimer_beijing_time=0;
+//               SendData_Real_GMT(wifi_t.getGreenwichTime[0],wifi_t.getGreenwichTime[1],wifi_t.getGreenwichTime[2]);
+//		     
+//		     wifi_t.wifiRun_Cammand_label=wifi_up_update_tuya_cloud_data;
+//
+//	       	}
+//		    else{
+//
+//				wifi_t.wifiRun_Cammand_label=wifi_up_update_tuya_cloud_data;
+//			}
+//		   
+//	   break;
 
 	   
 
@@ -188,16 +170,31 @@ void RunWifi_Command_Handler(void)
                Flash_Write_Data();
 
 		 }
+
+		 if(wifi_t.gTimer_beijing_time > 29){
+               wifi_t.gTimer_beijing_time=0;
+               SendData_Real_GMT(wifi_t.getGreenwichTime[0],wifi_t.getGreenwichTime[1],wifi_t.getGreenwichTime[2]);
+		     
+		     wifi_t.wifiRun_Cammand_label=wifi_up_update_tuya_cloud_data;
+
+	      }
+
+		 if(wifi_t.gTimer_up_dht11 >0){ //1 minutes
+		   	  wifi_t.gTimer_up_dht11=0;
+			  Wifi_DHT11_Up_Value(&DHT11);
+		      wifiDisplayTemperature_Humidity();
+			
+           }
             
 		 Wifi_ReceiveData_Handler(wifi_t.response_wifi_signal_label);
 		 
     }
-      mcu_get_wifi_work_state();
 
-		    if(wifi_work_state ==WIFI_CONN_CLOUD){
-			    wifi_t.wifiRun_Cammand_label = wifi_tuya_up_init_data;
-				
-			}
+	if(wifi_t.gTimer_get_wifi_state > 40){
+		wifi_t.gTimer_get_wifi_state=0;
+        mcu_get_wifi_work_state();
+    
+	}
 
 	 
 }
@@ -414,7 +411,7 @@ void MainBoard_Self_Inspection_PowerOn_Fun(void)
 			case success: //wifi has been linked to tuya cloud,need auto link to tuya cloud
 			   //wifi_t.runCommand_order_lable = wifi_link_tencent_cloud;
 			   run_t.flash_write_data_flag = 1;
-			   WIFI_WBR3_DISABLE();
+			    WIFI_WBR3_EN();
 			break;
 	
 	
@@ -431,7 +428,7 @@ void MainBoard_Self_Inspection_PowerOn_Fun(void)
 		 case 1:
 			if(wifi_work_state ==WIFI_CONN_CLOUD){
 			   wifi_t.wifiRun_Cammand_label= wifi_has_been_connected ;
-			
+			    
 		   }
 		   else wifi_t.wifiRun_Cammand_label =wifi_link_tuya_cloud;//wifi_has_been_connected
 	

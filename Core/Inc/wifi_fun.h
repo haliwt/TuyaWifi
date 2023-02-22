@@ -87,7 +87,7 @@ typedef struct _WIFI_FUN{
 
  
 	uint8_t gTimer_1s;
-
+    uint8_t gTimer_get_wifi_state;
 	uint8_t gTimer_up_dht11;
 	uint8_t gTimer_beijing_time;
 	uint8_t get_greenwich_error;

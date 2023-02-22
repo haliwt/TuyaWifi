@@ -297,8 +297,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
        tm0 =0;
         tm1++;
       
+	   wifi_t.gTimer_beijing_time++;
 
-     
+       wifi_t.gTimer_get_wifi_state++;
 	   wifi_t.gTimer_1s++;
 	   if(run_t.gFan_continueRun ==1){
            run_t.gFan_counter++;
@@ -309,7 +310,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
          tm1=0;
        
          wifi_t.gTimer_up_dht11 ++;
-         wifi_t.gTimer_beijing_time++;
+         
       }
 
 	 }
