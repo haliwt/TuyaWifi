@@ -844,7 +844,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	   if(tm0 == 100){//100ms *10 = 1000ms =1s
        tm0 =0;
         tm1++;
-   
+        wifi_t.gTimer_up_timing++;
        run_t.sendtimes++;
        wifi_t.timer_wifi_send_cmd++;
 	   wifi_t.gTimer_1s++;

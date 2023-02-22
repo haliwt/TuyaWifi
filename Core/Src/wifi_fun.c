@@ -6,7 +6,7 @@
 #include "special_power.h"
 #include "wifi.h"
 #include "flash.h"
-
+#include "gpio.h"
 
 WIFI_FUN   wifi_t;
 
@@ -84,6 +84,7 @@ void RunWifi_Command_Handler(void)
 
       case wifi_has_been_connected:
 		   WIFI_WBR3_EN();
+	      
            mcu_set_wifi_mode(SMART_CONFIG);//smart
 		   mcu_get_wifi_work_state();
 
@@ -98,6 +99,7 @@ void RunWifi_Command_Handler(void)
 
         case wifi_link_tuya_cloud: //02
 			 WIFI_WBR3_EN();
+			
 		    mcu_set_wifi_mode(  AP_STATE);//AP_STATE
 	       
 
@@ -107,7 +109,7 @@ void RunWifi_Command_Handler(void)
 			    wifi_t.wifiRun_Cammand_label = wifi_tuya_up_init_data;
 				
 			}
-         
+         wifi_t.wifiRun_Cammand_label=0xff;
 	    break;
 
 	  	
@@ -440,14 +442,14 @@ void MainBoard_Self_Inspection_PowerOn_Fun(void)
 	
 			case error: //wifi don't link to tuya cloud ,need manual operation
 				wifi_t.wifiRun_Cammand_label = 0xff;
-				 run_t.flash_write_data_flag = 0;
+		        run_t.flash_write_data_flag = 0;
 			     WIFI_WBR3_DISABLE();
 			break;
 	
 			case success: //wifi has been linked to tuya cloud,need auto link to tuya cloud
 			   //wifi_t.runCommand_order_lable = wifi_link_tencent_cloud;
 			   run_t.flash_write_data_flag = 1;
-			 
+			   WIFI_WBR3_DISABLE();
 			break;
 	
 	
@@ -472,7 +474,7 @@ void MainBoard_Self_Inspection_PowerOn_Fun(void)
 			   wifi_t.wifiRun_Cammand_label= wifi_has_been_connected ;
 			
 		   }
-		   else wifi_t.wifiRun_Cammand_label =0xff;
+		   else wifi_t.wifiRun_Cammand_label =wifi_link_tuya_cloud;//wifi_has_been_connected
 	
 		 break;
 	
