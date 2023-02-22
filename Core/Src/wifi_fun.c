@@ -78,7 +78,7 @@ void SetTemperatureHost(void(*temperatureHandler)(void))
 *********************************************************************/
 void RunWifi_Command_Handler(void)
 {
-      static uint8_t first_connect;
+      static uint8_t first_connect,first_cloud_data;
 
 	 switch(wifi_t.wifiRun_Cammand_label){
 
@@ -90,7 +90,7 @@ void RunWifi_Command_Handler(void)
 
 		 if(wifi_work_state ==WIFI_CONN_CLOUD){
 		 
-	        wifi_t.wifiRun_Cammand_label = wifi_tuya_download_data;
+	        wifi_t.wifiRun_Cammand_label = wifi_up_update_tuya_cloud_data;
 			
 				
 		  }
@@ -106,7 +106,7 @@ void RunWifi_Command_Handler(void)
 			 mcu_get_wifi_work_state();
 
 		    if(wifi_work_state ==WIFI_CONN_CLOUD){
-			    wifi_t.wifiRun_Cammand_label = wifi_tuya_up_init_data;
+			    wifi_t.wifiRun_Cammand_label = wifi_up_update_tuya_cloud_data;
 				
 			}
          wifi_t.wifiRun_Cammand_label=0xff;
@@ -115,13 +115,15 @@ void RunWifi_Command_Handler(void)
 	  	
 	  	case wifi_tuya_up_init_data://03
 		  
-	       if(wifi_t.gTimer_up_timing>2 ){
-	             wifi_t.gTimer_up_timing=0;
+	       if(first_cloud_data==0){
+	            first_cloud_data++;
 	          
 			    wifiPowerOn_After_data_update();
 				wifi_t.wifiRun_Cammand_label= wifi_up_update_tuya_cloud_data;
 	           
 	   	    }
+		    else
+				wifi_t.wifiRun_Cammand_label= wifi_up_update_tuya_cloud_data;
             
 		  
 		
@@ -148,12 +150,8 @@ void RunWifi_Command_Handler(void)
 		
 	   break;
 
-
-
-	  
-
-	   case wifi_get_beijing_time://7
-	       if(wifi_t.gTimer_beijing_time > 0){
+		case wifi_get_beijing_time://7
+	       if(wifi_t.gTimer_beijing_time > 29){
                wifi_t.gTimer_beijing_time=0;
                SendData_Real_GMT(wifi_t.getGreenwichTime[0],wifi_t.getGreenwichTime[1],wifi_t.getGreenwichTime[2]);
 		     
@@ -178,7 +176,7 @@ void RunWifi_Command_Handler(void)
 
 	 if(wifi_work_state == WIFI_CONN_CLOUD  ){
 
-            if(first_connect == 0 ){
+            if(first_connect < 5){
 			   first_connect ++ ;
 
 			  SendWifiData_To_Cmd(0x01);
@@ -203,41 +201,6 @@ void RunWifi_Command_Handler(void)
 
 	 
 }
-
-/**********************************************************************/
-
-	 #if 0
-     if(wifi_work_state != WIFI_CONN_CLOUD && wifi_t.wifi_sensor ==1){
-             if(no_wifi <2){
-                 no_wifi ++ ;
-                 mcu_set_wifi_mode(  AP_STATE);//AP_STATE
-                 
-             }
-      }
-
-
-    
-     Wifi_RunMode();
-      
- 
-     if(wifi_work_state == WIFI_CONN_CLOUD  ){
-
-            if(first_connect == 0 ){
-			   first_connect ++ ;
-
-			  SendWifiData_To_Cmd(0x01);
-
-            }
-		   if(run_t.flash_write_data_flag == 0){
-			run_t.flash_write_data_flag=2;
-               Flash_Erase_Data();
-               Flash_Write_Data();
-
-		 }
-    }
-}
-#endif 
-
 /**********************************************************************
 	*
 	*Functin Name: void Wifi_RunMode(uint8_t cmd)
@@ -414,9 +377,12 @@ static void wifiPowerOn_After_data_update(void)
     mcu_dp_bool_update(DPID_DRYING,1); //BOOL型数据上报;
      mcu_dp_bool_update(DPID_RAT_CONTROL,1); //BOOL型数据上报;//WT.EDIT 2022.11.22
     
-    mcu_dp_value_update(DPID_SET_TIMGING,0); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_SET_TIMGING,wifi_t.setTimesValue); //VALUE型数据上报;
     mcu_dp_value_update(DPID_HUMIDITY,wifi_t.dispHumidityValue); //VALUE型数据上报;
     mcu_dp_value_update(DPID_SET_TEMPERATURE,0); //VALUE型数据上报;
+
+	 mcu_dp_bool_update(DPID_SMART,1); //BOOL型数据上报;
+    mcu_dp_value_update(DPID_FAN,run_t.set_wind_speed_value); //VALUE型数据上报;
   
 
 }
@@ -437,7 +403,6 @@ void MainBoard_Self_Inspection_PowerOn_Fun(void)
 	   if(self_power_on_flag==0){
 		   self_power_on_flag ++ ;
 		   flash_read_data =Flash_Read_Data();
-		   Decode_Function();
 		   switch(flash_read_data){
 	
 			case error: //wifi don't link to tuya cloud ,need manual operation
@@ -464,13 +429,7 @@ void MainBoard_Self_Inspection_PowerOn_Fun(void)
 		 break;
 	
 		 case 1:
-		
-		
-		   //Wifi_SoftAP_Config_Handler();
-
-		 
-		   Decode_Function();
-		   if(wifi_work_state ==WIFI_CONN_CLOUD){
+			if(wifi_work_state ==WIFI_CONN_CLOUD){
 			   wifi_t.wifiRun_Cammand_label= wifi_has_been_connected ;
 			
 		   }
