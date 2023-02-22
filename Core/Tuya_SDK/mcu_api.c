@@ -20,7 +20,7 @@
 #define MCU_API_GLOBAL
 
 #include "wifi.h"
-#include "wifi_fun.h"
+
 /**
  * @brief  hex转bcd
  * @param[in] {Value_H} 高字节
@@ -208,8 +208,8 @@ unsigned char mcu_dp_raw_update(unsigned char dpid,const unsigned char value[],u
 {
     unsigned short send_len = 0;
     
-    if(stop_update_flag == ENABLE)
-        return SUCCESS;
+    if(stop_update_flag == WIFI_ENABLE)
+        return WIFI_SUCCESS;
     //
     send_len = set_wifi_uart_byte(send_len,dpid);
     send_len = set_wifi_uart_byte(send_len,DP_TYPE_RAW);
@@ -221,7 +221,7 @@ unsigned char mcu_dp_raw_update(unsigned char dpid,const unsigned char value[],u
     
     wifi_uart_write_frame(STATE_UPLOAD_CMD,MCU_TX_VER,send_len);
     
-    return SUCCESS;
+    return WIFI_SUCCESS;
 }
 
 /**
@@ -235,8 +235,8 @@ unsigned char mcu_dp_bool_update(unsigned char dpid,unsigned char value)
 {
     unsigned short send_len = 0;
     
-    if(stop_update_flag == ENABLE)
-        return SUCCESS;
+    if(stop_update_flag == WIFI_ENABLE)
+        return WIFI_SUCCESS;
     
     send_len = set_wifi_uart_byte(send_len,dpid);
     send_len = set_wifi_uart_byte(send_len,DP_TYPE_BOOL);
@@ -252,7 +252,7 @@ unsigned char mcu_dp_bool_update(unsigned char dpid,unsigned char value)
     
     wifi_uart_write_frame(STATE_UPLOAD_CMD, MCU_TX_VER, send_len);
     
-    return SUCCESS;
+    return WIFI_SUCCESS;
 }
 
 /**
@@ -266,8 +266,8 @@ unsigned char mcu_dp_value_update(unsigned char dpid,unsigned long value)
 {
     unsigned short send_len = 0;
     
-    if(stop_update_flag == ENABLE)
-        return SUCCESS;
+    if(stop_update_flag == WIFI_ENABLE)
+        return WIFI_SUCCESS;
     
     send_len = set_wifi_uart_byte(send_len,dpid);
     send_len = set_wifi_uart_byte(send_len,DP_TYPE_VALUE);
@@ -282,7 +282,7 @@ unsigned char mcu_dp_value_update(unsigned char dpid,unsigned long value)
     
     wifi_uart_write_frame(STATE_UPLOAD_CMD,MCU_TX_VER,send_len);
     
-    return SUCCESS;
+    return WIFI_SUCCESS;
 }
 
 /**
@@ -297,8 +297,8 @@ unsigned char mcu_dp_string_update(unsigned char dpid,const unsigned char value[
 {
     unsigned short send_len = 0;
     
-    if(stop_update_flag == ENABLE)
-        return SUCCESS;
+    if(stop_update_flag == WIFI_ENABLE)
+        return WIFI_SUCCESS;
     //
     send_len = set_wifi_uart_byte(send_len,dpid);
     send_len = set_wifi_uart_byte(send_len,DP_TYPE_STRING);
@@ -310,7 +310,7 @@ unsigned char mcu_dp_string_update(unsigned char dpid,const unsigned char value[
     
     wifi_uart_write_frame(STATE_UPLOAD_CMD,MCU_TX_VER,send_len);
     
-    return SUCCESS;
+    return WIFI_SUCCESS;
 }
 
 /**
@@ -324,8 +324,8 @@ unsigned char mcu_dp_enum_update(unsigned char dpid,unsigned char value)
 {
     unsigned short send_len = 0;
     
-    if(stop_update_flag == ENABLE)
-        return SUCCESS;
+    if(stop_update_flag == WIFI_ENABLE)
+        return WIFI_SUCCESS;
     
     send_len = set_wifi_uart_byte(send_len,dpid);
     send_len = set_wifi_uart_byte(send_len,DP_TYPE_ENUM);
@@ -337,7 +337,7 @@ unsigned char mcu_dp_enum_update(unsigned char dpid,unsigned char value)
     
     wifi_uart_write_frame(STATE_UPLOAD_CMD,MCU_TX_VER,send_len);
     
-    return SUCCESS;
+    return WIFI_SUCCESS;
 }
 
 /**
@@ -351,8 +351,8 @@ unsigned char mcu_dp_fault_update(unsigned char dpid,unsigned long value)
 {
     unsigned short send_len = 0;
      
-    if(stop_update_flag == ENABLE)
-        return SUCCESS;
+    if(stop_update_flag == WIFI_ENABLE)
+        return WIFI_SUCCESS;
     
     send_len = set_wifi_uart_byte(send_len,dpid);
     send_len = set_wifi_uart_byte(send_len,DP_TYPE_BITMAP);
@@ -376,7 +376,7 @@ unsigned char mcu_dp_fault_update(unsigned char dpid,unsigned long value)
     
     wifi_uart_write_frame(STATE_UPLOAD_CMD, MCU_TX_VER, send_len);
 
-    return SUCCESS;
+    return WIFI_SUCCESS;
 }
 
 #ifdef MCU_DP_UPLOAD_SYN
@@ -608,7 +608,7 @@ unsigned long mcu_get_dp_download_value(const unsigned char value[],unsigned sho
  */
 void uart_receive_input(unsigned char value)
 {
-   // #error "请在串口接收中断中调用uart_receive_input(value),串口数据由MCU_SDK处理,用户请勿再另行处理,完成后删除该行" 
+    //#error "请在串口接收中断中调用uart_receive_input(value),串口数据由MCU_SDK处理,用户请勿再另行处理,完成后删除该行" 
     
     if(1 == rx_buf_out - rx_buf_in) {
         //串口接收缓存已满
@@ -635,24 +635,10 @@ void uart_receive_buff_input(unsigned char value[], unsigned short data_len)
 {
    // #error "请在需要一次缓存多个字节串口数据处调用此函数,串口数据由MCU_SDK处理,用户请勿再另行处理,完成后删除该行" 
     
-    static uint8_t state=0;
     unsigned short i = 0;
     for(i = 0; i < data_len; i++) {
-
-	     if(state == 0){
-           if(value[0] == 0x55) state++;
-		   else{
-               i=0;
-
-		   }
-
-		 }
-             
-       uart_receive_input(value[i]);
-	   
+        uart_receive_input(value[i]);
     }
-	if(i > 12)
-	    wifi_t.getGreenTime = 0;
 }
 
 /**
@@ -663,7 +649,7 @@ void uart_receive_buff_input(unsigned char value[], unsigned short data_len)
  */
 void wifi_uart_service(void)
 {
-  //  #error "请直接在main函数的while(1){}中添加wifi_uart_service(),调用该函数不要加任何条件判断,完成后删除该行" 
+   // #error "请直接在main函数的while(1){}中添加wifi_uart_service(),调用该函数不要加任何条件判断,完成后删除该行" 
     static unsigned short rx_in = 0;
     unsigned short offset = 0;
     unsigned short rx_value_len = 0;
@@ -728,11 +714,11 @@ void wifi_uart_service(void)
  */
 void wifi_protocol_init(void)
 {
- //   #error " 请在main函数中添加wifi_protocol_init()完成wifi协议初始化,并删除该行"
+   // #error " 请在main函数中添加wifi_protocol_init()完成wifi协议初始化,并删除该行"
     rx_buf_in = (unsigned char *)wifi_uart_rx_buf;
     rx_buf_out = (unsigned char *)wifi_uart_rx_buf;
     
-    stop_update_flag = DISABLE;
+    stop_update_flag = WIFI_DISABLE;
     
 #ifndef WIFI_CONTROL_SELF_MODE
     wifi_work_state = WIFI_SATE_UNKNOW;

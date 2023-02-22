@@ -39,6 +39,11 @@ extern "C" {
 void MX_GPIO_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+#define  WIFI_GPIO_Pin         GPIO_PIN_12
+#define  WIFI_GPIO_Port        GPIOA
+
+#define WIFI_WBR3_EN()     				HAL_GPIO_WritePin(WIFI_GPIO_Port, WIFI_GPIO_Pin,GPIO_PIN_SET)
+#define WIFI_WBR3_DISABLE()             HAL_GPIO_WritePin(WIFI_GPIO_Port, WIFI_GPIO_Pin,GPIO_PIN_RESET)
 
 /* USER CODE END Prototypes */
 

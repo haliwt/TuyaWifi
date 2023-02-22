@@ -29,13 +29,11 @@
 ******************************************************************************/
 
 #include "wifi.h"
-#include "usart.h"
-#include "wifi_fun.h"
 #include "run.h"
+#include "wifi_fun.h"
+#include "usart.h"
 
 uint8_t wifiOutputBuf[1];
-
-uint8_t timesArrary[7];
 
 #ifdef WEATHER_ENABLE
 /**
@@ -92,6 +90,8 @@ const DOWNLOAD_CMD_S download_cmd[] =
   {DPID_HUMIDITY, DP_TYPE_VALUE},
   {DPID_RAT_CONTROL, DP_TYPE_BOOL},
   {DPID_SET_TEMPERATURE, DP_TYPE_VALUE},
+  {DPID_SMART, DP_TYPE_BOOL},
+  {DPID_FAN, DP_TYPE_VALUE},
 };
 
 
@@ -109,10 +109,9 @@ const DOWNLOAD_CMD_S download_cmd[] =
 void uart_transmit_output(unsigned char value)
 {
    // #error "请将MCU串口发送函数填入该函数,并删除该行"
-      wifiOutputBuf[0]=value;
+    wifiOutputBuf[0]=value;
  
-	   HAL_UART_Transmit(&huart2, wifiOutputBuf, 1,0xffff); //WT.EDIT 2022.08.27
-	
+	HAL_UART_Transmit(&huart2, wifiOutputBuf, 1,0xffff); //WT.EDIT 2022.08.27
     
 /*
     //Example:
@@ -148,26 +147,29 @@ void uart_transmit_output(unsigned char value)
 void all_data_update(void)
 {
    // #error "请在此处理可下发可上报数据及只上报数据示例,处理完成后删除该行"
-    
-    
     mcu_dp_bool_update(DPID_SWITCH,1); //BOOL型数据上报;
     mcu_dp_bool_update(DPID_UV,1); //BOOL型数据上报;
     mcu_dp_bool_update(DPID_DRYING,1); //BOOL型数据上报;
-    mcu_dp_value_update(DPID_TEMP_CURRENT,1); //VALUE型数据上报;
-    mcu_dp_value_update(DPID_SET_TIMGING,1); //VALUE型数据上报;
-    mcu_dp_value_update(DPID_HUMIDITY,1); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_TEMP_CURRENT,run_t.gDht11_temperature); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_SET_TIMGING,wifi_t.setTimesValue); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_HUMIDITY,run_t.gDht11_humidity); //VALUE型数据上报;
     mcu_dp_bool_update(DPID_RAT_CONTROL,1); //BOOL型数据上报;
-    mcu_dp_value_update(DPID_SET_TEMPERATURE,1); //VALUE型数据上报;
+    mcu_dp_value_update(DPID_SET_TEMPERATURE,run_t.set_temperature_value); //VALUE型数据上报;
+    mcu_dp_bool_update(DPID_SMART,1); //BOOL型数据上报;
+    mcu_dp_value_update(DPID_FAN,run_t.set_wind_speed_value); //VALUE型数据上报;
+   
     /*
     //此代码为平台自动生成，请按照实际数据修改每个可下发可上报函数和只上报函数
     mcu_dp_bool_update(DPID_SWITCH,当前开关); //BOOL型数据上报;
-    mcu_dp_bool_update(DPID_UV,当前UV杀菌); //BOOL型数据上报;
+    mcu_dp_bool_update(DPID_UV,当前杀菌); //BOOL型数据上报;
     mcu_dp_bool_update(DPID_DRYING,当前烘干); //BOOL型数据上报;
     mcu_dp_value_update(DPID_TEMP_CURRENT,当前当前温度); //VALUE型数据上报;
     mcu_dp_value_update(DPID_SET_TIMGING,当前设置定时关机); //VALUE型数据上报;
     mcu_dp_value_update(DPID_HUMIDITY,当前当前湿度); //VALUE型数据上报;
     mcu_dp_bool_update(DPID_RAT_CONTROL,当前驱鼠); //BOOL型数据上报;
     mcu_dp_value_update(DPID_SET_TEMPERATURE,当前设置温度); //VALUE型数据上报;
+    mcu_dp_bool_update(DPID_SMART,当前智能模式); //BOOL型数据上报;
+    mcu_dp_value_update(DPID_FAN,当前风速); //VALUE型数据上报;
 
     */
 }
@@ -196,14 +198,10 @@ static unsigned char dp_download_switch_handle(const unsigned char value[], unsi
     switch_1 = mcu_get_dp_download_bool(value,length);
     if(switch_1 == 0) {
         //bool off
-         wifi_t.wifi_power =2;//WT.EDIT 2022.08.27
-        
-         wifi_t.wifi_counter=0;
+        wifi_t.response_wifi_signal_label = OPEN_OFF_ITEM;
     }else {
         //bool on
-         wifi_t.wifi_power = 1 ;//WT.EDIT 2022.08.27
-         wifi_t.wifi_power_times=0;
-         wifi_t.wifi_counter=0;
+        wifi_t.response_wifi_signal_label = OPEN_ON_ITEM;
     }
   
     //There should be a report after processing the DP
@@ -231,12 +229,10 @@ static unsigned char dp_download_uv_handle(const unsigned char value[], unsigned
     uv = mcu_get_dp_download_bool(value,length);
     if(uv == 0) {
         //bool off
-         wifi_t.wifi_RunMode = wifi_not_kill;
-         wifi_t.wifi_counter=0;
+        wifi_t.response_wifi_signal_label = PLASMA_OFF_ITEM;
     }else {
         //bool on
-        wifi_t.wifi_RunMode = wifi_kill ;
-        wifi_t.wifi_counter=0;
+        wifi_t.response_wifi_signal_label = PLASMA_ON_ITEM;
     }
   
     //There should be a report after processing the DP
@@ -264,12 +260,10 @@ static unsigned char dp_download_drying_handle(const unsigned char value[], unsi
     drying = mcu_get_dp_download_bool(value,length);
     if(drying == 0) {
         //bool off
-        wifi_t.wifi_RunMode =wifi_not_heat;
-        wifi_t.wifi_counter=0;
+        wifi_t.response_wifi_signal_label = PTC_OFF_ITEM;
     }else {
         //bool on
-         wifi_t.wifi_RunMode = wifi_heat;
-         wifi_t.wifi_counter=0;
+        wifi_t.response_wifi_signal_label = PTC_ON_ITEM;
     }
   
     //There should be a report after processing the DP
@@ -298,7 +292,8 @@ static unsigned char dp_download_set_timging_handle(const unsigned char value[],
     //VALUE type data processing
     
     */
-     wifi_t.setTimesValue =  set_timging ; //WT.EDIT 2022.11.22
+    wifi_t.setTimesValue = set_timging;
+    wifi_t.response_wifi_signal_label = TIME_ITEM;
     //There should be a report after processing the DP
     ret = mcu_dp_value_update(DPID_SET_TIMGING,set_timging);
     if(ret == SUCCESS)
@@ -324,13 +319,10 @@ static unsigned char dp_download_rat_control_handle(const unsigned char value[],
     rat_control = mcu_get_dp_download_bool(value,length);
     if(rat_control == 0) {
         //bool off
-        wifi_t.wifi_RunMode= wifi_not_rat_control;
-        wifi_t.wifi_counter=0;
-        
+        wifi_t.response_wifi_signal_label = ULTRASONIC_OFF_ITEM;
     }else {
         //bool on
-         wifi_t.wifi_RunMode= wifi_rat_control;
-         wifi_t.wifi_counter=0;
+         wifi_t.response_wifi_signal_label = ULTRASONIC_ON_ITEM;
     }
   
     //There should be a report after processing the DP
@@ -359,9 +351,69 @@ static unsigned char dp_download_set_temperature_handle(const unsigned char valu
     //VALUE type data processing
     
     */
-     wifi_t.SetTemperatureValue = set_temperature ;
+    run_t.set_temperature_value = set_temperature;  //WT.EDIT 2023.02.21
+    wifi_t.response_wifi_signal_label = TEMPERATURE_ITEM;
     //There should be a report after processing the DP
     ret = mcu_dp_value_update(DPID_SET_TEMPERATURE,set_temperature);
+    if(ret == SUCCESS)
+        return SUCCESS;
+    else
+        return ERROR;
+}
+/*****************************************************************************
+函数名称 : dp_download_smart_handle
+功能描述 : 针对DPID_SMART的处理函数
+输入参数 : value:数据源数据
+        : length:数据长度
+返回参数 : 成功返回:SUCCESS/失败返回:ERROR
+使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
+*****************************************************************************/
+static unsigned char dp_download_smart_handle(const unsigned char value[], unsigned short length)
+{
+    //示例:当前DP类型为BOOL
+    unsigned char ret;
+    //0:off/1:on
+    unsigned char smart;
+    
+    smart = mcu_get_dp_download_bool(value,length);
+    if(smart == 0) {
+        //bool off
+         wifi_t.response_wifi_signal_label = SMART_OFF_ITEM;
+    }else {
+        //bool on
+         wifi_t.response_wifi_signal_label = SMART_ON_ITEM;
+    }
+  
+    //There should be a report after processing the DP
+    ret = mcu_dp_bool_update(DPID_SMART,smart);
+    if(ret == SUCCESS)
+        return SUCCESS;
+    else
+        return ERROR;
+}
+/*****************************************************************************
+函数名称 : dp_download_fan_handle
+功能描述 : 针对DPID_FAN的处理函数
+输入参数 : value:数据源数据
+        : length:数据长度
+返回参数 : 成功返回:SUCCESS/失败返回:ERROR
+使用说明 : 可下发可上报类型,需要在处理完数据后上报处理结果至app
+*****************************************************************************/
+static unsigned char dp_download_fan_handle(const unsigned char value[], unsigned short length)
+{
+    //示例:当前DP类型为VALUE
+    unsigned char ret;
+    unsigned long fan;
+    
+    fan = mcu_get_dp_download_value(value,length);
+    /*
+    //VALUE type data processing
+    
+    */
+    run_t.set_wind_speed_value = fan;
+	wifi_t.response_wifi_signal_label = FAN_ITEM;
+    //There should be a report after processing the DP
+    ret = mcu_dp_value_update(DPID_FAN,fan);
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -400,7 +452,7 @@ unsigned char dp_download_handle(unsigned char dpid,const unsigned char value[],
             ret = dp_download_switch_handle(value,length);
         break;
         case DPID_UV:
-            //UV杀菌处理函数
+            //杀菌处理函数
             ret = dp_download_uv_handle(value,length);
         break;
         case DPID_DRYING:
@@ -418,6 +470,14 @@ unsigned char dp_download_handle(unsigned char dpid,const unsigned char value[],
         case DPID_SET_TEMPERATURE:
             //设置温度处理函数
             ret = dp_download_set_temperature_handle(value,length);
+        break;
+        case DPID_SMART:
+            //智能模式处理函数
+            ret = dp_download_smart_handle(value,length);
+        break;
+        case DPID_FAN:
+            //风速处理函数
+            ret = dp_download_fan_handle(value,length);
         break;
 
         
@@ -506,11 +566,13 @@ void mcu_get_greentime(unsigned char time[])
     */
     if(time[0] == 1) {
         //正确接收到wifi模块返回的格林数据
-         wifi_t.getTime_flag =0;
+        wifi_t.getGreenwichTime[0] = time[4];
+		wifi_t.getGreenwichTime[1] = time[5];
+	    wifi_t.getGreenwichTime[2] = time[6];
         
     }else {
         //获取格林时间出错,有可能是当前wifi模块未联网
-         wifi_t.getTime_flag =1;
+        wifi_t.get_greenwich_error =1;
     }
 }
 #endif

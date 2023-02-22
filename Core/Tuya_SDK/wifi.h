@@ -20,7 +20,7 @@
 #ifndef __WIFI_H_
 #define __WIFI_H_
 
-#include "stm32g0xx.h"
+//#include "stm32f1xx.h"
 #include "stdio.h"
 #include "string.h"
 #include "protocol.h"
@@ -45,11 +45,11 @@
 #endif
 
 #ifndef SUCCESS
-#define         SUCCESS          1
+#define         WIFI_SUCCESS          1
 #endif
 
 #ifndef ERROR
-#define         ERROR            0
+#define         WIFI_ERROR            0
 #endif
 
 #ifndef INVALID
@@ -57,12 +57,14 @@
 #endif
 
 #ifndef ENABLE
-#define         ENABLE           1
+#define         WIFI_ENABLE           1
 #endif
 
 #ifndef DISABLE
-#define         DISABLE          0
+#define         WIFI_DISABLE          0
 #endif
+
+
 //=============================================================================
 //dp数据点类型
 //=============================================================================

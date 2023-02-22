@@ -38,6 +38,7 @@
 
 
 
+void Buzzer_KeySound(void);
 
 void FAN_CCW_RUN(void);
 void FAN_Stop(void);
@@ -46,11 +47,12 @@ void SterIlization(uint8_t sel);
 
 
 
-void Buzzer_On(void);
 void ShutDown_AllFunction(void);
 void Dry_Function(uint8_t sel);
 void UV_Function(uint8_t sel);
 
 void Rat_Control_Function(uint8_t uv);
+void Fan_Slowly_Speed(void);
+
 
 #endif 

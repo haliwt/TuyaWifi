@@ -465,7 +465,7 @@ void data_handle(unsigned short offset)
                 //
                 ret = data_point_handle((unsigned char *)wifi_data_process_buf + offset + DATA_START + i);
       
-                if(SUCCESS == ret) {
+                if(WIFI_SUCCESS == ret) {
                     //成功提示
                 }else {
                     //错误提示

@@ -12,10 +12,14 @@ extern uint8_t wifiInputBuf[1];
 
 void Decode_Function(void);
 
-void SendData_To_TouchKey(uint8_t hum,uint8_t temp);
+
+void sendData_Real_TempHum(uint8_t hum,uint8_t temp);
+
 
 void SendWifiData_To_Cmd(uint8_t wdata);
 
+
+void SendWifiData_To_PanelWindSpeed(uint8_t dat1);
 
 
 

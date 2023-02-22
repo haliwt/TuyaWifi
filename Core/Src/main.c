@@ -129,12 +129,10 @@ int main(void)
     
      wifi_uart_service();
   
-    
-     Wifi_Mode();
+     MainBoard_Self_Inspection_PowerOn_Fun();
+     RunWifi_Command_Handler();
 	 Decode_Function();
-    
-    
-	 RunCommand_Order();
+     RunCommand_MainBoard_Handler();
 	
    }
   /* USER CODE END 3 */

@@ -184,7 +184,7 @@ mcu_get_mac内部有#err提示,完成函数后请删除该#err
 mcu_get_greentime内部有#err提示,完成函数后请删除该#err
 mcu在wifi模块正确联网后可调用mcu_get_green_time()函数发起校时功能
 ******************************************************************************/
-#define         SUPPORT_GREEN_TIME                //开启格林时间功能 //WT.EDIT 
+#define         SUPPORT_GREEN_TIME                //开启格林时间功能
 
 /******************************************************************************
                       14:MCU是否需要开启同步状态上报功能
@@ -260,7 +260,7 @@ BLE_test_result内部有#err提示,完成函数后请删除该#err
 //开关(可下发可上报)
 //备注:
 #define DPID_SWITCH 1
-//UV杀菌(可下发可上报)
+//杀菌(可下发可上报)
 //备注:
 #define DPID_UV 3
 //烘干(可下发可上报)
@@ -281,6 +281,12 @@ BLE_test_result内部有#err提示,完成函数后请删除该#err
 //设置温度(可下发可上报)
 //备注:
 #define DPID_SET_TEMPERATURE 104
+//智能模式(可下发可上报)
+//备注:
+#define DPID_SMART 105
+//风速(可下发可上报)
+//备注:
+#define DPID_FAN 106
 
 
 

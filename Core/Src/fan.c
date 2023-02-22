@@ -5,6 +5,19 @@
 #include "delay.h"
 
 
+void Buzzer_KeySound(void)
+{
+
+  unsigned int m=200;//80
+	while(m--){
+
+    HAL_GPIO_TogglePin(BUZZER_GPIO,BUZZER_PIN);//BEEP=!BEEP;
+    //delay_us(600);
+    delay_us(500);//460//__delay_us(300);;//__delay_us(800);//delayUS(300);
+   
+    }
+       
+}
 
 
 
@@ -21,18 +34,6 @@ void FAN_Stop(void)
     FAN_CCW_SetLow(); //brake
     FAN_CW_SetLow(); //brake
 }
-
-
-
-void Buzzer_On(void)
-{
-  unsigned int m=200;//80
-	while(m--){
-		BUZZER_TOGGLE() ; 
-        delay_us(400);
-        }
-  
- }
 
 void ShutDown_AllFunction(void)
 {
@@ -103,4 +104,25 @@ void Dry_Function(uint8_t sel)
    }
 
 }
+
+void Fan_Slowly_Speed(void)
+{
+    static uint16_t fan_speed;
+	fan_speed ++ ;
+	FAN_CW_SetLow();
+	
+	if(fan_speed < 100){
+	   FAN_CCW_SetHigh(); //Run fan
+    }
+
+	if(fan_speed > 99  && fan_speed <  106){
+  
+	  FAN_CCW_SetLow(); //brake
+
+	}
+
+	if(fan_speed > 106|| fan_speed==106) fan_speed =0;
+	
+}
+
 
