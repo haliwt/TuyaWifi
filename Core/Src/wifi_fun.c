@@ -73,14 +73,15 @@ void SetTemperatureHost(void(*temperatureHandler)(void))
 *********************************************************************/
 void RunWifi_Command_Handler(void)
 {
-      static uint8_t first_connect,first_cloud_data;
+      static uint8_t first_connect,first_cloud_data,wbr3_flag;
 
 	 switch(wifi_t.wifiRun_Cammand_label){
 
       case wifi_has_been_connected:
+       
 		   WIFI_WBR3_EN();
-	      
-           mcu_set_wifi_mode(SMART_CONFIG);//smart
+	       mcu_set_wifi_mode(AP_STATE);//AP_STATE
+          // mcu_set_wifi_mode(SMART_CONFIG);//smart
 		   mcu_get_wifi_work_state();
 
 		 if(wifi_work_state ==WIFI_CONN_CLOUD){
@@ -93,9 +94,10 @@ void RunWifi_Command_Handler(void)
 		break;
 
         case wifi_link_tuya_cloud: //02
+           
 			 WIFI_WBR3_EN();
 			
-		    mcu_set_wifi_mode(  AP_STATE);//AP_STATE
+		    mcu_set_wifi_mode(AP_STATE);//AP_STATE
 	       
 
 			 mcu_get_wifi_work_state();
@@ -192,7 +194,8 @@ void RunWifi_Command_Handler(void)
 	if(wifi_t.gTimer_get_wifi_state > 40){
 		wifi_t.gTimer_get_wifi_state=0;
         mcu_get_wifi_work_state();
-        SendWifiData_To_Cmd(0x01);
+        if(wifi_work_state == WIFI_CONN_CLOUD)
+              SendWifiData_To_Cmd(0x01);
 	}
 
 	 
@@ -369,10 +372,11 @@ void Wifi_ReceiveData_Handler(uint8_t cmd)
 **********************************************************************/     
 static void Get_BeiJing_Time(void)
 {
-	if(wifi_t.getGreenTime == 0xff && wifi_t.getGreenTime !=0xFE && wifi_t.getGreenTime !=0){
+	
 
-	    if(wifi_t.gTimer_gmt > 4){ //10 minute 
+	    if(wifi_t.gTimer_gmt > 2){ //10 minute 
             wifi_t.gTimer_gmt=0;
+            wifi_t.getGreenTime=1;
              wifi_t.getGreenTime =0xFE;
            // Decode_GMT(rx_wifi_data);
             wifi_t.real_hours = rx_wifi_data[4] + 8;
@@ -386,7 +390,7 @@ static void Get_BeiJing_Time(void)
             SendData_Real_GMT(wifi_t.real_hours ,wifi_t.real_minutes,rx_wifi_data[6]); //gmt[4]->hours, gmt[5]->minutes
 		    
 	    }
-	}
+	
 
 
 }
@@ -449,7 +453,10 @@ void MainBoard_Self_Inspection_PowerOn_Fun(void)
 			case success: //wifi has been linked to tuya cloud,need auto link to tuya cloud
 			   //wifi_t.runCommand_order_lable = wifi_link_tencent_cloud;
 			   run_t.flash_write_data_flag = 1;
+                WIFI_WBR3_DISABLE();
+                HAL_Delay(1000);
 			    WIFI_WBR3_EN();
+                
 			break;
 	
 	
@@ -464,6 +471,7 @@ void MainBoard_Self_Inspection_PowerOn_Fun(void)
 		 break;
 	
 		 case 1:
+             mcu_get_wifi_work_state();
 			if(wifi_work_state ==WIFI_CONN_CLOUD){
 			   wifi_t.wifiRun_Cammand_label= wifi_has_been_connected ;
 			    

@@ -117,7 +117,7 @@ int main(void)
   PowerOn_Host(SetPowerOn_ForDoing);
   PowerOff_Host(SetPowerOff_ForDoing);
 
- 
+  wifi_t.getGreenTime =1;
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)

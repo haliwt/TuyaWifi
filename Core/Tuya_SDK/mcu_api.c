@@ -20,6 +20,7 @@
 #define MCU_API_GLOBAL
 
 #include "wifi.h"
+#include "wifi_fun.h"
 
 /**
  * @brief  hex转bcd
@@ -635,10 +636,24 @@ void uart_receive_buff_input(unsigned char value[], unsigned short data_len)
 {
    // #error "请在需要一次缓存多个字节串口数据处调用此函数,串口数据由MCU_SDK处理,用户请勿再另行处理,完成后删除该行" 
     
+    static uint8_t state=0;
     unsigned short i = 0;
     for(i = 0; i < data_len; i++) {
-        uart_receive_input(value[i]);
+
+	     if(state == 0){
+           if(value[0] == 0x55) state++;
+		   else{
+               i=0;
+
+		   }
+
+		 }
+             
+       uart_receive_input(value[i]);
+	   
     }
+	if(i > 12)
+	    wifi_t.getGreenTime = 0;
 }
 
 /**
