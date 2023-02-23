@@ -51,7 +51,7 @@ typedef struct _RUN_T{
 	
     uint8_t setup_timer_flag;
     uint8_t gmt_time_flag;
-	uint8_t sed_GMT_times;
+	
 	uint8_t set_wind_speed_value;
 	
 

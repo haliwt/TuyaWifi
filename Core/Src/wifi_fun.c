@@ -11,6 +11,8 @@
 
 WIFI_FUN   wifi_t;
 
+uint8_t time[7];
+
 void (*PowerOn)(void);
 void (*PowerOff)(void);
 void (*Ai_Fun)(uint8_t sig);
@@ -21,15 +23,7 @@ void (*SetTemperature)(void);
 
 
 static void wifiPowerOn_After_data_update(void);
-
-
-
-
-
-
-
-
-uint8_t temp[7];
+static void Get_BeiJing_Time(void);
 
 
 void PowerOn_Host(void (* poweronHandler)(void))
@@ -173,7 +167,11 @@ void RunWifi_Command_Handler(void)
 
 		 if(wifi_t.gTimer_beijing_time > 29){
                wifi_t.gTimer_beijing_time=0;
-               SendData_Real_GMT(wifi_t.getGreenwichTime[0],wifi_t.getGreenwichTime[1],wifi_t.getGreenwichTime[2]);
+			   mcu_get_greentime(time);
+		 
+               mcu_write_rtctime(wifi_t.getGreenwichTime);
+			   
+               SendData_Real_GMT( wifi_t.getGreenwichTime[4], wifi_t.getGreenwichTime[5], wifi_t.getGreenwichTime[6]);
 		     
 		     wifi_t.wifiRun_Cammand_label=wifi_up_update_tuya_cloud_data;
 
@@ -184,7 +182,8 @@ void RunWifi_Command_Handler(void)
 			  Wifi_DHT11_Up_Value(&DHT11);
 		      wifiDisplayTemperature_Humidity();
 			
-           }
+          }
+		 Get_BeiJing_Time();
             
 		 Wifi_ReceiveData_Handler(wifi_t.response_wifi_signal_label);
 		 
@@ -193,7 +192,7 @@ void RunWifi_Command_Handler(void)
 	if(wifi_t.gTimer_get_wifi_state > 40){
 		wifi_t.gTimer_get_wifi_state=0;
         mcu_get_wifi_work_state();
-    
+        SendWifiData_To_Cmd(0x01);
 	}
 
 	 
@@ -337,6 +336,15 @@ void Wifi_ReceiveData_Handler(uint8_t cmd)
 	     wifi_t.response_wifi_signal_label=0xff;
 	  	break;
 
+		case TIME_ITEM:
+
+		 
+		  SendWifiData_To_SetTime(wifi_t.setTimesValue);
+          wifi_t.response_wifi_signal_label=0xff;
+		  Buzzer_KeySound();
+
+		break;
+
 	 
 
 
@@ -351,7 +359,37 @@ void Wifi_ReceiveData_Handler(uint8_t cmd)
 
    }
   
-     
+/**********************************************************************
+	*
+	*Functin Name: static void Get_BeiJing_Time(void)
+	*Function : get beijing times
+	*Input Ref:  usart receive data
+	*Return Ref: NO
+	*
+**********************************************************************/     
+static void Get_BeiJing_Time(void)
+{
+	if(wifi_t.getGreenTime == 0xff && wifi_t.getGreenTime !=0xFE && wifi_t.getGreenTime !=0){
+
+	    if(wifi_t.gTimer_gmt > 4){ //10 minute 
+            wifi_t.gTimer_gmt=0;
+             wifi_t.getGreenTime =0xFE;
+           // Decode_GMT(rx_wifi_data);
+            wifi_t.real_hours = rx_wifi_data[4] + 8;
+			if(wifi_t.real_hours > 24){
+				wifi_t.real_hours = wifi_t.real_hours -24 ;
+
+			}
+			wifi_t.real_minutes = rx_wifi_data[5];
+			wifi_t.real_seconds = rx_wifi_data[6];
+         
+            SendData_Real_GMT(wifi_t.real_hours ,wifi_t.real_minutes,rx_wifi_data[6]); //gmt[4]->hours, gmt[5]->minutes
+		    
+	    }
+	}
+
+
+}
 
 
 

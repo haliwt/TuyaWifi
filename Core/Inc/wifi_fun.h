@@ -80,6 +80,11 @@ typedef struct _WIFI_FUN{
     uint8_t getTime_flag;
     uint8_t response_wifi_signal_label;
 	uint8_t getGreenTime;
+	
+
+	uint8_t real_hours;
+	uint8_t real_minutes;
+	uint8_t real_seconds; 
 
     
   
@@ -91,14 +96,15 @@ typedef struct _WIFI_FUN{
 	uint8_t gTimer_up_dht11;
 	uint8_t gTimer_beijing_time;
 	uint8_t get_greenwich_error;
-	
-	uint8_t getGreenwichTime[3];
+	uint8_t gTimer_gmt;
+	uint8_t getGreenwichTime[7];
 	
 
 
 }WIFI_FUN;
 
 extern WIFI_FUN   wifi_t;
+
 
 extern void (*PowerOn)(void); //函数指针
 extern void (*PowerOff)(void);

@@ -209,6 +209,29 @@ void SendWifiData_To_Cmd(uint8_t wdata)
 				HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
 			}
 }
+
+void SendWifiData_To_SetTime(uint8_t dat)
+{
+   
+	//crc=0x55;
+		outputBuf[0]='M'; //
+		outputBuf[1]='A'; //
+		outputBuf[2]='T'; // wind speed
+		outputBuf[3]=dat; //	
+	
+		
+		//for(i=3;i<6;i++) crc ^= outputBuf[i];
+		//outputBuf[i]=crc;
+		transferSize=4;
+		if(transferSize)
+		{
+			while(transOngoingFlag); //UART interrupt transmit flag ,disable one more send data.
+			transOngoingFlag=1;
+			HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
+		}
+
+}
+
 /***************************************************************
  * 
  * Function: panel power on and special function

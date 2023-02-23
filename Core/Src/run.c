@@ -16,6 +16,7 @@
 //static CProcess1 cprocess;
 RUN_T run_t; 
 
+
  
 /**********************************************************************
 *
@@ -51,11 +52,11 @@ void Decode_RunCmd(void)
                 Buzzer_KeySound(); 
 		   }
 		   else if(cmdType_2==0x14){
-                run_t.gModel =2; //turn off
+               // run_t.gModel =2; //turn off
                 Buzzer_KeySound();
             }
             else if(cmdType_2==0x04){
-                run_t.gModel =1;  //turn on
+               // run_t.gModel =1;  //turn on
                 Buzzer_KeySound();
             }
            
@@ -73,17 +74,33 @@ void Decode_RunCmd(void)
          
       break;
 
-	  case 'T':
+	  case 'M': //temperature value
 	  	if(run_t.gPower_flag==POWER_ON){
               
              run_t.set_temperature_value = cmdType_2;
 			if(wifi_work_state == WIFI_CONN_CLOUD)
 		    	mcu_dp_value_update(DPID_SET_TEMPERATURE,cmdType_2); //VALUE型数据上报;
-			   // mcu_dp_value_update(DPID_SET_TEMPERATURE,wifi_t.SetTemperatureValue); //VALUE型数据上报;
+			   
          }
 	  
 
 	  break;
+
+	  case 'T':
+		if(run_t.gPower_flag==POWER_ON){
+              
+             wifi_t.setTimesValue = cmdType_2;
+			if(wifi_work_state == WIFI_CONN_CLOUD)
+		    	mcu_dp_value_update(DPID_SET_TIMGING,cmdType_2); //VALUE型数据上报;
+			 
+         }
+	  
+	      
+
+
+	  break;
+
+	  
 
 
 	  case 'Z' ://buzzer sound 
@@ -118,6 +135,8 @@ void Single_ReceiveCmd(uint8_t cmd)
     case 0x00: //power off
            Buzzer_KeySound();
 		  run_t.gPower_On=POWER_OFF;
+	      run_t.gPower_flag =POWER_OFF;
+		  run_t.RunCommand_Label=POWER_OFF;
 		
 		  wifiUpdate_Power_Status(0);
 		 
@@ -195,6 +214,7 @@ void RunCommand_MainBoard_Handler(void)
 	   	run_t.RunCommand_Label= UPDATE_TO_PANEL_DATA;
 	    Display_DHT11_Value(&DHT11);
 		HAL_Delay(200);
+		run_t.gTimer_60s=0; //dht11 datat send displayPanel 
 		if(wifi_work_state == WIFI_CONN_CLOUD){
 			  SendWifiData_To_Cmd(0x01); //wifi has been link TuYa cloud
 
@@ -218,6 +238,11 @@ void RunCommand_MainBoard_Handler(void)
 	   	    run_t.gTimer_senddata_panel=0;
 	         MainBord_Template_Action_Handler();
 	     }
+		 if(run_t.gTimer_60s > 0){
+		    run_t.gTimer_60s=0;
+            Display_DHT11_Value(&DHT11);
+
+		 }
 		 
 	   	
 	   break;
@@ -308,8 +333,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
       if(tm1 > 59){ // 1minute 
          tm1=0;
-       
+         run_t.gTimer_60s++;
          wifi_t.gTimer_up_dht11 ++;
+		 wifi_t.gTimer_gmt++ ;
          
       }
 
