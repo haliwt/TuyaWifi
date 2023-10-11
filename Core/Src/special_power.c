@@ -47,7 +47,7 @@ void SetPowerOff_ForDoing(void)
     wifi_t.wifi_power=0;
     wifi_t.wifiPowerOn_flag =0;
 	wifi_t.wifiRun_Cammand_label =0 ;
-	WIFI_WBR3_DISABLE();
+	
   
 
     PLASMA_SetLow(); //

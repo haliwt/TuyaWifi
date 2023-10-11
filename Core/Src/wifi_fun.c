@@ -28,7 +28,7 @@ void (*Ai_Fun)(uint8_t sig);
 void (*SetTimes)(void);
 void (*SetTemperature)(void);
 static void Tuya_Wifi_Connector_Net(void);
-static void wifi_work_state_led(void);
+static void wifi_work_state_info(void);
 
 
 
@@ -151,8 +151,8 @@ void RunWifi_Command_Handler(void)
 	 
      }
  
-      wifi_work_state_led();
-	 if(wifi_work_state == WIFI_CONN_CLOUD  ){
+     wifi_work_state_info();
+	 if(wifi_work_state == WIFI_CONN_CLOUD){
 
             if(first_connect < 5){
 			   first_connect ++ ;
@@ -191,13 +191,11 @@ void RunWifi_Command_Handler(void)
 		 
     }
 
-	if(wifi_t.gTimer_get_wifi_state > 40){
+	if(wifi_t.gTimer_get_wifi_state > 40 && wifi_work_state == WIFI_CONN_CLOUD){
 		wifi_t.gTimer_get_wifi_state=0;
-        mcu_get_wifi_work_state();
-        if(wifi_work_state == WIFI_CONN_CLOUD){
-              SendWifiData_To_Cmd(0x01);
+       SendWifiData_To_Cmd(0x01);
               
-        }
+        
 	}
 
 	 
@@ -563,13 +561,13 @@ static void Tuya_Wifi_Connector_Net(void)
 
 }
 /*****************************************************************************
-函数名称 : wifi_work_state_led
+函数名称 : wifi_work_state_info
 功能描述 : wifi状态led控制
 输入参数 : 无
 返回参数 : 无
 使用说明 : 无
 *****************************************************************************/
-static void wifi_work_state_led(void)
+static void wifi_work_state_info(void)
 {
 	wifi_state = mcu_get_wifi_work_state();
 	if(wifi_state != wifi_state_copy){

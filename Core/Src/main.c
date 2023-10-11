@@ -119,7 +119,7 @@ int main(void)
 	
     wifi_uart_service();
   
- //   MainBoard_Self_Inspection_PowerOn_Fun();
+    MainBoard_Self_Inspection_PowerOn_Fun();
 	Decode_Function();
     RunWifi_Command_Handler();
 	

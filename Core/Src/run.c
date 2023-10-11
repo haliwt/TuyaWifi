@@ -219,9 +219,9 @@ void RunCommand_MainBoard_Handler(void)
        case POWER_ON:
 	    PowerOn(); //PowerOn_Host();
 	   	run_t.RunCommand_Label= UPDATE_TO_PANEL_DATA;
-	    wifi_t.wifiRun_Cammand_label =  0XFF;
+	  
 	    Display_DHT11_Value(&DHT11);
-		HAL_Delay(200);
+		HAL_Delay(2);
 		run_t.gTimer_60s=0; //dht11 datat send displayPanel 
 		if(wifi_work_state == WIFI_CONN_CLOUD){
 			  SendWifiData_To_Cmd(0x01); //wifi has been link TuYa cloud
