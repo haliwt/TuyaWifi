@@ -10,8 +10,15 @@
 #include "dht11.h"
 
 WIFI_FUN   wifi_t;
+_TUYA_T tuya_t;
+
 
 uint8_t time[7];
+uint8_t times;
+//用户按下按钮启动SmartConfig配网绑定
+char SmartConfigStartFlag = 0;
+int wifi_state = -1;//模组状态
+int wifi_state_copy = -1;//模组状态
 
 void (*PowerOn)(void);
 void (*PowerOff)(void);
@@ -20,6 +27,9 @@ void (*Ai_Fun)(uint8_t sig);
 
 void (*SetTimes)(void);
 void (*SetTemperature)(void);
+static void Tuya_Wifi_Connector_Net(void);
+static void wifi_work_state_led(void);
+
 
 
 static void wifiPowerOn_After_data_update(void);
@@ -78,7 +88,7 @@ void RunWifi_Command_Handler(void)
 	 switch(wifi_t.wifiRun_Cammand_label){
 
       case wifi_has_been_connected:
-       
+           
 		   WIFI_WBR3_EN();
 	       mcu_set_wifi_mode(AP_STATE);//AP_STATE
           // mcu_set_wifi_mode(SMART_CONFIG);//smart
@@ -94,19 +104,13 @@ void RunWifi_Command_Handler(void)
 		break;
 
         case wifi_link_tuya_cloud: //02
-           
-			 WIFI_WBR3_EN();
-			
-		    mcu_set_wifi_mode(AP_STATE);//AP_STATE
-	       
+	           WIFI_WBR3_DISABLE();
+                HAL_Delay(1000);
+			    WIFI_WBR3_EN();
+		mcu_set_wifi_mode(AP_CONFIG);//控制模组启用配网
 
-			 mcu_get_wifi_work_state();
-
-		    if(wifi_work_state ==WIFI_CONN_CLOUD){
-			    wifi_t.wifiRun_Cammand_label = wifi_up_update_tuya_cloud_data;
-				
-			}
-         wifi_t.wifiRun_Cammand_label=0xff;
+		 wifi_t.wifiRun_Cammand_label=0xff;
+			 
 	    break;
 
 	  	
@@ -120,11 +124,7 @@ void RunWifi_Command_Handler(void)
 	           
 	   	    }
 		   
-            
-		 
-		
-		 
-       	break;
+        break;
 
 	  
 
@@ -151,7 +151,7 @@ void RunWifi_Command_Handler(void)
 	 
      }
  
-
+      wifi_work_state_led();
 	 if(wifi_work_state == WIFI_CONN_CLOUD  ){
 
             if(first_connect < 5){
@@ -194,8 +194,10 @@ void RunWifi_Command_Handler(void)
 	if(wifi_t.gTimer_get_wifi_state > 40){
 		wifi_t.gTimer_get_wifi_state=0;
         mcu_get_wifi_work_state();
-        if(wifi_work_state == WIFI_CONN_CLOUD)
+        if(wifi_work_state == WIFI_CONN_CLOUD){
               SendWifiData_To_Cmd(0x01);
+              
+        }
 	}
 
 	 
@@ -372,10 +374,11 @@ void Wifi_ReceiveData_Handler(uint8_t cmd)
 **********************************************************************/     
 static void Get_BeiJing_Time(void)
 {
-	
-
-	    if(wifi_t.gTimer_gmt > 2){ //10 minute 
-            wifi_t.gTimer_gmt=0;
+	   mcu_get_wifi_work_state();
+      if(wifi_work_state == WIFI_CONN_CLOUD){
+    
+	    if(wifi_t.gTimer_gmt > 4 &&  wifi_t.gTimer_gmt < 6){ //10 minute 
+           
             wifi_t.getGreenTime=1;
              wifi_t.getGreenTime =0xFE;
            // Decode_GMT(rx_wifi_data);
@@ -390,11 +393,16 @@ static void Get_BeiJing_Time(void)
             SendData_Real_GMT(wifi_t.real_hours ,wifi_t.real_minutes,rx_wifi_data[6]); //gmt[4]->hours, gmt[5]->minutes
 		    
 	    }
+        
+        if(wifi_t.gTimer_gmt > 5){
+             wifi_t.gTimer_gmt=0;
+            wifi_t.getGreenTime=0;
+        }
 	
+   }
 
 
 }
-
 
 
 
@@ -492,6 +500,131 @@ void MainBoard_Self_Inspection_PowerOn_Fun(void)
 
 
 
+}
+
+static void Tuya_Wifi_Connector_Net(void)
+{
+    static uint8_t tuya_state;
+
+	switch(tuya_state){
+
+     case 0:
+	       
+			 WIFI_WBR3_EN();
+	        tuya_t.tuya_wifi_info = mcu_get_reset_wifi_flag();
+			if(tuya_t.tuya_wifi_info == RESET_WIFI_SUCCESS){
+                   mcu_reset_wifi();
+
+			}
+			 
+		
+			 
+			tuya_state =1;
+
+	 break;
+
+	 case 1:
+	 	WIFI_WBR3_EN();
+			
+		 tuya_t.tuya_wifi_info = mcu_get_reset_wifi_flag();
+			
+		tuya_state =2;
+			
+
+
+	 break;
+
+	 case 2:
+	// mcu_set_wifi_mode(AP_STATE);//AP_STATE
+	 tuya_state =3;
+
+	 break;
+
+	 case 3:
+		tuya_t.tuya_wifi_info = mcu_get_wifi_work_state();
+	    mcu_set_wifi_mode(AP_STATE);//AP_STATE
+		if(tuya_t.tuya_wifi_info == WIFI_CONN_CLOUD){
+
+           tuya_state =0xff;
+			wifi_t.wifiRun_Cammand_label =0xff;
+		}
+
+
+	 break;
+
+
+
+
+
+	}
+
+
+
+
+}
+/*****************************************************************************
+函数名称 : wifi_work_state_led
+功能描述 : wifi状态led控制
+输入参数 : 无
+返回参数 : 无
+使用说明 : 无
+*****************************************************************************/
+static void wifi_work_state_led(void)
+{
+	wifi_state = mcu_get_wifi_work_state();
+	if(wifi_state != wifi_state_copy){
+		wifi_state_copy = wifi_state;
+		//printf("*****************wifi_state*****************: %d \r\n",wifi_state_copy);
+	}
+	//注意这里,只要是发送了配网指令就设置模组的状态为配网状态
+	if(SmartConfigStartFlag){wifi_state=0;}
+	switch(wifi_state)
+	{
+		case SMART_CONFIG_STATE://配网模式,快闪
+		     tuya_t.tuya_wifi_info=SMART_CONFIG_STATE;
+		
+			/*自行实现 快闪*/
+		break;
+			
+		case AP_STATE://AP模式,慢闪
+		     tuya_t.tuya_wifi_info=AP_STATE;
+		
+			/*自行实现 慢闪*/
+		break;
+
+		case WIFI_NOT_CONNECTED://没有连接路由器  02
+				tuya_t.tuya_wifi_info=WIFI_NOT_CONNECTED;
+			/*自行实现 慢闪*/
+		break;
+
+		case WIFI_CONNECTED://连接路由器
+		 tuya_t.tuya_wifi_info=WIFI_CONNECTED;
+			
+		break;
+
+		case WIFI_CONN_CLOUD://连接上云端
+		 tuya_t.tuya_wifi_info=WIFI_CONN_CLOUD;
+			/*自行实现 常亮*/
+		break;
+
+		case WIFI_LOW_POWER : //0x05
+	
+		     tuya_t.tuya_wifi_info=WIFI_LOW_POWER ;
+
+		break;
+
+		case SMART_AND_AP_STATE : //             0x06
+		tuya_t.tuya_wifi_info=SMART_AND_AP_STATE;
+		break;
+		
+        case WIFI_SATE_UNKNOW :  //             0xff
+         tuya_t.tuya_wifi_info=WIFI_SATE_UNKNOW ;
+		break;
+		
+		default:
+			/*自行实现 慢闪*/
+		break;
+	}
 }
 
 /***********************************************

@@ -24,16 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "ultrasonic.h"
-#include "dht11.h"
-#include "wifi.h"
-#include "led.h"
-#include "run.h"
-#include "fan.h"
-#include "cmd_link.h"
-#include "wifi_fun.h"
-#include "special_power.h"
-#include "delay.h"
+#include "bsp.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -117,7 +108,7 @@ int main(void)
   PowerOn_Host(SetPowerOn_ForDoing);
   PowerOff_Host(SetPowerOff_ForDoing);
 
-  wifi_t.getGreenTime =1;
+   
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -126,13 +117,13 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	
-    
-     wifi_uart_service();
+    wifi_uart_service();
   
-     MainBoard_Self_Inspection_PowerOn_Fun();
-     RunWifi_Command_Handler();
-	 Decode_Function();
-     RunCommand_MainBoard_Handler();
+ //   MainBoard_Self_Inspection_PowerOn_Fun();
+	Decode_Function();
+    RunWifi_Command_Handler();
+	
+    RunCommand_MainBoard_Handler();
 	
    }
   /* USER CODE END 3 */

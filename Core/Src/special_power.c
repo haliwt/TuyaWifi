@@ -5,6 +5,7 @@
 #include "cmd_link.h"
 #include "run.h"
 #include "wifi_fun.h"
+#include "gpio.h"
 
 
 
@@ -19,6 +20,7 @@ void SetPowerOn_ForDoing(void)
 	run_t.gDry =1;
 	run_t.gFan_counter = 100;
 	run_t.gPlasma =1;
+
   
 
 	
@@ -44,6 +46,8 @@ void SetPowerOff_ForDoing(void)
 	run_t.gPower_On=POWER_OFF;
     wifi_t.wifi_power=0;
     wifi_t.wifiPowerOn_flag =0;
+	wifi_t.wifiRun_Cammand_label =0 ;
+	WIFI_WBR3_DISABLE();
   
 
     PLASMA_SetLow(); //

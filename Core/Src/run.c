@@ -9,6 +9,7 @@
 #include "wifi.h"
 
 #include "mcu_api.h"
+#include "gpio.h"
 
  
 
@@ -44,8 +45,13 @@ void Decode_RunCmd(void)
 	      if(run_t.gPower_flag==POWER_ON){
 	      if(cmdType_2==1){
               //fast led blink 
+              SendWifiData_To_Cmd(0x52);
 			  Buzzer_KeySound();	
               wifi_t.wifiRun_Cammand_label = wifi_link_tuya_cloud;//2 
+             WIFI_WBR3_DISABLE();
+             HAL_Delay(1000);
+			 WIFI_WBR3_EN();
+              
 		   }
 		   else if(cmdType_2==0){
                 
@@ -137,7 +143,7 @@ void Single_ReceiveCmd(uint8_t cmd)
 		  run_t.gPower_On=POWER_OFF;
 	      run_t.gPower_flag =POWER_OFF;
 		  run_t.RunCommand_Label=POWER_OFF;
-		
+		  SendWifiData_To_Cmd(0x53);
 		  wifiUpdate_Power_Status(0);
 		 
            
@@ -145,6 +151,7 @@ void Single_ReceiveCmd(uint8_t cmd)
 
     case 0x01: // power on
          Buzzer_KeySound();
+		SendWifiData_To_Cmd(0x54);
 		run_t.gPower_On=POWER_ON;
 	    run_t.gPower_flag=POWER_ON;
 	
@@ -212,6 +219,7 @@ void RunCommand_MainBoard_Handler(void)
        case POWER_ON:
 	    PowerOn(); //PowerOn_Host();
 	   	run_t.RunCommand_Label= UPDATE_TO_PANEL_DATA;
+	    wifi_t.wifiRun_Cammand_label =  0XFF;
 	    Display_DHT11_Value(&DHT11);
 		HAL_Delay(200);
 		run_t.gTimer_60s=0; //dht11 datat send displayPanel 
@@ -247,7 +255,7 @@ void RunCommand_MainBoard_Handler(void)
 	   	
 	   break;
 
-	   case POWER_OFF_FAN_STATE:
+	   case POWER_OFF_FAN_STATE: //5
             if(run_t.gFan_continueRun ==1 && run_t.gPower_flag == POWER_OFF){
           
                 if(run_t.gFan_counter < 60){
@@ -302,45 +310,5 @@ void RunCommand_MainBoard_Handler(void)
 }
 
 
-/*****************************************************************************************
-  *
-  * Function Name: void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-  * Function: Tim3 interrupt call back function
-  * Tim3 timer :timing time 10ms
-  * 
-*****************************************************************************************/
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
 
-    static uint8_t tm0 ,tm1;
-    if(htim->Instance==TIM3){
-	 tm0 ++ ;
-    
-	 run_t.gTimer_senddata_panel++;
-   
-	   if(tm0 == 100){//100ms *10 = 1000ms =1s
-       tm0 =0;
-        tm1++;
-      
-	   wifi_t.gTimer_beijing_time++;
-
-       wifi_t.gTimer_get_wifi_state++;
-	   wifi_t.gTimer_1s++;
-	   if(run_t.gFan_continueRun ==1){
-           run_t.gFan_counter++;
-		 
-	   }
-
-      if(tm1 > 59){ // 1minute 
-         tm1=0;
-         run_t.gTimer_60s++;
-         wifi_t.gTimer_up_dht11 ++;
-		 wifi_t.gTimer_gmt++ ;
-         
-      }
-
-	 }
-  }
-
-} 
     

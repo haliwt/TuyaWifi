@@ -105,6 +105,14 @@ typedef struct _WIFI_FUN{
 
 extern WIFI_FUN   wifi_t;
 
+typedef struct{
+
+  uint8_t tuya_wifi_info;
+
+}_TUYA_T;
+
+extern _TUYA_T tuya_t;
+
 
 extern void (*PowerOn)(void); //函数指针
 extern void (*PowerOff)(void);
