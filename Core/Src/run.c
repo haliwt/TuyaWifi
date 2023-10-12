@@ -37,7 +37,7 @@ void Decode_RunCmd(void)
       case 'P': //power 
 
 
-         Single_ReceiveCmd(cmdType_2);  
+         Rx_From_DisplayCmd(cmdType_2);  
         
        break;
 
@@ -73,7 +73,7 @@ void Decode_RunCmd(void)
 
 	    case 'C':
            if(run_t.gPower_flag==POWER_ON){
-               Single_ReceiveCmd(cmdType_2); 
+               Rx_From_DisplayCmd(cmdType_2); 
               
            }
      
@@ -125,13 +125,13 @@ void Decode_RunCmd(void)
 }
 /**********************************************************************
 	*
-	*Functin Name: void Single_ReceiveCmd(uint8_t cmd)
+	*Functin Name: void Rx_From_DisplayCmd(uint8_t cmd)
 	*Function : resolver is by usart port receive data  from display panle  
 	*Input Ref:  usart receive data
 	*Return Ref: NO
 	*
 **********************************************************************/
-void Single_ReceiveCmd(uint8_t cmd)
+void Rx_From_DisplayCmd(uint8_t cmd)
 {
  
 
@@ -139,23 +139,27 @@ void Single_ReceiveCmd(uint8_t cmd)
 	switch(cmd){
 
     case 0x00: //power off
-           Buzzer_KeySound();
+    
+		  SendWifiData_To_Cmd(0x53);
+	      Buzzer_KeySound();
 		  run_t.gPower_On=POWER_OFF;
 	      run_t.gPower_flag =POWER_OFF;
 		  run_t.RunCommand_Label=POWER_OFF;
-		  SendWifiData_To_Cmd(0x53);
+		 
 		  wifiUpdate_Power_Status(0);
 		 
            
     break;
 
     case 0x01: // power on
+    	 SendWifiData_To_Cmd(0x54);
          Buzzer_KeySound();
-		SendWifiData_To_Cmd(0x54);
+		
 		run_t.gPower_On=POWER_ON;
 	    run_t.gPower_flag=POWER_ON;
 	
 		wifi_t.wifi_power =POWER_ON; //WI.EDTI 2022.09.02
+		run_t.RunCommand_Label=POWER_ON;
 	    wifiUpdate_Power_Status(1);
 	
          
@@ -245,6 +249,7 @@ void RunCommand_MainBoard_Handler(void)
 	     if(run_t.gTimer_senddata_panel >30 && run_t.gPower_On==POWER_ON){ //300ms
 	   	    run_t.gTimer_senddata_panel=0;
 	         MainBord_Template_Action_Handler();
+		    
 	     }
 		 if(run_t.gTimer_60s > 0){
 		    run_t.gTimer_60s=0;

@@ -118,8 +118,9 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	
     wifi_uart_service();
-  
     MainBoard_Self_Inspection_PowerOn_Fun();
+
+    
 	Decode_Function();
     RunWifi_Command_Handler();
 	

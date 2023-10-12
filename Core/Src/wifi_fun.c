@@ -90,9 +90,9 @@ void RunWifi_Command_Handler(void)
       case wifi_has_been_connected:
            
 		   WIFI_WBR3_EN();
-	       mcu_set_wifi_mode(AP_STATE);//AP_STATE
-          // mcu_set_wifi_mode(SMART_CONFIG);//smart
-		   mcu_get_wifi_work_state();
+	     //  mcu_set_wifi_mode(AP_STATE);//AP_STATE
+           mcu_set_wifi_mode(SMART_CONFIG);//smart
+		 //  mcu_get_wifi_work_state();
 
 		 if(wifi_work_state ==WIFI_CONN_CLOUD){
 		 
@@ -126,25 +126,6 @@ void RunWifi_Command_Handler(void)
 		   
         break;
 
-	  
-
-//		case wifi_get_beijing_time://7
-//	       if(wifi_t.gTimer_beijing_time > 29){
-//               wifi_t.gTimer_beijing_time=0;
-//               SendData_Real_GMT(wifi_t.getGreenwichTime[0],wifi_t.getGreenwichTime[1],wifi_t.getGreenwichTime[2]);
-//		     
-//		     wifi_t.wifiRun_Cammand_label=wifi_up_update_tuya_cloud_data;
-//
-//	       	}
-//		    else{
-//
-//				wifi_t.wifiRun_Cammand_label=wifi_up_update_tuya_cloud_data;
-//			}
-//		   
-//	   break;
-
-	   
-
 	   default:
 
 	   break;
@@ -160,12 +141,7 @@ void RunWifi_Command_Handler(void)
 			  SendWifiData_To_Cmd(0x01);
 
             }
-		   if(run_t.flash_write_data_flag == 0){
-			run_t.flash_write_data_flag=2;
-               Flash_Erase_Data();
-               Flash_Write_Data();
-
-		 }
+	
 
 		 if(wifi_t.gTimer_beijing_time > 29){
                wifi_t.gTimer_beijing_time=0;
@@ -185,7 +161,7 @@ void RunWifi_Command_Handler(void)
 		      wifiDisplayTemperature_Humidity();
 			
           }
-		 Get_BeiJing_Time();
+		// Get_BeiJing_Time();
             
 		 Wifi_ReceiveData_Handler(wifi_t.response_wifi_signal_label);
 		 
@@ -221,10 +197,10 @@ void Wifi_ReceiveData_Handler(uint8_t cmd)
         run_t.gPower_flag =POWER_OFF;
 		run_t.RunCommand_Label=POWER_OFF;
 
-		SendWifiCmd_To_Order(WIFI_POWER_OFF);
+		SendWifiCmd_To_Order(WIFI_POWER_OFF_NORMAL);
 
         Buzzer_KeySound();
-        wifi_t.response_wifi_signal_label=0xff;
+        wifi_t.response_wifi_signal_label=0xEF;
       cmd= 0xff;
 	  break;
 
@@ -234,7 +210,7 @@ void Wifi_ReceiveData_Handler(uint8_t cmd)
        run_t.gPower_On = POWER_ON;
 	   run_t.gPower_flag =POWER_ON;
 	   run_t.RunCommand_Label=POWER_ON;
-	   SendWifiCmd_To_Order(WIFI_POWER_ON);
+	   SendWifiCmd_To_Order(WIFI_POWER_ON_NORMAL);
 	   Buzzer_KeySound();
 	    wifi_t.response_wifi_signal_label=0xff;
 
@@ -442,41 +418,17 @@ static void wifiPowerOn_After_data_update(void)
 void MainBoard_Self_Inspection_PowerOn_Fun(void)
 {
 	
+	
 	static uint8_t self_power_on_flag=0, flash_read_data;
 	   
 	
 	   if(self_power_on_flag==0){
 		   self_power_on_flag ++ ;
-		   flash_read_data =Flash_Read_Data();
-		   switch(flash_read_data){
-	
-			case error: //wifi don't link to tuya cloud ,need manual operation
-				wifi_t.wifiRun_Cammand_label = 0xff;
-		        run_t.flash_write_data_flag = 0;
-			     WIFI_WBR3_DISABLE();
-			break;
-	
-			case success: //wifi has been linked to tuya cloud,need auto link to tuya cloud
-			   //wifi_t.runCommand_order_lable = wifi_link_tencent_cloud;
-			   run_t.flash_write_data_flag = 1;
+
                 WIFI_WBR3_DISABLE();
                 HAL_Delay(1000);
 			    WIFI_WBR3_EN();
-                
-			break;
-	
-	
-	
-		   }
-	   
-	
-	   switch(run_t.flash_write_data_flag){
-	
-		 case 0:
-	
-		 break;
-	
-		 case 1:
+      
              mcu_get_wifi_work_state();
 			if(wifi_work_state ==WIFI_CONN_CLOUD){
 			   wifi_t.wifiRun_Cammand_label= wifi_has_been_connected ;
@@ -484,17 +436,17 @@ void MainBoard_Self_Inspection_PowerOn_Fun(void)
 		   }
 		   else wifi_t.wifiRun_Cammand_label =wifi_link_tuya_cloud;//wifi_has_been_connected
 	
-		 break;
+
 	
 	
-	   }
+	   
 	  }
 	   
-	  if(wifi_work_state ==WIFI_CONN_CLOUD &&	self_power_on_flag==1){
-		   self_power_on_flag++;
-			   wifi_t.wifiRun_Cammand_label = wifi_has_been_connected;
-			
-	   }
+//	  if(wifi_work_state ==WIFI_CONN_CLOUD &&	self_power_on_flag==1){
+//		   self_power_on_flag++;
+//			   wifi_t.wifiRun_Cammand_label = wifi_has_been_connected;
+//			
+//	   }
 
 
 

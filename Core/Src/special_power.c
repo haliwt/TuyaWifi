@@ -22,12 +22,7 @@ void SetPowerOn_ForDoing(void)
 	run_t.gPlasma =1;
 
   
-
-	
-
-
-	
-    FAN_CCW_RUN();
+	FAN_CCW_RUN();
     PLASMA_SetHigh(); //
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
     PTC_SetHigh();
@@ -46,7 +41,7 @@ void SetPowerOff_ForDoing(void)
 	run_t.gPower_On=POWER_OFF;
     wifi_t.wifi_power=0;
     wifi_t.wifiPowerOn_flag =0;
-	wifi_t.wifiRun_Cammand_label =0 ;
+
 	
   
 

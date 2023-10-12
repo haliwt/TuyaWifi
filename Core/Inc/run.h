@@ -55,8 +55,7 @@ typedef struct _RUN_T{
 	uint8_t set_wind_speed_value;
 	
 
-	uint8_t flash_write_data_flag;
-	uint8_t flash_write_data_error;
+
 
 	uint8_t  gModel;
 	uint8_t  gPlasma;
@@ -83,7 +82,7 @@ void Decode_RunCmd(void);
 
 
 
-void Single_ReceiveCmd(uint8_t cmd);
+void Rx_From_DisplayCmd(uint8_t cmd);
 
 void Wifi_ReceiveCmd(uint8_t cmd);
 
