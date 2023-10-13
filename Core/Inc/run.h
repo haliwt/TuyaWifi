@@ -5,8 +5,16 @@
 #define WIFI_TUYA      1  //
 
 
+
+
+
 typedef enum {                   /* enumeration for CProcess signals */
-    kill =1,notkill,dry,notdry,rat_control,notrat_control
+    kill =1,
+	notkill,
+	dry,
+	notdry,
+	rat_control,
+	notrat_control
 }Signal;
 
 
@@ -78,13 +86,7 @@ extern RUN_T run_t;
 void RunCommand_MainBoard_Handler(void);
 
 
-void Decode_RunCmd(void);
 
-
-
-void Rx_From_DisplayCmd(uint8_t cmd);
-
-void Wifi_ReceiveCmd(uint8_t cmd);
 
 
 #endif 

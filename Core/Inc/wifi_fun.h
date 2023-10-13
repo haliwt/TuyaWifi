@@ -144,6 +144,7 @@ void wifiUpdate_Dry_Status(uint8_t dv);
 void wifiUpdate_SetTimeValue(uint8_t tv);
 void wifiUpdate_SetTemperatureValue(uint8_t temp);
 void Wifi_ReceiveData_Handler(uint8_t cmd);
+void wifiUpdate_Fan_Level(uint8_t temp);
 
 
 

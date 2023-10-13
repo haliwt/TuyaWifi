@@ -627,5 +627,9 @@ void wifiUpdate_SetTemperatureValue(uint8_t temp)
    mcu_dp_value_update(DPID_SET_TEMPERATURE,temp); //VALUE型数据上报;
 }
 
+void wifiUpdate_Fan_Level(uint8_t temp)
+{
+   mcu_dp_value_update(DPID_FAN,temp); //VALUE型数据上报;
+}
 
 
