@@ -75,7 +75,8 @@ void SetTemperatureHost(void(*temperatureHandler)(void))
 *********************************************************************/
 void RunWifi_Command_Handler(void)
 {
-      static uint8_t first_connect,first_cloud_data,wbr3_flag;
+     static uint8_t first_connect,first_cloud_data,wbr3_flag;
+	 static uint8_t power_one;
 
 	 switch(wifi_t.wifiRun_Cammand_label){
 
@@ -99,6 +100,13 @@ void RunWifi_Command_Handler(void)
 	           WIFI_WBR3_DISABLE();
                 HAL_Delay(1000);
 			    WIFI_WBR3_EN();
+		    if(power_one == 0){
+				power_one ++;
+			}
+			else{
+			tuya_t.wifi_login_process =1;
+			wifi_work_state= 0xff;
+			}
 		mcu_set_wifi_mode(AP_CONFIG);//控制模组启用配网
 
 		 wifi_t.wifiRun_Cammand_label=0xff;
@@ -123,8 +131,11 @@ void RunWifi_Command_Handler(void)
 	   break;
 	 
      }
- 
-     wifi_work_state_info();
+     if(tuya_t.wifi_login_process == 1){
+		mcu_set_wifi_mode(AP_CONFIG);//控制模组启用配网
+        wifi_work_state_info();
+
+	 }
 	 if(wifi_work_state == WIFI_CONN_CLOUD){
 
             if(first_connect < 5){
@@ -164,6 +175,10 @@ void RunWifi_Command_Handler(void)
        SendWifiData_To_Cmd(0x01);
               
         
+	}
+	else{
+	   SendWifiData_To_Cmd(0x0);
+
 	}
 
 	 
@@ -302,7 +317,7 @@ void Wifi_ReceiveData_Handler(uint8_t cmd)
 	  case FAN_ITEM:
 	    if(run_t.gPower_flag ==POWER_ON){
       
-			//run_t.gFan_counter = run_t.set_wind_speed_value;
+			
     		SendWifiData_To_PanelWindSpeed(run_t.set_wind_speed_value);
           
 			Buzzer_KeySound();

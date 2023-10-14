@@ -70,7 +70,7 @@ typedef struct _RUN_T{
 	uint8_t  gPlasma;
 	uint8_t  gDry;
 	uint8_t  gUlransonic;
-	uint8_t gFan_level;
+
 	
 	uint8_t gTimer_60s;
 	uint8_t gTimer_1s;

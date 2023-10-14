@@ -237,7 +237,8 @@ void Rx_From_DisplayCmd(uint8_t cmd)
 	case FAN_LEVEL_MAX:
 
 	 if( run_t.gPower_flag == POWER_ON){
-		run_t.gFan_level = 100;
+	
+		run_t.set_wind_speed_value =100;
 			 Buzzer_KeySound();
 			 run_t.gFan_continueRun =0;
 	if(wifi_work_state == WIFI_CONN_CLOUD)
@@ -249,7 +250,8 @@ void Rx_From_DisplayCmd(uint8_t cmd)
 
 	case FAN_LEVEL_MIN:
 		 if( run_t.gPower_flag == POWER_ON){
-			 run_t.gFan_level = 50;
+		
+			 run_t.set_wind_speed_value = 50;
 			 Buzzer_KeySound();
 			 run_t.gFan_continueRun =0;
 		   if(wifi_work_state == WIFI_CONN_CLOUD)

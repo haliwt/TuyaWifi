@@ -66,13 +66,12 @@ void  MainBord_Template_Action_Handler(void)
 {
    if(run_t.gDry == 1){
 		 if(run_t.set_wind_speed_value < 67){
-            Fan_Slowly_Speed();
+            Fan_CCW_Run_Min();//Fan_Slowly_Speed();
 		 }
 		 else
-		 	//FAN_CCW_RUN();
 		 	Fan_CCW_Run_Max();
 	
-	    PTC_SetHigh();
+	        PTC_SetHigh();
 	     
 	}
 	else{
@@ -82,7 +81,7 @@ void  MainBord_Template_Action_Handler(void)
 	//kill
 	if(run_t.gPlasma == 1){
 		 if(run_t.set_wind_speed_value < 67){
-            Fan_Slowly_Speed();
+            Fan_CCW_Run_Min();//Fan_Slowly_Speed();
 		 }
 		 else
 		 Fan_CCW_Run_Max();	//FAN_CCW_RUN();
@@ -95,7 +94,7 @@ void  MainBord_Template_Action_Handler(void)
 	//driver bug
 	if(run_t.gUlransonic ==1){
 		 if(run_t.set_wind_speed_value < 67){
-            Fan_Slowly_Speed();
+            Fan_CCW_Run_Min();//Fan_Slowly_Speed();
 		 }
 		 else
 		 	Fan_CCW_Run_Max();//FAN_CCW_RUN();

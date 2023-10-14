@@ -110,6 +110,7 @@ extern WIFI_FUN   wifi_t;
 typedef struct{
 
   uint8_t tuya_wifi_info;
+  uint8_t wifi_login_process;
 
 }_TUYA_T;
 
