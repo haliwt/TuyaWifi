@@ -16,13 +16,15 @@
 #include "wifi.h"
 #include "led.h"
 #include "run.h"
-#include "fan.h"
+#include "bsp_fan.h"
 #include "cmd_link.h"
 #include "wifi_fun.h"
 #include "special_power.h"
 #include "delay.h"
 #include "bsp_decoder.h"
 #include "gpio.h"
+#include "tim.h"
+#include "iwdg.h"
 
 
 

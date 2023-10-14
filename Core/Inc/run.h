@@ -52,6 +52,7 @@ typedef struct _RUN_T{
 	uint8_t gDht11_temperature;
 
     uint8_t gFan_continueRun;
+	uint8_t gTimer_dogfood_times ;
 	
 	
   

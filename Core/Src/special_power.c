@@ -22,7 +22,8 @@ void SetPowerOn_ForDoing(void)
 	run_t.gPlasma =1;
 
   
-	FAN_CCW_RUN();
+	//FAN_CCW_RUN();
+	Fan_CCW_Run_Max();
     PLASMA_SetHigh(); //
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
     PTC_SetHigh();
@@ -68,7 +69,8 @@ void  MainBord_Template_Action_Handler(void)
             Fan_Slowly_Speed();
 		 }
 		 else
-		 	FAN_CCW_RUN();
+		 	//FAN_CCW_RUN();
+		 	Fan_CCW_Run_Max();
 	
 	    PTC_SetHigh();
 	     
@@ -83,7 +85,7 @@ void  MainBord_Template_Action_Handler(void)
             Fan_Slowly_Speed();
 		 }
 		 else
-		 	FAN_CCW_RUN();
+		 Fan_CCW_Run_Max();	//FAN_CCW_RUN();
 	     PLASMA_SetHigh();
 	}
 	else{
@@ -96,7 +98,7 @@ void  MainBord_Template_Action_Handler(void)
             Fan_Slowly_Speed();
 		 }
 		 else
-		 	FAN_CCW_RUN();
+		 	Fan_CCW_Run_Max();//FAN_CCW_RUN();
 	 
 		HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);//ultrasnoic ON 
 	}

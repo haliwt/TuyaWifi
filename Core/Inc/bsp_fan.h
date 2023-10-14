@@ -1,5 +1,5 @@
-#ifndef __FAN_H__
-#define __FAN_H__
+#ifndef __BSP_FAN_H__
+#define __BSP_FAN_H__
 #include "main.h"
 
 
@@ -40,16 +40,16 @@
 
 
 
-void FAN_CCW_RUN(void);
+
 void FAN_Stop(void);
-void SterIlization(uint8_t sel);
 
 
 
 
-void ShutDown_AllFunction(void);
-void Dry_Function(uint8_t sel);
-void UV_Function(uint8_t sel);
+
+
+
+
 
 
 void Fan_Slowly_Speed(void);

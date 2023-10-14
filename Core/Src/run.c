@@ -79,7 +79,7 @@ void RunCommand_MainBoard_Handler(void)
           
                 if(run_t.gFan_counter < 60){
           
-                       FAN_CCW_RUN();
+                       Fan_CCW_Run_Max();//FAN_CCW_RUN();
                   }       
 
 	           if(run_t.gFan_counter > 59){
@@ -113,7 +113,7 @@ void RunCommand_MainBoard_Handler(void)
 
               if(run_t.gFan_counter < 60){
           
-                       FAN_CCW_RUN();
+                      Fan_CCW_Run_Max();// FAN_CCW_RUN();
                   }       
 
 	           if(run_t.gFan_counter > 59){

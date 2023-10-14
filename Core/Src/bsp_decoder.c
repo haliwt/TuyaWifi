@@ -1,7 +1,7 @@
 #include "bsp_decoder.h"
 #include "bsp.h"
 
-
+uint8_t response_signal_on,response_signal_off;
 /**********************************************************************
 *
 *Function Name:void Decode_RunCmd(void)
@@ -25,7 +25,7 @@ void Decode_RunCmd(void)
        break;
 
 	  case 'W': //wifi-function
-	      if(run_t.gPower_flag==POWER_ON){
+	      if(run_t.gPower_On==POWER_ON){
 	      if(cmdType_2==1){
               //fast led blink 
               SendWifiData_To_Cmd(0x52);
@@ -55,7 +55,7 @@ void Decode_RunCmd(void)
 	   break;
 
 	    case 'C':
-           if(run_t.gPower_flag==POWER_ON){
+           if(run_t.gPower_On==POWER_ON){
                Rx_From_DisplayCmd(cmdType_2); 
               
            }
@@ -64,7 +64,7 @@ void Decode_RunCmd(void)
       break;
 
 	  case 'M': //temperature value
-	  	if(run_t.gPower_flag==POWER_ON){
+	  	if(run_t.gPower_On==POWER_ON){
               
              run_t.set_temperature_value = cmdType_2;
 			if(wifi_work_state == WIFI_CONN_CLOUD)
@@ -76,7 +76,7 @@ void Decode_RunCmd(void)
 	  break;
 
 	  case 'T':
-		if(run_t.gPower_flag==POWER_ON){
+		if(run_t.gPower_On==POWER_ON){
               
              wifi_t.setTimesValue = cmdType_2;
 			if(wifi_work_state == WIFI_CONN_CLOUD)
@@ -93,7 +93,7 @@ void Decode_RunCmd(void)
 
 
 	  case 'Z' ://buzzer sound 
-	    if(run_t.gPower_flag==POWER_ON){
+	    if(run_t.gPower_On==POWER_ON){
 
 		    if(cmdType_2== 'Z'){//turn off AI
 			    Buzzer_KeySound();
@@ -119,7 +119,7 @@ void Rx_From_DisplayCmd(uint8_t cmd)
 {
  
    static uint8_t response_int_on=0xff, response_int_off =0xff;
-   static uint8_t response_signal_on,response_signal_off;
+  
   
 	switch(cmd){
 

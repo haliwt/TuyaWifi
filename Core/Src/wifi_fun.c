@@ -1,13 +1,5 @@
 #include "wifi_fun.h"
-#include "cmd_link.h"
-#include "run.h"
-#include "fan.h"
-#include "tim.h"
-#include "special_power.h"
-#include "wifi.h"
-#include "flash.h"
-#include "gpio.h"
-#include "dht11.h"
+#include "bsp.h"
 
 WIFI_FUN   wifi_t;
 _TUYA_T tuya_t;
@@ -194,12 +186,14 @@ void Wifi_ReceiveData_Handler(uint8_t cmd)
 
         
 	    run_t.gPower_On = POWER_OFF;
-        run_t.gPower_flag =POWER_OFF;
+        //run_t.gPower_flag =POWER_OFF;
 		run_t.RunCommand_Label=POWER_OFF;
 
 		SendWifiCmd_To_Order(WIFI_POWER_OFF_NORMAL);
-
-        Buzzer_KeySound();
+        if(run_t.gPower_flag !=POWER_OFF)
+        	Buzzer_KeySound();
+		else
+			run_t.gPower_flag =POWER_OFF;
         wifi_t.response_wifi_signal_label=0xEF;
       cmd= 0xff;
 	  break;
@@ -208,10 +202,13 @@ void Wifi_ReceiveData_Handler(uint8_t cmd)
 
 	  
        run_t.gPower_On = POWER_ON;
-	   run_t.gPower_flag =POWER_ON;
+	  // run_t.gPower_flag =POWER_ON;
 	   run_t.RunCommand_Label=POWER_ON;
 	   SendWifiCmd_To_Order(WIFI_POWER_ON_NORMAL);
-	   Buzzer_KeySound();
+	   if(run_t.gPower_flag !=POWER_ON)
+	    Buzzer_KeySound();
+	   else
+	   	run_t.gPower_flag =POWER_ON;
 	    wifi_t.response_wifi_signal_label=0xff;
 
 	  cmd= 0xff;

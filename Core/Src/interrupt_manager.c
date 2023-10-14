@@ -26,6 +26,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
        wifi_t.gTimer_get_wifi_state++;
 	   wifi_t.gTimer_1s++;
+	   run_t.gTimer_dogfood_times ++;
 	   if(run_t.gFan_continueRun ==1){
            run_t.gFan_counter++;
 		 

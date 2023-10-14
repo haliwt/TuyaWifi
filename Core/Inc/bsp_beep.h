@@ -3,7 +3,7 @@
 #include "main.h"
 
 
-
+void Buzzer_KeySound(void);
 
 
 #endif 
