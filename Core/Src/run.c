@@ -1,15 +1,5 @@
 #include "run.h"
-#include "wifi_fun.h"
-
-#include "dht11.h"
-#include "fan.h"
-#include "tim.h"
-#include "cmd_link.h"
-#include "special_power.h"
-#include "wifi.h"
-
-#include "mcu_api.h"
-#include "gpio.h"
+#include "bsp.h"
 
  
 

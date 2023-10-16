@@ -10,6 +10,7 @@
 
 #include "interrupt_manager.h"
 #include "bsp_beep.h"
+#include "bsp_fan.h"
 
 #include "ultrasonic.h"
 #include "dht11.h"
@@ -25,6 +26,7 @@
 #include "gpio.h"
 #include "tim.h"
 #include "iwdg.h"
+#include "usart.h"
 
 
 

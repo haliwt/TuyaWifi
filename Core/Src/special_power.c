@@ -1,11 +1,5 @@
 #include "special_power.h"
-#include "dht11.h"
-#include "fan.h"
-#include "tim.h"
-#include "cmd_link.h"
-#include "run.h"
-#include "wifi_fun.h"
-#include "gpio.h"
+#include "bsp.h"
 
 
 

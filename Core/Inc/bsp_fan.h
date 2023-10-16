@@ -44,13 +44,8 @@
 void FAN_Stop(void);
 
 
-
-
-
-
-
-
-
+void Fan_CCW_Run_Max(void);
+void Fan_CCW_Run_Min(void);
 
 void Fan_Slowly_Speed(void);
 

@@ -123,12 +123,11 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	
     wifi_uart_service();
-	//tuya_wifi_parser();
 	bsp_Idle();
 
-	 Connect_Tuya_Wifi();
+	// Connect_Tuya_Wifi();
 	
-   // MainBoard_Self_Inspection_PowerOn_Fun();
+   MainBoard_Self_Inspection_PowerOn_Fun();
     RunCommand_MainBoard_Handler();
 	
    }

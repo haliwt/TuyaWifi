@@ -1,9 +1,5 @@
 #include "cmd_link.h"
-#include "usart.h"
-#include "run.h"
-#include "fan.h"
-#include "wifi.h"
-#include "mcu_api.h"
+#include "bsp.h"
 
 #define MAX_BUFFER_SIZE  8
 

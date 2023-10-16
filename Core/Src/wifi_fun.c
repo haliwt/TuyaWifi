@@ -97,15 +97,17 @@ void Connect_Tuya_Wifi(void)
 
 	if( tuya_t.wifi_login_process ==1){
 		  tuya_t.wifi_login_process ++;
-
+                HAL_IWDG_Refresh(&hiwdg);
 		        WIFI_WBR3_DISABLE();
                 HAL_Delay(1000);
 				HAL_Delay(1000);
 				HAL_Delay(1000);
 				HAL_Delay(1000);
 				HAL_Delay(1000);
+				
 
 				HAL_Delay(1000);
+				HAL_IWDG_Refresh(&hiwdg);
 		       
 		        WIFI_WBR3_EN();
 				
@@ -144,6 +146,7 @@ void Connect_Tuya_Wifi(void)
 		  tuya_t.wifi_login_process ++;
 
 		        WIFI_WBR3_DISABLE();
+		        HAL_IWDG_Refresh(&hiwdg);
                 HAL_Delay(1000);
 				HAL_Delay(1000);
 				HAL_Delay(1000);
@@ -151,6 +154,7 @@ void Connect_Tuya_Wifi(void)
 				HAL_Delay(1000);
 
 				HAL_Delay(1000);
+				HAL_IWDG_Refresh(&hiwdg);
 		       
 		        WIFI_WBR3_EN();
 				
@@ -206,10 +210,10 @@ void RunWifi_Command_Handler(void)
 
       case wifi_has_been_connected:
            
-		 //  WIFI_WBR3_EN();
-	     //  mcu_set_wifi_mode(AP_STATE);//AP_STATE
-        //   mcu_set_wifi_mode(SMART_CONFIG);//smart
-		 //  mcu_get_wifi_work_state();
+		   WIFI_WBR3_EN();
+	      // mcu_set_wifi_mode(AP_STATE);//AP_STATE
+           mcu_set_wifi_mode(SMART_CONFIG);//smart
+		   mcu_get_wifi_work_state();
 
 		 if(wifi_work_state ==WIFI_CONN_CLOUD){
 		 
@@ -221,26 +225,20 @@ void RunWifi_Command_Handler(void)
 		break;
 
         case wifi_link_tuya_cloud: //02
-	           WIFI_WBR3_DISABLE();
+	          
+			    if(power_one == 0){
+				power_one ++;
+				WIFI_WBR3_DISABLE();
                 HAL_Delay(1000);
-		        HAL_Delay(1000);
-				HAL_Delay(1000);
-			    HAL_Delay(1000);
-				HAL_Delay(1000);
-		        HAL_Delay(1000);
-		        WIFI_WBR3_EN();
-				//mcu_reset_wifi();
-		    	wifi_config_flag = 0;
-			  
-			  // if(mcu_get_reset_wifi_flag()){
-                    tuya_t.wifi_login_process =1;
+			    WIFI_WBR3_EN();
+		        mcu_set_wifi_mode(AP_CONFIG);//控制模组启用配网
 
-			  // }
-		
-			 tuya_t.wifi_login_process =1;
+				}
+				else {
+			    	wifi_config_flag = 0;
+					tuya_t.wifi_login_process =1;
+				}
 			
-			
-		//mcu_set_wifi_mode(SMART_CONFIG);//控制模组启用配网
 
 		 wifi_t.wifiRun_Cammand_label=0xff;
 			 
@@ -577,7 +575,7 @@ void MainBoard_Self_Inspection_PowerOn_Fun(void)
 			   wifi_t.wifiRun_Cammand_label= wifi_has_been_connected ;
 			    
 		   }
-		  // else wifi_t.wifiRun_Cammand_label =wifi_link_tuya_cloud;//wifi_has_been_connected
+		   else wifi_t.wifiRun_Cammand_label =wifi_link_tuya_cloud;//wifi_has_been_connected
 	
 
 	
