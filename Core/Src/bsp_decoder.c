@@ -30,7 +30,7 @@ void Decode_RunCmd(void)
               //fast led blink 
               SendWifiData_To_Cmd(0x52);
 			  Buzzer_KeySound();	
-              wifi_t.wifiRun_Cammand_label = wifi_link_tuya_cloud;//2 
+            //  wifi_t.wifiRun_Cammand_label = wifi_link_tuya_cloud;//2 
 //             WIFI_WBR3_DISABLE();
 //             HAL_Delay(1000);
 //			 WIFI_WBR3_EN();

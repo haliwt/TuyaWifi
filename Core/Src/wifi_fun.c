@@ -100,6 +100,12 @@ void Connect_Tuya_Wifi(void)
 
 		        WIFI_WBR3_DISABLE();
                 HAL_Delay(1000);
+				HAL_Delay(1000);
+				HAL_Delay(1000);
+				HAL_Delay(1000);
+				HAL_Delay(1000);
+
+				HAL_Delay(1000);
 		       
 		        WIFI_WBR3_EN();
 				
@@ -124,7 +130,7 @@ void Connect_Tuya_Wifi(void)
 			
 	break;
 	
-	case WIFI_NOT_CONNECTED: 
+	case WIFI_NOT_CONNECTED: //2
 		tuya_t.tuya_wifi_info = WIFI_NOT_CONNECTED;
 		
 	break;
@@ -132,10 +138,27 @@ void Connect_Tuya_Wifi(void)
 	case WIFI_LOW_POWER://05
 
 	    tuya_t.tuya_wifi_info = WIFI_LOW_POWER;
-		tuya_t.wifi_login_process=1;
+		mcu_set_wifi_mode(SMART_CONFIG);//控制模组启用配网
 		
-		//mcu_set_wifi_mode(SMART_CONFIG);//控制模组启用配网;
+	       if( tuya_t.wifi_login_process ==2){
+		  tuya_t.wifi_login_process ++;
 
+		        WIFI_WBR3_DISABLE();
+                HAL_Delay(1000);
+				HAL_Delay(1000);
+				HAL_Delay(1000);
+				HAL_Delay(1000);
+				HAL_Delay(1000);
+
+				HAL_Delay(1000);
+		       
+		        WIFI_WBR3_EN();
+				
+			  
+			 mcu_set_wifi_mode(SMART_CONFIG);//控制模组启用配网
+
+
+   }
 		
 		 
 

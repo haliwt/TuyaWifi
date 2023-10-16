@@ -54,11 +54,11 @@ void MX_IWDG_Init(void)
 /* USER CODE BEGIN 1 */
 void iwdg_feed(void)
 {
-   if(run_t.gTimer_dogfood_times > 5){
+   //if(run_t.gTimer_dogfood_times > 5){
 	   run_t.gTimer_dogfood_times =0;
        HAL_IWDG_Refresh(&hiwdg);
 
-    }
+   // }
 }
 
 /* USER CODE END 1 */
