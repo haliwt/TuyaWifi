@@ -16,7 +16,7 @@ void Buzzer_KeySound(void)
 
   HAL_TIM_PWM_Start(&htim14,TIM_CHANNEL_1);
   //HAL_Delay(100);
-  HAL_Delay(50);
+  HAL_Delay(60);
   Buzzer_KeySound_Off();
        
 }

@@ -151,7 +151,9 @@ void wifiUpdate_Fan_Level(uint8_t temp);
 
 void MainBoard_Self_Inspection_PowerOn_Fun(void);
 
+void Connect_Tuya_Wifi(void);
 
+void tuya_wifi_parser(void);
 
 #endif 
 

@@ -671,6 +671,7 @@ void wifi_uart_service(void)
     
     while((rx_in < sizeof(wifi_data_process_buf)) && with_data_rxbuff() > 0) {
         wifi_data_process_buf[rx_in ++] = take_byte_rxbuff();
+
     }
     
     if(rx_in < PROTOCOL_HEAD)

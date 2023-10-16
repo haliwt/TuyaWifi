@@ -31,9 +31,12 @@ void Decode_RunCmd(void)
               SendWifiData_To_Cmd(0x52);
 			  Buzzer_KeySound();	
               wifi_t.wifiRun_Cammand_label = wifi_link_tuya_cloud;//2 
-             WIFI_WBR3_DISABLE();
-             HAL_Delay(1000);
-			 WIFI_WBR3_EN();
+//             WIFI_WBR3_DISABLE();
+//             HAL_Delay(1000);
+//			 WIFI_WBR3_EN();
+
+				tuya_t.wifi_login_process =1;
+             
               
 		   }
 		   else if(cmdType_2==0){
