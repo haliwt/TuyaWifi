@@ -28,6 +28,7 @@
 #include "iwdg.h"
 #include "usart.h"
 #include "tuya_protocol.h"
+#include "bsp_connect.h"
 
 
 

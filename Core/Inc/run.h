@@ -47,6 +47,8 @@ typedef struct _RUN_T{
 	uint8_t gPower_flag;
 	uint8_t gDht11_flag;
 	uint8_t set_temperature_value;
+	uint8_t response_power_on;
+	uint8_t response_power_off;
 
 	uint8_t gDht11_humidity ;
 	uint8_t gDht11_temperature;
@@ -64,7 +66,9 @@ typedef struct _RUN_T{
 	uint8_t set_wind_speed_value;
 	
 
-
+    //wifi temperature value
+     uint8_t response_temperature_value;
+	 uint8_t response_timer_value ;
 
 	uint8_t  gModel;
 	uint8_t  gPlasma;
@@ -74,6 +78,7 @@ typedef struct _RUN_T{
 	
 	uint8_t gTimer_60s;
 	uint8_t gTimer_1s;
+	uint8_t gTimer_receive_times;
 
 	uint8_t gFan_counter;
 	uint8_t gTimer_senddata_panel;

@@ -103,9 +103,9 @@ void RunWifi_Command_Handler(void)
 		   WIFI_WBR3_EN();
 	      // mcu_set_wifi_mode(AP_STATE);//AP_STATE
            mcu_set_wifi_mode(SMART_CONFIG);//smart
-		   mcu_get_wifi_work_state();
+		   
 
-		 if(wifi_work_state ==WIFI_CONN_CLOUD){
+		 if(mcu_get_wifi_work_state() ==WIFI_CONN_CLOUD){
 		 
 	        wifi_t.wifiRun_Cammand_label = wifi_up_update_tuya_cloud_data;
 			
@@ -155,7 +155,7 @@ void RunWifi_Command_Handler(void)
      }
  
 
-	Connect_Tuya_Wifi();
+		Connect_Tuya_Wifi();
 	 if(mcu_get_wifi_work_state() == WIFI_CONN_CLOUD){
 
             if(first_connect < 5){
@@ -319,8 +319,8 @@ void Connect_Tuya_Wifi(void)
 **********************************************************************/
 void Wifi_ReceiveData_Handler(uint8_t cmd)
 {
-
- 
+  static uint8_t sound_temp,sound_timer;
+  uint8_t temp;
    switch(cmd){
 
        case OPEN_OFF_ITEM:
@@ -435,7 +435,25 @@ void Wifi_ReceiveData_Handler(uint8_t cmd)
 	   if(run_t.gPower_flag ==POWER_ON){
          
 			SendWifiData_To_PanelTemp(run_t.set_temperature_value);
-            Buzzer_KeySound();
+			
+			Buzzer_KeySound();
+	        wifi_t.response_wifi_signal_label=0xff;
+//			if(sound_temp ==0){
+//
+//			   sound_temp++;
+//               Buzzer_KeySound();
+//
+//			}
+//			temp = Wifi_ReadParam_Temperature_Value();
+//			if(temp == 1){
+//				wifi_t.response_wifi_signal_label=0xff;
+//				 
+//
+//			}
+//			else{
+//				wifi_t.response_wifi_signal_label=0xff;
+//                  
+//			}
          }
 	    wifi_t.response_wifi_signal_label=0xff;
 	  break;
@@ -455,11 +473,27 @@ void Wifi_ReceiveData_Handler(uint8_t cmd)
 
 		case TIME_ITEM:
 
-		 
+		 if(run_t.gPower_flag ==POWER_ON){
 		  SendWifiData_To_SetTime(wifi_t.setTimesValue);
           wifi_t.response_wifi_signal_label=0xff;
 		  Buzzer_KeySound();
-
+//          if(sound_timer ==0){
+//		  	 sound_timer ++;
+//		     Buzzer_KeySound();
+//
+//          }
+//		  temp = Wifi_ReadParam_Timer_Value();
+//		  if(temp == 1){
+//		  	
+//		  	wifi_t.response_wifi_signal_label=0xff;
+//		  	}
+//		  else{
+//		  	
+//		  	wifi_t.response_wifi_signal_label=0xff;
+//
+//		  	}
+		 }
+		  wifi_t.response_wifi_signal_label=0xff;
 		break;
 
 	 
@@ -467,7 +501,8 @@ void Wifi_ReceiveData_Handler(uint8_t cmd)
 
 	   default:
 
-	     
+	       sound_temp=0;
+		   sound_timer=0;
 
 	   break;
 

@@ -92,6 +92,39 @@ void Decode_RunCmd(void)
 
 	  break;
 
+	  case 'R':
+
+	       switch(cmdType_2){
+
+			 case 0x50 : //power on
+                 run_t.response_power_on =1;
+		     break;
+
+			 case 0x51: //power off
+                run_t.response_power_off =1;
+			 break;
+
+			 case 0x52: //timer value 
+                run_t.response_timer_value =1;
+			 break;
+
+			 case 0x53: //temperature value response signal
+               run_t.response_temperature_value =1;
+			 break;
+
+			 default:
+
+			 break;
+
+
+
+
+
+		   }
+	  	
+
+	  break;
+
 	  
 
 
