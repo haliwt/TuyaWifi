@@ -27,6 +27,7 @@
 #include "tim.h"
 #include "iwdg.h"
 #include "usart.h"
+#include "tuya_protocol.h"
 
 
 

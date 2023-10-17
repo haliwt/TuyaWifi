@@ -124,8 +124,7 @@ int main(void)
 	
     wifi_uart_service();
 	bsp_Idle();
-
-	// Connect_Tuya_Wifi();
+	
 	
    MainBoard_Self_Inspection_PowerOn_Fun();
     RunCommand_MainBoard_Handler();

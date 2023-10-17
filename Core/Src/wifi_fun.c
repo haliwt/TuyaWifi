@@ -84,116 +84,6 @@ void tuya_wifi_parser(void)
 
 }
 
-/*****************************************************************************
-函数名称 : static void Connect_Tuya_Wifi(void)
-功能描述 : wifi状态led控制
-输入参数 : 无
-返回参数 : 无
-使用说明 : 无
-*****************************************************************************/
-void Connect_Tuya_Wifi(void)
-{
-    static uint8_t low_t;
-
-	if( tuya_t.wifi_login_process ==1){
-		  tuya_t.wifi_login_process ++;
-                HAL_IWDG_Refresh(&hiwdg);
-		        WIFI_WBR3_DISABLE();
-                HAL_Delay(1000);
-				HAL_Delay(1000);
-				HAL_Delay(1000);
-				HAL_Delay(1000);
-				HAL_Delay(1000);
-				
-
-				HAL_Delay(1000);
-				HAL_IWDG_Refresh(&hiwdg);
-		       
-		        WIFI_WBR3_EN();
-				
-			  
-			 mcu_set_wifi_mode(SMART_CONFIG);//控制模组启用配网
-
-
-   }
-
-
-  switch(mcu_get_wifi_work_state())
-  {
- 	case SMART_CONFIG_STATE:       
-			
-		   tuya_t.tuya_wifi_info = SMART_CONFIG_STATE;
-		  
-	     
-		
-	break;
-	case AP_STATE:        
-		tuya_t.tuya_wifi_info = AP_STATE;	
-			
-	break;
-	
-	case WIFI_NOT_CONNECTED: //2
-		tuya_t.tuya_wifi_info = WIFI_NOT_CONNECTED;
-		
-	break;
-
-	case WIFI_LOW_POWER://05
-
-	    tuya_t.tuya_wifi_info = WIFI_LOW_POWER;
-		mcu_set_wifi_mode(SMART_CONFIG);//控制模组启用配网
-		
-	       if( tuya_t.wifi_login_process ==2){
-		  tuya_t.wifi_login_process ++;
-
-		        WIFI_WBR3_DISABLE();
-		        HAL_IWDG_Refresh(&hiwdg);
-                HAL_Delay(1000);
-				HAL_Delay(1000);
-				HAL_Delay(1000);
-				HAL_Delay(1000);
-				HAL_Delay(1000);
-
-				HAL_Delay(1000);
-				HAL_IWDG_Refresh(&hiwdg);
-		       
-		        WIFI_WBR3_EN();
-				
-			  
-			 mcu_set_wifi_mode(SMART_CONFIG);//控制模组启用配网
-
-
-   }
-		
-		 
-
-	break;
-
-	case SMART_AND_AP_STATE: //06
-
-	    tuya_t.tuya_wifi_info = SMART_AND_AP_STATE;
-		
-
-	break;
-	
-	case WIFI_CONNECTED:
-		  
-			
-	case WIFI_CONN_CLOUD:
-		tuya_t.tuya_wifi_info = WIFI_CONN_CLOUD;
-			
-	break;
-	default:
-			
-	break;
-				
-  }
-
-  	
-
-}
-
-
-
 /*********************************************************************
 	*
 	*Function Name: void Wifi_Mode(void)
@@ -231,11 +121,12 @@ void RunWifi_Command_Handler(void)
 				WIFI_WBR3_DISABLE();
                 HAL_Delay(1000);
 			    WIFI_WBR3_EN();
-		        mcu_set_wifi_mode(AP_CONFIG);//控制模组启用配网
+		        mcu_set_wifi_mode(SMART_CONFIG);//控制模组启用配网
 
 				}
 				else {
-			    	wifi_config_flag = 0;
+			    	//wifi_config_flag = 0;
+			    	mcu_reset_wifi();
 					tuya_t.wifi_login_process =1;
 				}
 			
@@ -264,8 +155,8 @@ void RunWifi_Command_Handler(void)
      }
  
 
-	 Connect_Tuya_Wifi();
-	 if(wifi_work_state == WIFI_CONN_CLOUD){
+	Connect_Tuya_Wifi();
+	 if(mcu_get_wifi_work_state() == WIFI_CONN_CLOUD){
 
             if(first_connect < 5){
 			   first_connect ++ ;
@@ -299,19 +190,125 @@ void RunWifi_Command_Handler(void)
 		 
     }
 
-	if(wifi_t.gTimer_get_wifi_state > 40 && wifi_work_state == WIFI_CONN_CLOUD){
+	if(wifi_t.gTimer_get_wifi_state > 40){ // && wifi_work_state == WIFI_CONN_CLOUD){
 		wifi_t.gTimer_get_wifi_state=0;
-       SendWifiData_To_Cmd(0x01);
+	   if(mcu_get_wifi_work_state()==WIFI_CONN_CLOUD)
+            SendWifiData_To_Cmd(0x01);
+	   else
+	   	   SendWifiData_To_Cmd(0x0);
               
         
 	}
-	else{
-	   SendWifiData_To_Cmd(0x0);
-
-	}
-
-	 
 }
+/*****************************************************************************
+函数名称 : static void Connect_Tuya_Wifi(void)
+功能描述 : wifi状态led控制
+输入参数 : 无
+返回参数 : 无
+使用说明 : 无
+*****************************************************************************/
+void Connect_Tuya_Wifi(void)
+{
+    static uint8_t low_t;
+
+	if( tuya_t.wifi_login_process ==1){
+		  tuya_t.wifi_login_process ++;
+		        WIFI_WBR3_EN();
+                HAL_IWDG_Refresh(&hiwdg);
+//		        WIFI_WBR3_DISABLE();
+//                HAL_Delay(1000);
+//				HAL_Delay(1000);
+//				HAL_Delay(1000);
+//				HAL_Delay(1000);
+//				HAL_Delay(1000);
+//				
+//
+//				HAL_Delay(1000);
+				//HAL_IWDG_Refresh(&hiwdg);
+		       
+		      
+				
+			  
+			 mcu_set_wifi_mode(SMART_CONFIG);//控制模组启用配网
+
+
+   }
+
+
+  switch(mcu_get_wifi_work_state())
+  {
+ 	case SMART_CONFIG_STATE:       
+			
+		   tuya_t.tuya_wifi_info = SMART_CONFIG_STATE;
+		  
+	     
+		
+	break;
+	case AP_STATE:        
+		tuya_t.tuya_wifi_info = AP_STATE;	
+			
+	break;
+	
+	case WIFI_NOT_CONNECTED: //2
+		tuya_t.tuya_wifi_info = WIFI_NOT_CONNECTED;
+		
+	break;
+
+	case WIFI_LOW_POWER://05
+
+	    tuya_t.tuya_wifi_info = WIFI_LOW_POWER;
+		
+		
+//	       if( tuya_t.wifi_login_process ==2){
+//		  tuya_t.wifi_login_process ++;
+//
+//		        WIFI_WBR3_DISABLE();
+//		        HAL_IWDG_Refresh(&hiwdg);
+//                HAL_Delay(1000);
+//				HAL_Delay(1000);
+//				HAL_Delay(1000);
+//				HAL_Delay(1000);
+//				HAL_Delay(1000);
+//
+//				HAL_Delay(1000);
+//				HAL_IWDG_Refresh(&hiwdg);
+//		       
+//		        WIFI_WBR3_EN();
+//				
+//			  
+//			 mcu_set_wifi_mode(AP_CONFIG);//控制模组启用配网
+//
+//
+//   		}
+//		
+		 
+
+	break;
+
+	case SMART_AND_AP_STATE: //06
+
+	    tuya_t.tuya_wifi_info = SMART_AND_AP_STATE;
+		
+
+	break;
+	
+	case WIFI_CONNECTED:
+		  
+			
+	case WIFI_CONN_CLOUD:
+		tuya_t.tuya_wifi_info = WIFI_CONN_CLOUD;
+			
+	break;
+	default:
+			
+	break;
+				
+  }
+
+  	
+
+}
+
 /**********************************************************************
 	*
 	*Functin Name: void Wifi_RunMode(uint8_t cmd)
