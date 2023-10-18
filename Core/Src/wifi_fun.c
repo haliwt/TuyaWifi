@@ -601,7 +601,7 @@ void MainBoard_Self_Inspection_PowerOn_Fun(void)
                 WIFI_WBR3_DISABLE();
                 HAL_Delay(1000);
 			    WIFI_WBR3_EN();
-      
+              Buzzer_KeySound();
              mcu_get_wifi_work_state();
 			if(wifi_work_state ==WIFI_CONN_CLOUD){
 			   wifi_t.wifiRun_Cammand_label= wifi_has_been_connected ;
